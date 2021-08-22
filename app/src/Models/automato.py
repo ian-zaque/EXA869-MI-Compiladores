@@ -1,4 +1,4 @@
-from states.initialState import InitialState
+from states.initialState import *
 from states.identifierState import IdentifierState
 from states.numberState import NumberState
 from states.reserverdWordState import ReserverdWordState
@@ -9,9 +9,9 @@ class Automato:
 
     def __init__(self, file):
         self.currentState = {}
+        self.initialState  = []
         self.states = {}
         self.file = open(file,'r')
-        # self.states['InitialState'] = InitialState()
         # self.states['IdentifierState'] = IdentifierState()
         # self.states['NumberState'] = NumberState()
         # self.states['ReserverdWordState'] = ReserverdWordState()
@@ -35,8 +35,12 @@ class Automato:
         
     def handleFile(self):
         file = self.file
-        line = file.readline()
-        print(line)
+        for indexLine, line in enumerate(file):
+            for indexChar, char in enumerate(line):
+                print('CHAR:' +str(indexChar),char)
+            print('LINHA:'+str(indexLine),line)
+        # file.close()
+        
         
         # while True:
         #     for idx,char in enumerate(line):
@@ -55,12 +59,5 @@ class Automato:
 
         #             if i >= len(line)-1:
         #                 break
-                    
-                    
-        line = file.readline()
             # if END OF FILE BREAK AND CLOSE FILE
-        
-            
-        
-        self.file.close()
         

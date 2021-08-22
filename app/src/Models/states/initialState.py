@@ -1,4 +1,4 @@
-from lexemas import Lexemas
+from lexemas import *
 from states.identifierState import IdentifierState
 from states.numberState import NumberState
 from states.relationalOperatorState import RelationalOperatorState
@@ -16,7 +16,6 @@ class InitialState:
     
     def checkChar(self):
         word = self.char
-        print('aoeifnaidfníaf',self.char)
         if Lexemas.isLetter(word):
             return IdentifierState(word)
         

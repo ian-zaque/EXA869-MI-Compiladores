@@ -17,30 +17,30 @@ class Lexemas:
     
     COMMENT_DELIMMITERS = ['#', '{#', '#}']
     
-    def isReservedWord(self,word):
-        return word in self.RESERVERD_WORDS
+    def isReservedWord(self,char):
+        return char in self.RESERVERD_WORDS
     
-    def isNumber(word):
-        return word.isnumeric()
+    def isNumber(char):
+        return char.isnumeric()
 
-    def isLetter(word):
-        return word.isalpha()
+    def isLetter(char):
+        return char.isalpha()
 
-    def isRelationalOperator(self,word):
-        return word in self.RELATIONAL_OPERATORS
+    def isRelationalOperator(self,char):
+        return char in self.RELATIONAL_OPERATORS
     
-    def isArithmeticOperators(self,word):
-        return word in self.ARITHMETIC_OPERATORS
+    def isArithmeticOperators(self,char):
+        return char in self.ARITHMETIC_OPERATORS
     
-    def isLogicalOperator(self,word):
-        return word in self.LOGICAL_OPERATORS
+    def isLogicalOperator(self,char):
+        return char in self.LOGICAL_OPERATORS
     
-    def isDelimiter(self,word):
-        return word in self.DELIMITERS
+    def isDelimiter(self,char):
+        return char in self.DELIMITERS
     
-    def isCommentDelimiter(self,word):
-        return word in self.COMMENT_DELIMMITERS
+    def isCommentDelimiter(self,char):
+        return char in self.COMMENT_DELIMMITERS
     
-    def isValidSimbol(word):
-        asciiValue = ord(word)
+    def isValidSimbol(char):
+        asciiValue = ord(char)
         return asciiValue not in ['"', '\'', 34, 39] and asciiValue.isacii()
