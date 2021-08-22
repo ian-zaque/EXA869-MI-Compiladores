@@ -17,9 +17,8 @@ def getInputFiles(dir):
 
 #FUNCTION TO READ THE FILE
 def readFileInputs(path,filename):
-    #CHAMAR AUTOMATO AQUI. PASSAR {{file}}
     # file[0] -> file.txt, file[1] -> file index
-    automato = Automato([],path + '\\' + filename)
+    automato = Automato(path + '\\' + filename)
     automato.handleFile()
 ############################
 

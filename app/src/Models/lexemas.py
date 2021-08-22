@@ -1,46 +1,46 @@
 class Lexemas:
-    reserverdWords = [
+    RESERVERD_WORDS = [
         'algoritmo', 'variaveis', 'constantes', 'registro','funcao', 
         'retorno', 'vazio', 'se', 'senao', 'enquanto','para', 'leia', 'escreva', 'inteiro', 'real', 'booleano', 
         'char','cadeia', 'verdadeiro', 'falso'
     ]
     
-    numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     
-    relationalOperators = ['=', '<', '>', '==', '<=', ' >=', '!=']
+    RELATIONAL_OPERATORS = ['=', '<', '>', '==', '<=', ' >=', '!=']
     
-    arithmeticOperators = ['+', '-', '++', '--', '*', '/']
+    ARITHMETIC_OPERATORS = ['+', '-', '++', '--', '*', '/']
 
-    logicalOperators = ['&&', '||', '!']
+    LOGICAL_OPERATORS = ['&&', '||', '!']
 
-    delimiters = [';', ',', '.', '(', ')', '{', '}', '[', ']', ' ', '\\n', '\\t']
+    DELIMITERS = [';', ',', '.', '(', ')', '{', '}', '[', ']', ' ', '\\n', '\\t']
     
-    commentDelimiters = ['#', '{#', '#}']
+    COMMENT_DELIMMITERS = ['#', '{#', '#}']
     
     def isReservedWord(self,word):
-        return word in self.reserverdWords
+        return word in self.RESERVERD_WORDS
     
-    def isNumber(self,word):
+    def isNumber(word):
         return word.isnumeric()
 
-    def isLetter(self, word):
+    def isLetter(word):
         return word.isalpha()
 
     def isRelationalOperator(self,word):
-        return word in self.relationalOperators
+        return word in self.RELATIONAL_OPERATORS
     
     def isArithmeticOperators(self,word):
-        return word in self.arithmeticOperators
+        return word in self.ARITHMETIC_OPERATORS
     
     def isLogicalOperator(self,word):
-        return word in self.logicalOperators
+        return word in self.LOGICAL_OPERATORS
     
     def isDelimiter(self,word):
-        return word in self.delimiters
+        return word in self.DELIMITERS
     
-    def isCommentDelimiters(self,word):
-        return word in self.commentDelimiters
+    def isCommentDelimiter(self,word):
+        return word in self.COMMENT_DELIMMITERS
     
-    def isValidSimbol(self,word):
+    def isValidSimbol(word):
         asciiValue = ord(word)
         return asciiValue not in ['"', '\'', 34, 39] and asciiValue.isacii()
