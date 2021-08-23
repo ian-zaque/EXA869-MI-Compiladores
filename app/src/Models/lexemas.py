@@ -1,35 +1,37 @@
 class Lexemas:
-    RESERVERD_WORDS = [
-        'algoritmo', 'variaveis', 'constantes', 'registro','funcao', 
-        'retorno', 'vazio', 'se', 'senao', 'enquanto','para', 'leia', 'escreva', 'inteiro', 'real', 'booleano', 
-        'char','cadeia', 'verdadeiro', 'falso'
-    ]
     
-    NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    
-    RELATIONAL_OPERATORS = ['=', '<', '>', '==', '<=', ' >=', '!=']
-    
-    ARITHMETIC_OPERATORS = ['+', '-', '++', '--', '*', '/']
+    def __init__(self):
+        self.RESERVERD_WORDS = [
+            'algoritmo', 'variaveis', 'constantes', 'registro','funcao', 
+            'retorno', 'vazio', 'se', 'senao', 'enquanto','para', 'leia', 'escreva', 'inteiro', 'real', 'booleano', 
+            'char','cadeia', 'verdadeiro', 'falso'
+        ]
+        
+        self.NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        
+        self.RELATIONAL_OPERATORS = ['=', '<', '>', '==', '<=', ' >=', '!=']
+        
+        self.ARITHMETIC_OPERATORS = ['+', '-', '++', '--', '*', '/']
 
-    LOGICAL_OPERATORS = ['&&', '||', '!']
+        self.LOGICAL_OPERATORS = ['&&', '||', '!']
 
-    DELIMITERS = [';', ',', '.', '(', ')', '{', '}', '[', ']', ' ', '\\n', '\\t']
-    
-    COMMENT_DELIMMITERS = ['#', '{#', '#}']
+        self.DELIMITERS = [';', ',', '.', '(', ')', '{', '}', '[', ']', ' ', '\\n', '\\t']
+        
+        self.COMMENT_DELIMMITERS = ['#', '{#', '#}']
     
     def isReservedWord(self,char):
         return char in self.RESERVERD_WORDS
     
-    def isNumber(char):
+    def isNumber(self,char):
         return char.isnumeric()
 
-    def isLetter(char):
+    def isLetter(self,char):
         return char.isalpha()
 
     def isRelationalOperator(self,char):
         return char in self.RELATIONAL_OPERATORS
     
-    def isArithmeticOperators(self,char):
+    def isArithmeticOperator(self,char):
         return char in self.ARITHMETIC_OPERATORS
     
     def isLogicalOperator(self,char):

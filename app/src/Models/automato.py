@@ -38,9 +38,8 @@ class Automato:
         for indexLine, line in enumerate(file):
             # for indexChar, char in enumerate(line):
             #     print('CHAR:' +str(indexChar),char)
-            self.initialState = InitialState(line)
-            self.states = self.initialState.checkChar()
-            print('LINHA:'+str(indexLine),line)
+            self.states = InitialState(line).checkChar()
+            # print('LINHA:'+str(indexLine),line)
             print('ESTADOS',self.states)
         # file.close()
         

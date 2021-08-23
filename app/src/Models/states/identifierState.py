@@ -1,4 +1,6 @@
 from states.numberState import NumberState
+from states.relationalOperatorState import *
+from states.arithmeticOperatorState import *
 from lexemas import *
 
 class IdentifierState:
@@ -7,36 +9,60 @@ class IdentifierState:
         self.stateName = 'IDE'
         self.indexChar = indexChar
         self.line = line
+        self.state = []
     
     def getStateName(self):
         return self.stateName
     
     def checkChar(self):
         line = self.line
-        stateFinal = []
         hasEnded = False
         
-        for idxChar, char in enumerate(line):
-            print('char novo',char)
-            print('liiinha',line)
-            
-            if idxChar <= len(line)-1 and char != '\\n':
-                if Lexemas.isLetter(char) and hasEnded==False:
-                    alteredLine = line[idxChar+1:]
-                    self.nextState = IdentifierState(idxChar,alteredLine).checkChar()
-                    print(self.nextState)
+        if self.indexChar >= len(line)-1:
+            return self.state
+        
+        else:
+            char = line[self.indexChar]
+            if self.indexChar <= len(line):
+                if hasEnded == True:
+                    return self.state
                 
-                elif Lexemas.isNumber(char) and hasEnded==False:
-                    alteredLine = line[idxChar+1:]
-                    self.nextState = NumberState(idxChar,alteredLine).checkChar()
-                    print(self.nextState)
-                
-                elif hasEnded== True:
-                    self.stateFinal = self.nextState
-                    return self.stateFinal
+                elif Lexemas().isNumber(char) and hasEnded==False:
+                    self.state.append('IDE')
+                    NumberState(self.indexChar+1,line).checkChar()
                     
-            elif idxChar > len(line[self.indexChar:]) or char == '\\n':
-                hasEnded = True
+                elif (Lexemas().isLetter(char) or char == '_') and hasEnded==False:
+                    self.state.append('IDE')
+                    IdentifierState(self.indexChar+1,line).checkChar()        
+                    
+            elif self.indexChar > len(line)-1:
+                hasEnded=True
+                return self.state
+                    
+            elif hasEnded:
+                return self.state
+        
+        # if self.indexChar <= len(line)-1 and line[self.indexChar] != '\\n':
+        #     if (Lexemas.isLetter(line[self.indexChar]) or line[self.indexChar]=='_') and hasEnded==False:
+        #         alteredLine = line[self.indexChar+1:]
+        #         self.nextState = IdentifierState(self.indexChar+1,alteredLine).checkChar()
+        #         # print(self.nextState)
+            
+        #     elif Lexemas.isNumber(line[self.indexChar]) and hasEnded==False:
+        #         alteredLine = line[self.indexChar+1:]
+        #         self.nextState = NumberState(self.indexChar+1,alteredLine).checkChar()
+        #         # print(self.nextState)
+            
+        #     elif hasEnded== True:
+        #         self.stateFinal = self.nextState
+        #         return self.stateFinal
+            
+        # elif hasEnded:
+        #     self.stateFinal = self.nextState
+        #     return self.stateFinal
+        
+        # else:
+        #     hasEnded = True
             
             # if self.indexChar <= len(line):
             #     if Lexemas.isLetter(char):

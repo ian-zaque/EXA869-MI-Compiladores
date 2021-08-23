@@ -10,7 +10,8 @@ class InitialState:
     def __init__(self,line):
         self.stateName = 'INIT'
         self.line = line
-        self.stateFinal = []
+        self.indexChar = 0
+        self.states = []
     
     def getStateName(self):
         return self.stateName
@@ -23,20 +24,45 @@ class InitialState:
             print('LINHA:',line)
             print('CHAR:' +str(indexChar),'\'',char,'\'')
             
-            if indexChar <= len(line)-1 and char != '\\n':
-                if Lexemas.isLetter(char) and hasEnded==False:
-                    alteredLine = line[indexChar+1:]
-                    self.stateFinal = IdentifierState(indexChar,alteredLine).checkChar()
-                    print(self.stateFinal)
+            if indexChar <= len(line) and char != '\\n':
+                if hasEnded==True:
+                    return self.states
+                
+                elif Lexemas().isNumber(char) and hasEnded==False:
+                    self.states.append('NRO')
+                    NumberState(indexChar+1,line).checkChar()
                     
-                elif hasEnded== True:
-                    return self.stateFinal
+                elif Lexemas().isLetter(char) and hasEnded==False:
+                    self.states.append('IDE')
+                    IdentifierState(indexChar+1,line).checkChar()
+                    
+                elif Lexemas().isRelationalOperator(char) and hasEnded==False:
+                    self.states.append('REL')
+                    RelationalOperatorState(indexChar+1,line).checkChar()
+                    
+                # elif Lexemas().isArithmeticOperator(char) and hasEnded==False:
+                #     self.state = ArithmeticOperatorState(indexChar+1,line).checkChar()
+                
+            elif indexChar > len(line)-1:
+                hasEnded=True
+                
+            elif hasEnded:
+                return self.state
             
-            elif indexChar >= len(line[self.indexChar:]) or char == '\\n':
-                hasEnded = True
+            # if indexChar <= len(line)-1 and char != '\\n':
+            #     if Lexemas.isLetter(char) and hasEnded==False:
+            #         alteredLine = line[indexChar+1:]
+            #         self.stateFinal = IdentifierState(indexChar,alteredLine).checkChar()
+            #         print(self.stateFinal)
+                    
+            #     elif hasEnded== True:
+            #         return self.stateFinal
             
-            else:
-                return 'CARACTER INVALIDO'
+            # elif indexChar >= len(line[self.indexChar:]) or char == '\\n':
+            #     hasEnded = True
+            
+            # else:
+            #     break
             
         # for indexChar, char in enumerate(line):
         #     print('LINHA:',line)
