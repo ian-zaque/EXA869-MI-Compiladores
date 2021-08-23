@@ -36,9 +36,12 @@ class Automato:
     def handleFile(self):
         file = self.file
         for indexLine, line in enumerate(file):
-            for indexChar, char in enumerate(line):
-                print('CHAR:' +str(indexChar),char)
+            # for indexChar, char in enumerate(line):
+            #     print('CHAR:' +str(indexChar),char)
+            self.initialState = InitialState(line)
+            self.states = self.initialState.checkChar()
             print('LINHA:'+str(indexLine),line)
+            print('ESTADOS',self.states)
         # file.close()
         
         
