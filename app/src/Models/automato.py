@@ -30,8 +30,8 @@ class Automato:
                 numState = 0
                 word = ''
                 
-                if idxLine >= len(line)-1:
-                    break
+                # if idxLine >= len(line):
+                #     break
                 
                 for idxChar,char in enumerate(line):
                     print('Posição:',idxChar, 'Char: ',char)
@@ -52,7 +52,7 @@ class Automato:
                             numState = 99
                     
                     elif numState ==1:
-                        if self.lexemas.isLetter(char):
+                        if self.lexemas.isLetter(char) or self.lexemas.isDigit(char) or char=='_':
                             numState = 1
                             word = word + char
                         
