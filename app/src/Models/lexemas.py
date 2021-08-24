@@ -1,6 +1,11 @@
 class Lexemas:
     
-    def __init__(self):        
+    def __init__(self):
+        self.tokens = [
+            'PRE', 'IDE', 'NRO', 'DEL', 'REL', 'LOG', 'ART', 'SII', 'CAR', 'CAD'
+            'SII', 'CMF', 'NMF', 'CaMF', 'CoMF', 'OpMF',      
+        ]
+             
         self.RESERVERD_WORDS = [
             'algoritmo', 'variaveis', 'constantes', 'registro','funcao', 
             'retorno', 'vazio', 'se', 'senao', 'enquanto','para', 'leia', 'escreva', 'inteiro', 'real', 'booleano', 
@@ -48,4 +53,7 @@ class Lexemas:
     
     def isValidSimbol(char):
         asciiValue = ord(char)
-        return asciiValue not in ['"', '\'', 34, 39] and asciiValue.isacii()
+        return asciiValue not in [34, 39] and asciiValue.isacii()
+    
+    st = ' '
+    print(st.isspace())

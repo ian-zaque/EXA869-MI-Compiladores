@@ -1,12 +1,8 @@
 class Token:
-    def __init__(self,word,type):
-        self.tokens = [
-            'PRE', 'IDE', 'NRO', 'DEL', 'REL', 'LOG', 'ART', 'SII', 'CAR', 'CAD'
-            'SII', 'CMF', 'NMF', 'CaMF', 'CoMF', 'OpMF',      
-        ]
-        
+    def __init__(self,word,type,line):        
         self.word = word
         self.type = type
+        self.line = line
         
     def getType(self):
         return self.type
@@ -21,4 +17,7 @@ class Token:
         self.word = word
         
     def toString(self):
-        return {self.word, self.type}
+        line = self.line
+        typeToken = self.type
+        word = self.word
+        return [line, typeToken, word]
