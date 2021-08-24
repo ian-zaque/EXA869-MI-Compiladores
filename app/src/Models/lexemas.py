@@ -1,6 +1,6 @@
 class Lexemas:
     
-    def __init__(self):
+    def __init__(self):        
         self.RESERVERD_WORDS = [
             'algoritmo', 'variaveis', 'constantes', 'registro','funcao', 
             'retorno', 'vazio', 'se', 'senao', 'enquanto','para', 'leia', 'escreva', 'inteiro', 'real', 'booleano', 
@@ -22,11 +22,14 @@ class Lexemas:
     def isReservedWord(self,char):
         return char in self.RESERVERD_WORDS
     
-    def isNumber(self,char):
+    def isDigit(self,char):
         return char.isnumeric()
 
     def isLetter(self,char):
         return char.isalpha()
+
+    def isSpace(self,char):
+        return char.isspace()
 
     def isRelationalOperator(self,char):
         return char in self.RELATIONAL_OPERATORS

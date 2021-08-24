@@ -1,6 +1,6 @@
 from os.path import dirname, abspath
 from os import listdir
-from automato import Automato
+from Automato import Automato
 
 
 #FUNCTION TO GET ALL THE TEXTS INPUTS
@@ -19,7 +19,8 @@ def getInputFiles(dir):
 def readFileInputs(path,filename):
     # file[0] -> file.txt, file[1] -> file index
     automato = Automato(path + '\\' + filename)
-    automato.handleFile()
+    token = automato.getNextToken()
+    print('TOKEN AUTOMATO',token)
 ############################
 
 path = dirname(dirname(dirname(dirname(abspath(__file__)))))

@@ -1,4 +1,4 @@
-from lexemas import *
+from Lexemas import *
 from states.identifierState import IdentifierState
 from states.numberState import NumberState
 from states.relationalOperatorState import RelationalOperatorState
@@ -11,7 +11,7 @@ class InitialState:
         self.stateName = 'INIT'
         self.line = line
         self.indexChar = 0
-        self.states = []
+        self.states = {}
     
     def getStateName(self):
         return self.stateName
@@ -19,35 +19,50 @@ class InitialState:
     def checkChar(self):
         line = self.line
         hasEnded = False
+        nextState =[]
 
-        for indexChar, char in enumerate(line):
-            print('LINHA:',line)
-            print('CHAR:' +str(indexChar),'\'',char,'\'')
+        # for indexChar, char in enumerate(line):
+        #     print('LINHA:',line)
+        #     print('CHAR:' +str(indexChar),'\'',char,'\'')
             
-            if indexChar <= len(line) and char != '\\n':
-                if hasEnded==True:
-                    return self.states
+        #     if not char.isspace():
+        #         if indexChar < len(line) and char != '\\n' and indexChar+1 < len(line):
+        #             if Lexemas().isLetter(char):
+        #                 nextState = IdentifierState(indexChar+1,line,line[indexChar+1]).checkChar()
+        #                 self.states = nextState
+        #         else:
+        #             return self.states
+     
+        #     elif indexChar >= len(line):
+        #         return self.states
+            
+        #     else:
+        #         continue
+            
+            # if indexChar <= len(line) and char != '\\n':
+            #     if hasEnded==True:
+            #         return self.states
                 
-                elif Lexemas().isNumber(char) and hasEnded==False:
-                    self.states.append('NRO')
-                    NumberState(indexChar+1,line).checkChar()
+            #     elif Lexemas().isNumber(char) and hasEnded==False:
+            #         self.states.append('NRO')
+            #         NumberState(indexChar+1,line).checkChar()
                     
-                elif Lexemas().isLetter(char) and hasEnded==False:
-                    self.states.append('IDE')
-                    IdentifierState(indexChar+1,line).checkChar()
+            #     elif Lexemas().isLetter(char) and hasEnded==False:
+            #         self.states.append('IDE')
+            #         IdentifierState(indexChar+1,line).checkChar()
                     
-                elif Lexemas().isRelationalOperator(char) and hasEnded==False:
-                    self.states.append('REL')
-                    RelationalOperatorState(indexChar+1,line).checkChar()
+            #     elif Lexemas().isRelationalOperator(char) and hasEnded==False:
+            #         self.states.append('REL')
+            #         RelationalOperatorState(indexChar+1,line).checkChar()
                     
                 # elif Lexemas().isArithmeticOperator(char) and hasEnded==False:
                 #     self.state = ArithmeticOperatorState(indexChar+1,line).checkChar()
                 
-            elif indexChar > len(line)-1:
-                hasEnded=True
+            # elif indexChar > len(line)-1:
+            #     hasEnded=True
                 
-            elif hasEnded:
-                return self.state
+            # elif hasEnded:
+            #     return self.state
             
             # if indexChar <= len(line)-1 and char != '\\n':
             #     if Lexemas.isLetter(char) and hasEnded==False:
