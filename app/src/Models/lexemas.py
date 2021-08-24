@@ -5,6 +5,12 @@ class Lexemas:
             'PRE', 'IDE', 'NRO', 'DEL', 'REL', 'LOG', 'ART', 'SII', 'CAR', 'CAD'
             'SII', 'CMF', 'NMF', 'CaMF', 'CoMF', 'OpMF',      
         ]
+        
+        self.stateTypes = {
+            0 : 'INITIAL',
+            1 : 'q1',
+            2 : 'q2'
+        }
              
         self.RESERVERD_WORDS = [
             'algoritmo', 'variaveis', 'constantes', 'registro','funcao', 

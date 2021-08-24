@@ -1,5 +1,6 @@
 from Token import Token
 from lexemas import Lexemas
+from State import State
 
 class Automato:
 
@@ -9,19 +10,6 @@ class Automato:
         self.lexemas = Lexemas()
         self.states = []
     
-    def getFile(self):
-        return self.file
-    
-    def nextChar(self):
-        self.index = self.index+1
-        return self.fileContent[self.index]
-    
-    def back(self):
-        self.index = self.index-1
-    
-    def isEOF(self):
-        return self.index == len(self.file.readlines())
-    
     def getNextToken(self):
             file = self.file.readlines()
             for idxLine, line in enumerate(file):
@@ -29,6 +17,7 @@ class Automato:
                 print(self.file.readlines())
                 numState = 0
                 word = ''
+                # state = State(numState,word,line,line[idxLine])
                 
                 # if idxLine >= len(line):
                 #     break
@@ -36,10 +25,11 @@ class Automato:
                 for idxChar,char in enumerate(line):
                     print('Posição:',idxChar, 'Char: ',char)
                 
-                    if numState == 0:
+                    if numState == 0:                   #WAITING
                         if self.lexemas.isLetter(char):
                             numState = 1
                             word = word + char
+                            state = State(numState,word,line,char)
                         # 
                         # AQUI OUTROS IFS
                         
@@ -51,13 +41,16 @@ class Automato:
                             # ALGUM ERRO
                             numState = 99
                     
-                    elif numState ==1:
+                    elif numState ==1:              #RECEIVED char
                         if self.lexemas.isLetter(char) or self.lexemas.isDigit(char) or char=='_':
                             numState = 1
                             word = word + char
                         
-                        elif self.lexemas.isSpace(char) or char == '\n':
-                            token = Token(word,'IDE',idxLine)
+                        elif self.lexemas.isSpace(char) or self.lexemas.isDelimiter(char) or char == '\n':
+                            if self.lexemas.isReservedWord(word):
+                                token = Token(word,'PRE',idxLine)
+                            else:
+                                token = Token(word,'IDE',idxLine)
                             self.states.append(token.toString())
                             word =''
                             numState = 0
@@ -65,54 +58,6 @@ class Automato:
                             
                             # TRATAR ERROS OU OUTRA OCASIOES AQUI
                         else:
-                            numState = 0           
+                            numState = 0
+                                    
             return self.states
-        # if self.isEOF():
-        #     return
-        
-        # state = 0
-        # word = ''
-        # index = -1
-        
-        # file = self.fileContent
-        # for indexLine, line in enumerate(file):
-        #     index = indexLine
-        #     if self.isEOF():
-        #         return self.states
-            
-        #     else:
-        #         word = ''
-        #         state = 0
-        #         for indexChar, char in enumerate(line):
-        #             if indexChar == len(line):
-        #                 return self.states
-                    
-        #             else:
-        #                 if state == 0:
-        #                     if Lexemas().isLetter(char):
-        #                         word = word+char
-        #                         state = 1
-                                
-        #                     elif Lexemas().isSpace(char):
-        #                         state = 0
-        #                         word = ''
-        #                     #
-        #                     #OUTROS IFS PARA OUTRAS ENTRADAS
-        #                     #
-                            
-        #                     else:
-        #                         print('ERRO')
-        #                         return self.states
-                            
-        #                 elif state == 1:
-        #                     if Lexemas().isLetter(char):
-        #                         word = word+char
-        #                         state = 1
-                                
-        #                     else:
-        #                         state = Token(word, 'IDE')
-        #                         self.states.append(state.toString())
-                                
-        #                 elif state.getType() == 'IDE':
-        #                     self.states.append(state.toString())
-        # return self.states
