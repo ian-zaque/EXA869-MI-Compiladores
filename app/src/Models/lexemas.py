@@ -2,14 +2,35 @@ class Lexemas:
     
     def __init__(self):
         self.tokens = [
-            'PRE', 'IDE', 'NRO', 'DEL', 'REL', 'LOG', 'ART', 'SII', 'CAR', 'CAD'
+            #tokens
+            'PRE', 'IDE', 'NRO', 'DEL', 'REL', 'LOG', 'ART', 'SII', 'CAR', 'CAD',
+            
+            #errors
             'SII', 'CMF', 'NMF', 'CaMF', 'CoMF', 'OpMF',      
         ]
         
         self.stateTypes = {
-            0 : 'INITIAL',
-            1 : 'q1',
-            2 : 'q2'
+            0 : {'q0','INITIAL'},                               #INITIAL STATE, FIRST DIGIT     {{ a-z | A-Z }}
+            
+            #IDENTIFICADORES OU PALAVRAS_RESERVADAS
+            1 : {'q1','WAITING_OR_FINAL_LETTER'},               #RETURNS TOKEN 'IDE' OR 'PRE'   {{ a-z | A-Z | 0-9 | _ }}
+            
+            #NÚMEROS
+            2 : {'q2', 'WAITING_OR_FINAL_DIGIT'},               #RETURNS TOKEN 'NRO'        {{0-9}}
+            3 : {'q3', 'ERROR_NMF'},                            #RETURNS ERROR 'NMF'        _other_
+            4 : {'q4', 'WAITING_DIGITS_AFTER_POINT'},           #MANDATORY TO RECEIVE A DIGIT   {{ . }}
+            5 : {'q5', 'WAITING_DIGITS_AFTER_POINT-DIGIT'},     #RETURNS TOKEN 'NRO'        {{ 0-9 }}
+            
+            #OPERADORES RELACIONAIS
+            6 : {'q6', 'WAITING_OR_FINAL_OPR'},                 #RETURNS TOKEN 'OPR'       {{ = | < | > }}
+            7 : {'q7', 'WAITING_EQUALS_AFTER_EXCLAMATION'},     #MANDATORY TO RECEIVE '='.  {{ ! }}
+            8 : {'q8', 'FINAL_OPR_AFTER_OPR'},                  #RETURNS TOKEN 'OPR'        {{ = }}
+            9 : {'q9', 'ERROR_OpMF'},                           #RETURNS ERROR 'OpMF'       _other_
+            
+            #OPERADORES ARITMÉTICOS
+            10 : {'q10', 'FINAL_ART'},                          #RETURNS TOKEN 'ART'     {{ * | / }}
+            11 : {'q11', 'WAITING_OR_FINAL_ART'},               #RETURNS TOKEN 'ART'     {{ + | - }}
+            12 : {'q12', 'ERROR_OpMF'},                         #RETURNS ERROR 'OpMF'    _other_or_not_space_before_or_after
         }
              
         self.RESERVERD_WORDS = [

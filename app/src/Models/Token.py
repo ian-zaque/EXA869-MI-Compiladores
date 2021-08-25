@@ -20,4 +20,4 @@ class Token:
         line = self.line
         typeToken = self.type
         word = self.word
-        return [line, typeToken, word]
+        return {line, typeToken, word}

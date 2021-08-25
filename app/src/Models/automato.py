@@ -6,33 +6,29 @@ class Automato:
 
     def __init__(self, file):
         self.file = open(file,'r')
-        self.index = -1
         self.lexemas = Lexemas()
         self.states = []
     
     def getNextToken(self):
             file = self.file.readlines()
             for idxLine, line in enumerate(file):
-                print('Linha:',idxLine, 'Valor: ',line)
-                print(self.file.readlines())
+                # print('Linha:',idxLine, 'Valor: ',line)
                 numState = 0
                 word = ''
-                # state = State(numState,word,line,line[idxLine])
-                
-                # if idxLine >= len(line):
-                #     break
                 
                 for idxChar,char in enumerate(line):
-                    print('Posição:',idxChar, 'Char: ',char)
+                    # print('Posição:',idxChar, 'Char: ',char)
                 
-                    if numState == 0:                   #WAITING
+                    #####################{{ q0 }}#########################
+                    if numState == 0:
                         if self.lexemas.isLetter(char):
                             numState = 1
                             word = word + char
-                            state = State(numState,word,line,char)
+                            # state = State(numState,word,line,char)
                         # 
                         # AQUI OUTROS IFS
-                        
+                        # if char in ['&','|']:
+                        #     numState = 3
                         
                         elif char == '\n' or self.lexemas.isSpace(char):
                             numState = 0
@@ -40,8 +36,10 @@ class Automato:
                         else:
                             # ALGUM ERRO
                             numState = 99
+                    #####################{{ FIM Q0 }}#########################
                     
-                    elif numState ==1:              #RECEIVED char
+                    #####################{{ q1 }}#########################
+                    elif numState == 1:
                         if self.lexemas.isLetter(char) or self.lexemas.isDigit(char) or char=='_':
                             numState = 1
                             word = word + char
@@ -56,8 +54,8 @@ class Automato:
                             numState = 0
                             #TRATAR ESPAÇO AQUI
                             
-                            # TRATAR ERROS OU OUTRA OCASIOES AQUI
-                        else:
+                        else:               # TRATAR ERROS OU OUTRA OCASIOES AQUI
                             numState = 0
+                    #####################{{ FIM q1 }}#########################
                                     
             return self.states
