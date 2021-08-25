@@ -22,15 +22,21 @@ class Lexemas:
             5 : {'q5', 'WAITING_DIGITS_AFTER_POINT-DIGIT'},     #RETURNS TOKEN 'NRO'        {{ 0-9 }}
             
             #OPERADORES RELACIONAIS
-            6 : {'q6', 'WAITING_OR_FINAL_OPR'},                 #RETURNS TOKEN 'OPR'       {{ = | < | > }}
+            6 : {'q6', 'WAITING_OR_FINAL_REL'},                 #RETURNS TOKEN 'REL'       {{ = | < | > }}
             7 : {'q7', 'WAITING_EQUALS_AFTER_EXCLAMATION'},     #MANDATORY TO RECEIVE '='.  {{ ! }}
-            8 : {'q8', 'FINAL_OPR_AFTER_OPR'},                  #RETURNS TOKEN 'OPR'        {{ = }}
+            8 : {'q8', 'FINAL_REL_AFTER_REL'},                  #RETURNS TOKEN 'REL'        {{ = }}
             9 : {'q9', 'ERROR_OpMF'},                           #RETURNS ERROR 'OpMF'       _other_
             
             #OPERADORES ARITMÉTICOS
             10 : {'q10', 'FINAL_ART'},                          #RETURNS TOKEN 'ART'     {{ * | / }}
             11 : {'q11', 'WAITING_OR_FINAL_ART'},               #RETURNS TOKEN 'ART'     {{ + | - }}
-            12 : {'q12', 'ERROR_OpMF'},                         #RETURNS ERROR 'OpMF'    _other_or_not_space_before_or_after
+            12 : {'q12', 'ERROR_OpMF'},                         #RETURNS ERROR 'OpMF'    _other_or_not_space_before_or_after_
+            
+            #OPERADORES LÓGICOS
+            13 : {'q13', 'WAITING_FINAL_LOG'},                   #MANDATORY TO RECEIVE '&' OR '|'.  {{ & | '|' }}
+            14 : {'q14', 'FINAL_LOG'},                           #RETURNS TOKEN 'LOG' {{ & | '|' }}
+            15 : {'q15', 'FINAL_EXCLAMATION'},                   #RETURNS TOKEN 'LOG'  {{ ! }}
+            16 : {'q16', 'ERROR_OpMF'},                          #RETURNS ERROR 'OpMF'  {{ &! | !& | '|' | |& | &| | _othen_ }}
         }
              
         self.RESERVERD_WORDS = [
