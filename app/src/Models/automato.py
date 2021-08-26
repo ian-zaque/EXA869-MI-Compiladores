@@ -12,84 +12,124 @@ class Automato:
     def getNextToken(self):
             file = self.file.readlines()
             for idxLine, line in enumerate(file):
-                numState = 0
+                sizePalavra = 0
+                state = State(0)
                 word = ''
                 
                 for idxChar,char in enumerate(line):
                     # print('Posição:',idxChar, 'Char: ',char)
                 
                     #####################{{ q0 }}#########################
-                    if numState == 0:
-                        if self.lexemas.isLetter(char):
-                            numState = 1
+                    if state.getStateNumber() == 0:                    
+                        if char == '\n' or char == '\t' or self.lexemas.isSpace(char):
+                            state = State(0)
+                        
+                        elif bytes(char, 'ascii').islower():
+                            # tamanho da palavra
+                            sizePalavra += 1
+                            state = State(1)
                             word = word + char
                         
-                        elif char == '\n' or self.lexemas.isSpace(char):
-                            numState = 0
+                        elif bytes(char, 'ascii').isupper():
+                            state = State(1)
+                            word = word + char
                         
                         elif self.lexemas.isDigit(char):
-                            numState = 2
+                            state = State(2)
                             word = word + char
                         
                         elif char in ['=', '<', '>']:
-                            numState = 6
+                            state = State(6)
                             word = word + char
                             
                         elif char == '!':
-                            numState = 7
+                            state = State(7)
                             word = word + char
                         
                         elif char in ['*','/']:
-                            numState = 10
+                            state = State(10)
                             word = word + char
                         
                         elif char == '+':
-                            numState = 11
+                            state = State(11)
                             word = word + char
                         
                         elif char == '-':
-                            numState= 12
+                            state = State(12)
+                            word = word + char
+                        
+                        elif char == '&':
+                            state = State(13)
+                            word = word + char
+                        
+                        elif char == '|':
+                            state = State(14)
+                            word = word + char
+                        
+                        elif char in self.lexemas.START_DELIMITERS:
+                            state = State(15)
+                            word = word + char
+                        
+                        elif char in self.lexemas.END_DELIMITERS:
+                            state = State(16)
                             word = word + char
                         
                         else:
                             # ALGUM ERRO
-                            numState = 99
+                            print('ERRO 1',word)
+                            print('ERRO 2',state.getStateNumber())
+                            state = State(0)
                     #####################{{ FIM Q0 }}#########################
                     
+                    
                     #####################{{ q1 }}#########################
-                    elif numState == 1:
-                        if self.lexemas.isLetter(char) or self.lexemas.isDigit(char) or char=='_':
-                            numState = 1
+                    elif state.getStateNumber() == 1:
+                        if ((sizePalavra == 1 or sizePalavra < 10) and bytes(char, 'ascii').islower()):
+                            sizePalavra += 1
+                            word = word + char
+
+                        elif self.lexemas.isSpace(char) or char == '\n':
+                            if (sizePalavra >= 2 and sizePalavra <= 10 and sizePalavra != 3) and self.lexemas.isReservedWord(word):
+                                token = Token(word, 'PRE', idxLine)
+
+                            else:
+                                token = Token(word, 'IDE', idxLine)
+                                self.states.append(token)
+                                word = ''
+                                state = State(0)
+
+                        elif self.lexemas.isLetter(char) or self.lexemas.isDigit(char) or char == '_':
                             word = word + char
                         
-                        elif self.lexemas.isSpace(char) or self.lexemas.isDelimiter(char) or char == '\n':
-                            if self.lexemas.isReservedWord(word):
-                                token = Token(word,'PRE',idxLine)
-                            else:
-                                token = Token(word,'IDE',idxLine)
+                        elif self.lexemas.isEndDelimiter(char):
+                            token = Token(word, 'IDE', idxLine)
                             self.states.append(token)
-                            word =''
-                            numState = 0
-                            #TRATAR ESPAÇO AQUI
                             
-                        else:               # TRATAR ERROS OU OUTRA OCASIOES AQUI
-                            numState = 0
+                            token = Token(char, 'DEL', idxLine)
+                            self.states.append(token)
+                            
+                            word = ''
+                            state = State(0)
+                        
+                        else:
+                            state = State(0)
                     #####################{{ FIM q1 }}#########################
                     
+                    
                     #####################{{ q2 }}#########################
-                    elif numState == 2:
+                    elif state.getStateNumber() == 2:
                         if self.lexemas.isDigit(char):
-                            numState = 2
+                            state = State(2)
                             word = word + char
 
                         elif char == '.':
-                            numState = 3
+                            state = State(3)
                             word = word + char
                         
-                        elif self.lexemas.isSpace(char) or self.lexemas.isDelimiter(char) or char == '\n':
+                        elif self.lexemas.isSpace(char) or char == '\n':
                             token = Token(word, 'NRO', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                         
                         else:
@@ -97,50 +137,53 @@ class Automato:
                             word = word + char
                             token = Token(word, 'NMF', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                     #####################{{ FIM q2 }}#########################
                     
+                    
                     #####################{{ q3 }}#########################
-                    elif numState == 3:
+                    elif state.getStateNumber() == 3:
                         if self.lexemas.isDigit(char):
-                            numState = 4
+                            state = State(4)
                             word = word + char
                         
                         else:
                             word = word + char
                             token = Token(word, 'NMF', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(5)
                             word = ''
                     #####################{{ FIM q3 }}#########################
                     
+                    
                     #####################{{ q4 }}#########################
-                    elif numState == 4:
+                    elif state.getStateNumber() == 4:
                         if self.lexemas.isDigit(char):
-                            numState = 4
+                            state = State(4)
                             word = word + char
                         
-                        elif self.lexemas.isSpace(char) or self.lexemas.isDelimiter(char) or char == '\n':
+                        elif self.lexemas.isSpace(char) or char == '\n':
                             token = Token(word, 'NRO', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                         
                         else:
                             word = word + char
                             token = Token(word, 'NMF', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                     #####################{{ FIM q4 }}#########################
                     
+                    
                     #####################{{ q6 }}#########################
-                    elif numState == 6:
+                    elif state.getStateNumber() == 6:
                         if self.lexemas.isSpace(char) or char == '\n':
                             token = Token(word, 'REL', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                         
                         elif char == '=':
@@ -148,51 +191,53 @@ class Automato:
                             token = Token(word, 'REL', idxLine)
                             self.states.append(token)
                             word =''
-                            numState = 0
+                            state = State(0)
                             
                         else:
                             word = word + char
                             token = Token(word, 'OpMF', idxLine)
                             self.states.append(token)
                             word =''
-                            numState = 0
+                            state = State(0)
                     #####################{{ FIM q6 }}#########################
                     
+                    
                     #####################{{ q7 }}#########################
-                    elif numState == 7:
+                    elif state.getStateNumber() == 7:
                         if self.lexemas.isSpace(char) or char == '\n':
                             token = Token(word, 'OpMF', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                         
-                        elif char == '=':
+                        elif char == '=':                   # !=
                             word = word + char
                             token = Token(word, 'REL', idxLine)
                             self.states.append(token)
                             word =''
-                            numState = 0
+                            state = State(0)
                         
-                        elif self.lexemas.isLetter(char):
+                        elif self.lexemas.isLetter(char) or char =='!':             # ! or !! or !!! ...
                             token = Token(word, 'LOG', idxLine)
                             self.states.append(token)
                             word =''
-                            numState = 0                   
+                            state = State(0)      
                          
                         else:
                             word = word + char
                             token = Token(word, 'OpMF', idxLine)
                             self.states.append(token)
                             word =''
-                            numState = 0
+                            state = State(0)
                     #####################{{ FIM q7 }}#########################
                     
+                    
                     #####################{{ q10 }}#########################
-                    elif numState == 10:
+                    elif state.getStateNumber() == 10:
                         if self.lexemas.isSpace(char) or char == '\n':
                             token = Token(word, 'ART', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                             
                         else:
@@ -200,54 +245,116 @@ class Automato:
                             token = Token(word, 'OpMF', idxLine)
                             self.states.append(token)
                             word =''
-                            numState = 0
+                            state = State(0)
                     #####################{{ FIM q10 }}#########################
                     
+                    
                     #####################{{ q11 }}#########################
-                    elif numState == 11:
+                    elif state.getStateNumber() == 11:
                         if self.lexemas.isSpace(char) or char == '\n':
-                            token = Token(word, 'OpMF', idxLine)
+                            token = Token(word, 'ART', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                             
                         elif char == '+':
                             word = word + char
                             token = Token(word, 'ART', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                             
                         else:
                             word = word + char
                             token = Token(word, 'OpMF', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                      #####################{{ FIM q11 }}#########################
                     
                     
                     #####################{{ q12 }}#########################
-                    elif numState == 12:
+                    elif state.getStateNumber() == 12:
                         if self.lexemas.isSpace(char) or char == '\n':
-                            token = Token(word, 'OpMF', idxLine)
+                            token = Token(word, 'ART', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                             
                         elif char == '-':
                             word = word + char
                             token = Token(word, 'ART', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
                             
                         else:
                             word = word + char
                             token = Token(word, 'OpMF', idxLine)
                             self.states.append(token)
-                            numState = 0
+                            state = State(0)
                             word = ''
-                     #####################{{ FIM q12 }}#########################
+                    #####################{{ FIM q12 }}#########################
+                    
+                    #####################{{ q13 }}#########################
+                    elif state.getStateNumber() == 13:
+                        if self.lexemas.isSpace(char) or char == '\n':
+                            token = Token(word, 'OpMF', idxLine)
+                            self.states.append(token)
+                            state = State(0)
+                            word = ''
+                            
+                        elif char == '&':
+                            token = Token(word, 'LOG', idxLine)
+                            self.states.append(token)
+                            word =''
+                            state = State(0)
+                            
+                        else:
+                            token = Token(word, 'OpMF', idxLine)
+                            self.states.append(token)
+                            state = State(0)
+                            word = ''
+                    #####################{{ FIM q13 }}#########################
+                    
+                    #####################{{ q14 }}#########################
+                    elif state.getStateNumber() == 14:
+                        if self.lexemas.isSpace(char) or char == '\n':
+                            token = Token(word, 'OpMF', idxLine)
+                            self.states.append(token)
+                            state = State(0)
+                            word = ''
+                            
+                        elif char == '|':
+                            token = Token(word, 'LOG', idxLine)
+                            self.states.append(token)
+                            word =''
+                            state = State(0)
+                            
+                        else:
+                            token = Token(word, 'OpMF', idxLine)
+                            self.states.append(token)
+                            state = State(0)
+                            word = ''
+                    #####################{{ FIM q14 }}#########################
+                    
+                    
+                    #####################{{ q15 }}#########################
+                    elif state.getStateNumber() == 15:
+                        if self.lexemas.isSpace(char):
+                            token = Token(word, 'DEL', idxLine)
+                            self.states.append(token)
+                            word =''
+                            state = State(0)
+                    #####################{{ FIM q15 }}#########################
+                    
+                    #####################{{ q16 }}#########################
+                    elif state.getStateNumber() == 16:
+                        if self.lexemas.isSpace(char):
+                            token = Token(word, 'DEL', idxLine)
+                            self.states.append(token)
+                            word =''
+                            state = State(0)
+                    #####################{{ FIM q16 }}#########################
                     
             return self.states

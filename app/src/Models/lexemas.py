@@ -47,13 +47,15 @@ class Lexemas:
         
         self.NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         
-        self.RELATIONAL_OPERATORS = ['=', '<', '>', '==', '<=', ' >=', '!=']
+        self.RELATIONAL_OPERATORS = ['=', '<', '>', '==', '<=', '>=', '!=']
         
         self.ARITHMETIC_OPERATORS = ['+', '-', '++', '--', '*', '/']
 
         self.LOGICAL_OPERATORS = ['&&', '||', '!']
 
-        self.DELIMITERS = [';', ',', '.', '(', ')', '{', '}', '[', ']', ' ', '\\n', '\\t']
+        self.START_DELIMITERS = ['(', '{', '[']
+
+        self.END_DELIMITERS = [';', ',', '.', ')', '}', ']', '\\t']
         
         self.COMMENT_DELIMMITERS = ['#', '{#', '#}']
     
@@ -78,15 +80,21 @@ class Lexemas:
     def isLogicalOperator(self,char):
         return char in self.LOGICAL_OPERATORS
     
-    def isDelimiter(self,char):
-        return char in self.DELIMITERS
+    def isStartDelimiter(self,char):
+        return char in self.START_DELIMITERS
+    
+    def isEndDelimiter(self,char):
+        return char in self.END_DELIMITERS
     
     def isCommentDelimiter(self,char):
         return char in self.COMMENT_DELIMMITERS
     
-    def isValidSimbol(char):
-        asciiValue = ord(char)
-        return asciiValue not in [34, 39] and asciiValue.isacii()
-    
-    st = ' '
-    print(st.isspace())
+    def isCaracters(self, char):
+        return bytes(char, 'ascii').hex() == '22'
+
+    def isCaracter(self, char):
+        return bytes(char, 'ascii').hex() == '27'
+
+    def isValidSimbol(self, char):
+        simbol = int(bytes(char, 'ascii').hex(), 16)
+        return (simbol > 31 and simbol < 127 and simbol != 34 and simbol != 39)
