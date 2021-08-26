@@ -17,9 +17,9 @@ class Lexemas:
             
             #NÚMEROS
             2 : {'q2', 'WAITING_OR_FINAL_DIGIT'},               #RETURNS TOKEN 'NRO'        {{0-9}}
-            3 : {'q3', 'ERROR_NMF'},                            #RETURNS ERROR 'NMF'        _other_
-            4 : {'q4', 'WAITING_DIGITS_AFTER_POINT'},           #MANDATORY TO RECEIVE A DIGIT   {{ . }}
-            5 : {'q5', 'WAITING_DIGITS_AFTER_POINT-DIGIT'},     #RETURNS TOKEN 'NRO'        {{ 0-9 }}
+            3 : {'q3', 'WAITING_DIGITS_AFTER_POINT'},           #MANDATORY TO RECEIVE A DIGIT   {{ . }}
+            4 : {'q4', 'WAITING_DIGITS_AFTER_POINT-DIGIT'},     #RETURNS TOKEN 'NRO'        {{ 0-9 }}
+            5 : {'q5', 'ERROR_NMF'},                            #RETURNS ERROR 'NMF'        _other_
             
             #OPERADORES RELACIONAIS
             6 : {'q6', 'WAITING_OR_FINAL_REL'},                 #RETURNS TOKEN 'REL'       {{ = | < | > }}

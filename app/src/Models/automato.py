@@ -23,9 +23,13 @@ class Automato:
                         if self.lexemas.isLetter(char):
                             numState = 1
                             word = word + char
-                            # state = State(numState,word,line,char)
-                        # 
-                        # AQUI OUTROS IFS
+                        
+                        elif char == '\n' or self.lexemas.isSpace(char):
+                            numState = 0
+                        
+                        elif self.lexemas.isDigit(char):
+                            numState = 2
+                            word = word + char
                         
                         elif char in ['=', '<', '>']:
                             numState = 6
@@ -46,11 +50,6 @@ class Automato:
                         elif char == '-':
                             numState= 12
                             word = word + char
-                        
-                        
-                        
-                        elif char == '\n' or self.lexemas.isSpace(char):
-                            numState = 0
                         
                         else:
                             # ALGUM ERRO
@@ -77,6 +76,64 @@ class Automato:
                             numState = 0
                     #####################{{ FIM q1 }}#########################
                     
+                    #####################{{ q2 }}#########################
+                    elif numState == 2:
+                        if self.lexemas.isDigit(char):
+                            numState = 2
+                            word = word + char
+
+                        elif char == '.':
+                            numState = 3
+                            word = word + char
+                        
+                        elif self.lexemas.isSpace(char) or self.lexemas.isDelimiter(char) or char == '\n':
+                            token = Token(word, 'NRO', idxLine)
+                            self.states.append(token)
+                            numState = 0
+                            word = ''
+                        
+                        else:
+                            #q5
+                            word = word + char
+                            token = Token(word, 'NMF', idxLine)
+                            self.states.append(token)
+                            numState = 0
+                            word = ''
+                    #####################{{ FIM q2 }}#########################
+                    
+                    #####################{{ q3 }}#########################
+                    elif numState == 3:
+                        if self.lexemas.isDigit(char):
+                            numState = 4
+                            word = word + char
+                        
+                        else:
+                            word = word + char
+                            token = Token(word, 'NMF', idxLine)
+                            self.states.append(token)
+                            numState = 0
+                            word = ''
+                    #####################{{ FIM q3 }}#########################
+                    
+                    #####################{{ q4 }}#########################
+                    elif numState == 4:
+                        if self.lexemas.isDigit(char):
+                            numState = 4
+                            word = word + char
+                        
+                        elif self.lexemas.isSpace(char) or self.lexemas.isDelimiter(char) or char == '\n':
+                            token = Token(word, 'NRO', idxLine)
+                            self.states.append(token)
+                            numState = 0
+                            word = ''
+                        
+                        else:
+                            word = word + char
+                            token = Token(word, 'NMF', idxLine)
+                            self.states.append(token)
+                            numState = 0
+                            word = ''
+                    #####################{{ FIM q4 }}#########################
                     
                     #####################{{ q6 }}#########################
                     elif numState == 6:
@@ -120,7 +177,7 @@ class Automato:
                             token = Token(word, 'LOG', idxLine)
                             self.states.append(token)
                             word =''
-                            numState = 0                        
+                            numState = 0                   
                          
                         else:
                             word = word + char

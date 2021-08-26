@@ -18,13 +18,13 @@ def readFileInputs(path,pathOutput,filename,index):
     automato = Automato(path + '\\' + filename)
     tokens = automato.getNextToken()
     lineTxt = []
-    print('TOKEN AUTOMATO',tokens)
+    
     file = open(pathOutput+'\\saida'+str(index)+'.txt','w')
+    
     for idx, token in enumerate(tokens):
         lineTxt= str(token.getLine()+1) + ' ' + token.getType() + ' ' + token.getWord()
         file.write(lineTxt)
         file.write('\n')
-    # file.writelines(lineTxt)
     file.close()
         
     
@@ -39,7 +39,7 @@ def main():
     inputFiles = getInputFiles(path)
 
     for idx, file in enumerate(inputFiles):
-        readFileInputs(path,pathOutput,file[0],file[1]-1)
+        readFileInputs(path, pathOutput, file[0], file[1]-1)
 
 
 
