@@ -7,3 +7,7 @@ duas+
 *+
 /
 hahaha
+
+f <= a
+
+f<0
