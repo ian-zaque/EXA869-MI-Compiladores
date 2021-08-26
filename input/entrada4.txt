@@ -1,0 +1,11 @@
+7
+
+se(123 <> 3)
+    escreva("uma palavra aqui");
+    leia( )
+
+enquanto a +1
+    char c = 'soif084dinf&&&@@*))'
+    nome== c
+
+ da like no video e se inscreva

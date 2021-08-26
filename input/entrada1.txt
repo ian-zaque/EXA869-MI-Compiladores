@@ -1,12 +1,12 @@
-exemplo teste; % codigo exemplo
 
-float f = - 3.5;
 
-string msg = "teste
+char c = 'exemplo
 
-if ( f >= -10) && (f < )
-		write("mensagem );
-
+se ( F >= -10); && (f <);
+			escreva('palavra)
+	vari)avel
+	vari_avel
 @
-{# exa869 mi processadores de
-linguagem de programacao
+{########
+	algo aqui que não deve aparecer depois no arquivo de saida correpondente
+#}

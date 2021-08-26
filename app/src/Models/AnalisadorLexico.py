@@ -34,12 +34,10 @@ def main():
     path = dirname(dirname(dirname(dirname(abspath(__file__)))))
     pathOutput = path + '\\output'
     path = path + '\\input'
-    print('0000',path)
-    print('bbbbb',pathOutput)
     inputFiles = getInputFiles(path)
 
     for idx, file in enumerate(inputFiles):
-        readFileInputs(path, pathOutput, file[0], file[1]-1)
+        readFileInputs(path, pathOutput, file[0], file[1])
 
 
 
