@@ -6,15 +6,12 @@ class Token:
         
     def getType(self):
         return self.type
-    
-    def setType(self,type):
-        self.type = type
         
     def getWord(self):
         return self.word
-    
-    def setWord(self,word):
-        self.word = word
+        
+    def getLine(self):
+        return self.line
         
     def toString(self):
         line = self.line

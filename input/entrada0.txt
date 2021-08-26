@@ -1,5 +1,9 @@
-UMA entrada
-outra mais 
-duas
-
+UMA entrada < >
+outra mais !aa
+duas+
+++
++=
+*
+*+
+/
 hahaha
