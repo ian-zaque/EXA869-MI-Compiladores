@@ -92,12 +92,14 @@ class Automato:
                                 self.states.append(token)
                                 word = ''
                                 state = State(0)
+                                sizePalavra = 0
                                 
                             else:
                                 token = Token(word, 'IDE', idxLine)
                                 self.states.append(token)
                                 word = ''
                                 state = State(0)
+                                sizePalavra = 0
 
                         elif self.lexemas.isLetter(char) or self.lexemas.isDigit(char) or char == '_':
                             word = word + char
