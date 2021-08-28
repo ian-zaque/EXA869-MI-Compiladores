@@ -1,0 +1,15 @@
+1 IDE se
+1 DEL (
+1 IDE a
+1 REL >
+1 IDE b
+1 DEL )
+1 IDE entao
+1 DEL {
+2 IDE escreva
+2 DEL (
+2 IDE a
+2 IDE maior
+2 IDE que
+2 DEL b)
+3 DEL }

@@ -1,3 +1,7 @@
-paralelepipedo enquanto para
-se paralelepipedo senao light
-Crawling stately along the spine
+booleano funcao par (inteiro aux){
+	se (aux / 2) * 2 == aux {
+		retorno verdadeiro;
+	senao
+		retorno falso;
+	}
+}

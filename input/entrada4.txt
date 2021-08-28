@@ -1,11 +1,10 @@
-7
+funcao 5bomdia (){
+$$
++"isso é um teste;";
+teste@
+teste  = 5+5;
+teste2 = 6 +-1
+teste3 = 8 ++-- 1
 
-se(123 <> 3)
-    escreva("uma palavra aqui");
-    leia( )
-
-enquanto a +1
-    char c = 'soif084dinf&&&@@*))'
-    nome== c
-
- da like no video e se inscreva
+{#
+}

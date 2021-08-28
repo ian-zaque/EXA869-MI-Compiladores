@@ -1,0 +1,18 @@
+constantes {
+   real pi = 3.14;
+}
+
+# Testa67¬¢£³ndo com§entáriªo de linha
+
+variaveis {
+   inteiro num_1, num_2;
+   booleano sinal;
+   cadeia msg1, msg2;
+}
+
+{#######
+
+funcao vazio vazio(,) {
+   retorno
+}
+

@@ -1,0 +1,7 @@
+1 REL ==
+2 LOG &&
+2 DEL ,
+2 LOG ||
+
+1 OpMF &
+2 OpMF |

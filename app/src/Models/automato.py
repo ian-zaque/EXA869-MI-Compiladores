@@ -8,6 +8,7 @@ class Automato:
         self.file = open(file,'r')
         self.lexemas = Lexemas()
         self.states = []
+        self.errors = []
     
     def getNextToken(self):
             file = self.file.readlines()
@@ -116,21 +117,23 @@ class Automato:
                             state = State(0)
                         
                         elif self.lexemas.isLogicalOperator(char) or self.lexemas.isArithmeticOperator(char) or self.lexemas.isRelationalOperator(char):
-                            if char in ['=', '<', '>']:
-                                word = word+ char
-                                state = State(6)
+                            word = word + char
+                            state = State(9)
+                            # if char in ['=', '<', '>']:
+                            #     word = word+ char
+                            #     state = State(6)
                             
-                            elif char == '+' or char == '-' or char == '*' or char == '/':
-                                word = word + char
-                                state = State(0)
+                            # elif char == '+' or char == '-' or char == '*' or char == '/':
+                            #     word = word + char
+                            #     state = State(0)
                                 
-                            if char == '&':
-                                word = word+ char
-                                state = State(13)
+                            # if char == '&':
+                            #     word = word+ char
+                            #     state = State(13)
                             
-                            if char == '|':
-                                word = word+ char
-                                state = State(14)
+                            # if char == '|':
+                            #     word = word+ char
+                            #     state = State(14)
                         
                         else:
                             state = State(0)
@@ -153,20 +156,23 @@ class Automato:
                             state = State(0)
                             word = ''
                         
+                        elif self.lexemas.isLetter(char):
+                            state = State(5)
+                            word = word + char
+                        
                         elif self.lexemas.isEndDelimiter(char):
                             token = Token(word, 'NRO', idxLine)
                             self.states.append(token)
                             
                             token = Token(char, 'DEL', idxLine)
                             self.states.append(token)
-                            
                             word = ''
                             state = State(0)
                         
                         elif self.lexemas.isLogicalOperator(char) or self.lexemas.isArithmeticOperator(char) or self.lexemas.isRelationalOperator(char):
                             word = word +char
                             token = Token(word, 'NMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             word = ''
                             state = State(0)
                         
@@ -174,8 +180,8 @@ class Automato:
                             #q5
                             word = word + char
                             token = Token(word, 'NMF', idxLine)
-                            self.states.append(token)
-                            state = State(0)
+                            self.errors.append(token)
+                            state = State(5)
                             word = ''
                     #####################{{ FIM q2 }}#########################
                     
@@ -188,10 +194,7 @@ class Automato:
                         
                         else:
                             word = word + char
-                            token = Token(word, 'NMF', idxLine)
-                            self.states.append(token)
                             state = State(5)
-                            word = ''
                     #####################{{ FIM q3 }}#########################
                     
                     
@@ -220,18 +223,30 @@ class Automato:
                         elif self.lexemas.isLogicalOperator(char) or self.lexemas.isArithmeticOperator(char) or self.lexemas.isRelationalOperator(char):
                             word = word +char
                             token = Token(word, 'NMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             word = ''
                             state = State(0)
                         
                         else:
                             word = word + char
                             token = Token(word, 'NMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             state = State(0)
                             word = ''
                     #####################{{ FIM q4 }}#########################
                     
+                    #####################{{ q5 }}#########################
+                    elif state.getStateNumber() == 5:
+                        if self.lexemas.isSpace(char) or char == '\n':
+                            token = Token(word, 'NMF', idxLine)
+                            self.errors.append(token)
+                            state = State(0)
+                            word = ''
+                        
+                        else:
+                            state = State(5)
+                            word = word + char
+                    #####################{{ FIM q5 }}#########################
                     
                     #####################{{ q6 }}#########################
                     elif state.getStateNumber() == 6:
@@ -248,14 +263,14 @@ class Automato:
                         elif self.lexemas.isLogicalOperator(char) or self.lexemas.isArithmeticOperator(char) or self.lexemas.isRelationalOperator(char):
                             word = word +char
                             token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             word = ''
                             state = State(0)
                         
                         else:
                             word = word + char
                             token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             word =''
                             state = State(0)
                     #####################{{ FIM q6 }}#########################
@@ -265,7 +280,7 @@ class Automato:
                     elif state.getStateNumber() == 7:
                         if self.lexemas.isSpace(char) or char == '\n':
                             token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             state = State(0)
                             word = ''
                         
@@ -277,19 +292,31 @@ class Automato:
                             state = State(0)
                         
                         elif self.lexemas.isLetter(char) or char =='!':             # ! or !! or !!! ...
-                            token = Token(word, 'LOG', idxLine)
-                            self.states.append(token)
-                            word = char
-                            state = State(0)
+                            word = word+ char
+                            state = State(9)
                          
                         else:
                             word = word + char
                             token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             word =''
                             state = State(0)
                     #####################{{ FIM q7 }}#########################
                     
+                    
+                    #####################{{ q9 }}#########################
+                    elif state.getStateNumber() == 9:
+                        if self.lexemas.isSpace(char) or char == '\n':
+                            token = Token(word, 'OpMF', idxLine)
+                            self.errors.append(token)
+                            state = State(0)
+                            word = ''
+                        
+                        else:
+                            word = word + char
+                            state = State(9)
+                    #####################{{ FIM q9 }}#########################
+                            
                     
                     #####################{{ q10 }}#########################
                     elif state.getStateNumber() == 10:
@@ -301,10 +328,7 @@ class Automato:
 
                         else:
                             word = word + char
-                            token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
-                            word =''
-                            state = State(0)
+                            state = State(9)
                     #####################{{ FIM q10 }}#########################
                     
                     
@@ -325,20 +349,11 @@ class Automato:
                         
                         elif self.lexemas.isLetter(char):
                             word = word + char
-                            token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
-                            state = State(1)
-                        
-                        elif self.lexemas.isDigit(char):
-                            word = word + char
-                            state = State(2)
+                            state = State(9)
                         
                         else:
                             word = word + char
-                            token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
-                            state = State(0)
-                            word = ''
+                            state = State(9)
                      #####################{{ FIM q11 }}#########################
                     
                     
@@ -364,7 +379,7 @@ class Automato:
                         else:
                             word = word + char
                             token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             state = State(0)
                             word = ''
                     #####################{{ FIM q12 }}#########################
@@ -373,7 +388,7 @@ class Automato:
                     elif state.getStateNumber() == 13:
                         if self.lexemas.isSpace(char) or char == '\n':
                             token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             state = State(0)
                             word = ''
                             
@@ -386,7 +401,7 @@ class Automato:
                             
                         else:
                             token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             state = State(0)
                             word = ''
                     #####################{{ FIM q13 }}#########################
@@ -395,7 +410,7 @@ class Automato:
                     elif state.getStateNumber() == 14:
                         if self.lexemas.isSpace(char) or char == '\n':
                             token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             state = State(0)
                             word = ''
                             
@@ -408,7 +423,7 @@ class Automato:
                             
                         else:
                             token = Token(word, 'OpMF', idxLine)
-                            self.states.append(token)
+                            self.errors.append(token)
                             state = State(0)
                             word = ''
                     #####################{{ FIM q14 }}#########################
@@ -445,4 +460,4 @@ class Automato:
                             state = State(0)
                     #####################{{ FIM q16 }}#########################
                     
-            return self.states
+            return {'states':self.states, 'errors': self.errors}

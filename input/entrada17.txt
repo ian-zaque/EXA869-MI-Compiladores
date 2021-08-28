@@ -1,0 +1,12 @@
+
+
+char c = 'exemplo
+
+se ( F >= -10); && (f <);
+			escreva('palavra)
+	vari)avel
+	vari_avel
+@
+{########
+	algo aqui que nao deve aparecer depois no arquivo de saida correpondente
+#}

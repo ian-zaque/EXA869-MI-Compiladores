@@ -40,9 +40,9 @@ class Lexemas:
         }
              
         self.RESERVERD_WORDS = [
-            'algoritmo', 'variaveis', 'constantes', 'registro','funcao', 
-            'retorno', 'vazio', 'se', 'senao', 'enquanto','para', 'leia', 'escreva', 'inteiro', 'real', 'booleano', 
-            'char','cadeia', 'verdadeiro', 'falso'
+            'algoritmo', 'variaveis', 'constantes', 'registro','funcao', 'retorno', 
+            'vazio', 'se', 'senao', 'enquanto','para', 'leia', 'escreva', 'inteiro', 
+            'real', 'booleano', 'char','cadeia', 'verdadeiro', 'falso',
         ]
         
         self.NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]

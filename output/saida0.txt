@@ -1,0 +1,21 @@
+1 IDE UMA
+1 IDE entrada
+2 IDE outra
+2 IDE mais
+10 ART ++
+12 ART *
+14 ART /
+15 IDE hahaha
+17 IDE f
+17 REL <=
+17 IDE a
+
+1 OpMF <>
+2 OpMF !aa
+5 OpMF duas+
+6 NMF 2-
+7 OpMF duas*
+8 OpMF duas+a
+9 OpMF =-
+11 OpMF +=
+13 OpMF *+

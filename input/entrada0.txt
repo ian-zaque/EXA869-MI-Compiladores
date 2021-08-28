@@ -1,4 +1,4 @@
-UMA entrada < >
+UMA entrada <>
 outra mais !aa
 
 

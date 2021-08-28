@@ -1,0 +1,10 @@
+1 PRE algoritmo
+1 IDE variaveisconstantes
+1 PRE registro
+3 IDE funca
+3 IDE retorn
+3 PRE vazio
+3 PRE se
+3 IDE senaoenquanto
+4 PRE para
+6 PRE leia

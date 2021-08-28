@@ -1,0 +1,18 @@
+funcao inteiro soma(inteiro a, inteiro b) {
+    inteiro c = a + b;
+    retorno c;
+}
+
+real pi = 3.14;
+
+66% # Isto é uma porcentagem aleatória
+
+cadeia mensagem = "Olá, mundo!";
+
+real numero = 1.5;
+
+se (numero <= pi && verdadeiro) {
+   escreva("Entrou!");
+}
+
+se (numero != pi || numero < 7) { }

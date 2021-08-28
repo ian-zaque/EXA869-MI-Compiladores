@@ -1,0 +1,9 @@
+1 PRE funcao
+1 IDE oi
+1 DEL (
+2 IDE escreva
+2 DEL (
+2 IDE Ola
+2 DEL ,
+2 IDE tudo
+2 DEL bom)

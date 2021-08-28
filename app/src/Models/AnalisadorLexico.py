@@ -9,7 +9,9 @@ def getInputFiles(dir):
 
     for index,filename in enumerate(dir):
         if filename.startswith('entrada'):
-            files.append([filename,index])
+            idx = int(''.join(i for i in filename if i.isdigit()))
+            print(idx)
+            files.append([filename,idx])
 
     return files
 
@@ -21,10 +23,15 @@ def readFileInputs(path,pathOutput,filename,index):
     
     file = open(pathOutput+'\\saida'+str(index)+'.txt','w')
     
-    for idx, token in enumerate(tokens):
+    for idx, token in enumerate(tokens['states']):
         lineTxt= str(token.getLine()+1) + ' ' + token.getType() + ' ' + token.getWord()
         file.write(lineTxt)
         file.write('\n')
+        
+    for idx, token in enumerate(tokens['errors']):
+        file.write('\n')
+        lineTxt= str(token.getLine()+1) + ' ' + token.getType() + ' ' + token.getWord()
+        file.write(lineTxt)
     file.close()
         
     
