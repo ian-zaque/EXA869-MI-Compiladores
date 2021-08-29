@@ -1,6 +1,6 @@
 UMA entrada <>
 %   outra mais !aa
-
+{ $
 === =
 = ====
 

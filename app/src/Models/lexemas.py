@@ -29,14 +29,14 @@ class Lexemas:
             
             #OPERADORES ARITMÉTICOS
             10 : {'q10', 'FINAL_ART'},                          #RETURNS TOKEN 'ART'     {{ * | / }}
-            11 : {'q11', 'WAITING_OR_FINAL_ART'},               #RETURNS TOKEN 'ART'     {{ + | - }}
-            12 : {'q12', 'ERROR_OpMF'},                         #RETURNS ERROR 'OpMF'    _other_or_not_space_before_or_after_
+            11 : {'q11', 'WAITING_OR_FINAL_ART'},               #RETURNS TOKEN 'ART'     {{ + }}
+            12 : {'q12', 'WAITING_OR_FINAL_ART'},               #RETURNS TOKEN 'ART'     {{ - }}
             
             #OPERADORES LÓGICOS
-            13 : {'q13', 'WAITING_FINAL_LOG'},                  #MANDATORY TO RECEIVE '&' OR '|'.  {{ & | '|' }}
-            14 : {'q14', 'FINAL_LOG'},                          #RETURNS TOKEN 'LOG' {{ & | '|' }}
-            15 : {'q15', 'FINAL_EXCLAMATION'},                  #RETURNS TOKEN 'LOG'  {{ ! }}
-            16 : {'q16', 'ERROR_OpMF'},                         #RETURNS ERROR 'OpMF'  {{ &! | !& | '|' | |& | &| | _othen_ }}
+            13 : {'q13', 'FIRST_&'},                            #RETURNS TOKEN 'LOG' {{ & }}
+            14 : {'q14', 'FIRST_|'},                            #RETURNS TOKEN 'LOG' {{ | }}
+            99 : {'q15', 'FINAL_LOG'},                          #RETURNS TOKEN 'LOG' {{ & | '|' }}
+            16 : {'q16', 'FINAL_EXCLAMATION'},                  #RETURNS TOKEN 'LOG'  {{ ! }}
             
             17 : {'q17', 'LINE_COMMENT'},                       #IGNORES THE WHOLE LINE     {{ % }}
             18 : {'q18', 'WAITING_#_TO_START_BLOCK_COMMENT'},   #MANDATORY TO RECEIVE '#' {{ '#' }}  
@@ -106,3 +106,7 @@ class Lexemas:
     def isValidSimbol(self, char):
         simbol = int(bytes(char, 'ascii').hex(), 16)
         return (simbol > 31 and simbol < 127 and simbol != 34 and simbol != 39)
+    
+    def isInvalidSimbol(self,char):
+        simbol = int(bytes(char, 'ascii').hex(), 16)
+        return (simbol == 34 or simbol == 39)
