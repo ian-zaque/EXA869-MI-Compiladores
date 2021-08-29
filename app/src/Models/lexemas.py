@@ -33,12 +33,18 @@ class Lexemas:
             12 : {'q12', 'ERROR_OpMF'},                         #RETURNS ERROR 'OpMF'    _other_or_not_space_before_or_after_
             
             #OPERADORES LÓGICOS
-            13 : {'q13', 'WAITING_FINAL_LOG'},                   #MANDATORY TO RECEIVE '&' OR '|'.  {{ & | '|' }}
-            14 : {'q14', 'FINAL_LOG'},                           #RETURNS TOKEN 'LOG' {{ & | '|' }}
-            15 : {'q15', 'FINAL_EXCLAMATION'},                   #RETURNS TOKEN 'LOG'  {{ ! }}
-            16 : {'q16', 'ERROR_OpMF'},                          #RETURNS ERROR 'OpMF'  {{ &! | !& | '|' | |& | &| | _othen_ }}
+            13 : {'q13', 'WAITING_FINAL_LOG'},                  #MANDATORY TO RECEIVE '&' OR '|'.  {{ & | '|' }}
+            14 : {'q14', 'FINAL_LOG'},                          #RETURNS TOKEN 'LOG' {{ & | '|' }}
+            15 : {'q15', 'FINAL_EXCLAMATION'},                  #RETURNS TOKEN 'LOG'  {{ ! }}
+            16 : {'q16', 'ERROR_OpMF'},                         #RETURNS ERROR 'OpMF'  {{ &! | !& | '|' | |& | &| | _othen_ }}
+            
+            17 : {'q17', 'LINE_COMMENT'},                       #IGNORES THE WHOLE LINE     {{ % }}
+            18 : {'q18', 'WAITING_#_TO_START_BLOCK_COMMENT'},   #MANDATORY TO RECEIVE '#' {{ '#' }}  
+            19 : {'q19', 'WAITING_#_TO_MIDDLE_BLOCK_COMMENT'},  #MANDATORY TO RECEIVE '#' {{ '#' }}
+            20 : {'q20', 'WAITING_}_TO_END_BLOCK_COMMENT'},     #MANDATORY TO RECEIVE '}' {{ '}' }}
+            21 : {'q21', 'ERROR_CoMF'},                         #RETURNS ERROR 'OpMF'      _OTHER_
         }
-             
+
         self.RESERVERD_WORDS = [
             'algoritmo', 'variaveis', 'constantes', 'registro','funcao', 'retorno', 
             'vazio', 'se', 'senao', 'enquanto','para', 'leia', 'escreva', 'inteiro', 
@@ -57,7 +63,7 @@ class Lexemas:
 
         self.END_DELIMITERS = [';', ',', '.', ')', '}', ']', '\\t']
         
-        self.COMMENT_DELIMMITERS = ['#', '{#', '#}']
+        self.COMMENT_DELIMMITERS = ['%', '{#', '#}']
     
     def isReservedWord(self,char):
         return char in self.RESERVERD_WORDS

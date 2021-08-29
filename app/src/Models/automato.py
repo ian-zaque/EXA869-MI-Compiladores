@@ -67,12 +67,20 @@ class Automato:
                             state = State(14)
                             word = word + char
                         
-                        elif char in self.lexemas.START_DELIMITERS:
+                        elif char in self.lexemas.START_DELIMITERS and char != '{':
                             state = State(15)
                             word = word + char
                         
                         elif char in self.lexemas.END_DELIMITERS:
                             state = State(16)
+                            word = word + char
+                        
+                        elif self.lexemas.isCommentDelimiter(char):
+                            state = State(17)
+                            word = word + char
+                            
+                        elif char == '{':
+                            state = State(18)
                             word = word + char
                         
                         else:
@@ -83,7 +91,7 @@ class Automato:
                     
                     #####################{{ q1 }}#########################
                     elif state.getStateNumber() == 1:
-                        if ((sizePalavra == 1 or sizePalavra < 10) and bytes(char, 'ascii').islower()):
+                        if ((sizePalavra == 1 or sizePalavra <= 10) and bytes(char, 'ascii').islower()):
                             sizePalavra += 1
                             word = word + char
 
@@ -258,7 +266,7 @@ class Automato:
                         
                         elif char == '=':
                             word = word + char
-                            state = State(6)
+                            state = State(8)
                         
                         elif self.lexemas.isLogicalOperator(char) or self.lexemas.isArithmeticOperator(char) or self.lexemas.isRelationalOperator(char):
                             word = word +char
@@ -303,6 +311,16 @@ class Automato:
                             state = State(0)
                     #####################{{ FIM q7 }}#########################
                     
+                    elif state.getStateNumber() == 8:
+                        if self.lexemas.isSpace(char) or char == '\n':
+                            token = Token(word, 'REL', idxLine)
+                            self.states.append(token)
+                            state = State(0)
+                            word = ''
+                        
+                        else:
+                            word= word + char
+                            state = State(9)
                     
                     #####################{{ q9 }}#########################
                     elif state.getStateNumber() == 9:
@@ -420,7 +438,7 @@ class Automato:
                             self.states.append(token)
                             word =''
                             state = State(0)
-                            
+
                         else:
                             token = Token(word, 'OpMF', idxLine)
                             self.errors.append(token)
@@ -448,9 +466,9 @@ class Automato:
                             self.states.append(token)
                             word = char
                             state = State(2)
-                            
                     #####################{{ FIM q15 }}#########################
                     
+
                     #####################{{ q16 }}#########################
                     elif state.getStateNumber() == 16:
                         if self.lexemas.isSpace(char):
@@ -459,5 +477,20 @@ class Automato:
                             word =''
                             state = State(0)
                     #####################{{ FIM q16 }}#########################
+                    
+                    
+                    #####################{{ q17 }}#########################
+                    elif state.getStateNumber() == 17:
+                        if char == '\n':
+                            word = ''
+                            state = State(0)
+                            
+                        else:
+                            state = State(17)
+                    #####################{{ FIM q17 }}#########################
+                    
+
+
+                    
                     
             return {'states':self.states, 'errors': self.errors}

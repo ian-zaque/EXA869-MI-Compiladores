@@ -1,6 +1,8 @@
 UMA entrada <>
-outra mais !aa
+%   outra mais !aa
 
+=== =
+= ====
 
 duas+
 2-

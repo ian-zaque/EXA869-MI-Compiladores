@@ -5,7 +5,7 @@ class State:
     def __init__(self,numState):
         self.stateType = Lexemas().stateTypes[numState]
         self.stateNumber = numState
-        # print('typee',self.stateType)
+        print('typee',self.stateType)
         
     def getStateType(self):
         return self.stateType
