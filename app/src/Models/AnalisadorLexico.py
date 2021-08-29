@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from os.path import dirname, abspath
 from os import listdir
 from automato import Automato
@@ -21,13 +22,13 @@ def getInputFiles(dir):
 
 
 def readFileInputs(path, pathOutput, filename, index):
-    #automato = Automato(path + '/' + filename)
     automato = Automato(path + '\\' + filename)
+    #automato = Automato(path + '/' + filename)
     tokens = automato.getNextToken()
     lineTxt = []
 
-    #file = open(pathOutput+'/saida'+str(index)+'.txt','w')
     file = open(pathOutput+'\\saida'+str(index)+'.txt', 'w')
+    #file = open(pathOutput+'/saida'+str(index)+'.txt', 'w')
 
     for idx, token in enumerate(tokens['states']):
         lineTxt = str(token.getLine()+1) + ' ' + \
@@ -45,14 +46,14 @@ def readFileInputs(path, pathOutput, filename, index):
 
 def main():
     path = dirname(dirname(dirname(dirname(abspath(__file__)))))
-    #pathOutput = path + '/output'
-    #path = path + '/input'
     pathOutput = path + '\\output'
-    path = path + '\\input'
-    inputFiles = getInputFiles(path)
+    pathInput = path + '\\input'
+    #pathOutput = path + '/output'
+    #pathInput = path + '/input'
+    inputFiles = getInputFiles(pathInput)
 
     for idx, file in enumerate(inputFiles):
-        readFileInputs(path, pathOutput, file[0], file[1])
+        readFileInputs(pathInput, pathOutput, file[0], file[1])
 
 
 main()
