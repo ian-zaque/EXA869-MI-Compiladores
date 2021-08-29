@@ -20,7 +20,7 @@ class Automato:
             word = ''
 
             for idxChar, char in enumerate(line):
-                # print('Posição:',idxChar, 'Char: ',char)
+                #print('Posição:', idxChar, 'Char: ', char, 'Ascii:', bytes(char, 'ascii').hex())
 
                 #####################{{ q0 }}#########################
                 if state.getStateNumber() == 0:
@@ -523,7 +523,7 @@ class Automato:
                         state = State(0)
                         word = ''
 
-                    elif self.lexemas.isCaracter(char):
+                    elif self.lexemas.isCaracter(char) or bytes(char, 'ascii').hex() == '0a':
                         word = word + char
                         token = Token(word, 'CaMF', idxLine)
                         self.errors.append(token)
@@ -532,20 +532,24 @@ class Automato:
 
                     else:
                         word = word + char
-                        state = State(20)
+                        sizePalavra += 1
                 #####################{{ FIM q20 }}#########################
 
                 #####################{{ q21 }}#########################
                 elif state.getStateNumber() == 21:
-                    if self.lexemas.isSpace(char) or char == '\n':
-                        token = Token(word, 'SII', idxLine)
-                        self.errors.append(token)
+                    if self.lexemas.isValidSimbol(char) or char == '\"':
+                        word = word + char
+                        state = State(21)
+
+                    elif self.lexemas.isCaracters(char):
+                        word = word + char
+                        token = Token(word, 'CAD', idxLine)
                         state = State(0)
                         word = ''
 
                     else:
                         word = word + char
-                        state = State(22)
+                        state = State(23)
                 #####################{{ FIM q21 }}#########################
 
                 #####################{{ q22 }}#########################
@@ -560,5 +564,19 @@ class Automato:
                         word = word + char
                         state = State(22)
                 #####################{{ FIM q22 }}#########################
+
+                #####################{{ q23 }}#########################
+                elif state.getStateNumber() == 23:
+                    if self.lexemas.isCaracters(char):
+                        word = word + char
+                        token = Token(word, 'CMF', idxLine)
+                        self.errors.append(token)
+                        state = State(0)
+                        word = ''
+
+                    else:
+                        word = word + char
+                        state = State(23)
+                #####################{{ FIM 23 }}#########################
 
         return {'states': self.states, 'errors': self.errors}
