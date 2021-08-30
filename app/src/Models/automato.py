@@ -20,8 +20,7 @@ class Automato:
             word = ''
 
             for idxChar, char in enumerate(line):
-                print('Posição:', idxChar, 'Char: ', char,
-                      'state:', state.getStateNumber())
+                #print('Posição:', idxChar, 'Char: ', char, 'state:', state.getStateNumber())
 
                 #####################{{ q0 }}#########################
                 if state.getStateNumber() == 0:
@@ -163,7 +162,7 @@ class Automato:
 
                     else:
                         state = State(0)
-                        print('error')
+                        # print('error')
                 #####################{{ FIM q1 }}#########################
 
                 #####################{{ q2 }}#########################
@@ -526,6 +525,21 @@ class Automato:
 
                 #####################{{ FIM q18 }}#########################
 
+                #####################{{ q19 }}#########################
+                elif state.getStateNumber() == 19:
+                    if char == '#':
+                        word = word + char
+                        state = State(24)
+
+                    elif self.lexemas.isSpace(char) or char == '\n':
+                        word = word + char
+                        state = State(19)
+
+                    else:
+                        word = word + char
+                        state = State(19)
+                #####################{{ FIM q19 }}#########################
+
                 #####################{{ q20 }}#########################
                 elif state.getStateNumber() == 20:
                     if ((self.lexemas.isValidSimbol(char) or char == '\'') and sizePalavra < 1):
@@ -600,5 +614,20 @@ class Automato:
                     else:
                         word = word + char
                 #####################{{ FIM 23 }}#########################
+
+                #####################{{ q24 }}#########################
+                elif state.getStateNumber() == 24:
+                    if char == '}':
+                        word = word + char
+                        state = State(0)
+
+                    elif self.lexemas.isSpace(char) or char == '\n':
+                        word = word + char
+                        state = State(19)
+
+                    else:
+                        word = word + char
+                        state = State(19)
+                #####################{{ FIM 24 }}#########################
 
         return {'states': self.states, 'errors': self.errors}
