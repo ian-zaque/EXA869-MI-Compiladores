@@ -7,7 +7,7 @@ from State import State
 class Automato:
 
     def __init__(self, file):
-        self.file = open(file, 'r')
+        self.file = open(file, 'r',encoding='UTF-8')
         self.lexemas = Lexemas()
         self.states = []
         self.errors = []
@@ -510,6 +510,23 @@ class Automato:
 
                 #####################{{ FIM q18 }}#########################
 
+
+                #####################{{ q19 }}#########################
+                elif state.getStateNumber() == 19:
+                    if char == '#':
+                        word = word + char
+                        state = State(24)
+                    
+                    elif self.lexemas.isSpace(char) or char == '\n':
+                        word = word+ char
+                        state = State(19)
+                    
+                    else:
+                        word = word+ char
+                        state = State(19)                    
+                #####################{{ FIM q19 }}#########################
+                
+
                 #####################{{ q20 }}#########################
                 elif state.getStateNumber() == 20:
                     if ((self.lexemas.isValidSimbol(char) or char == '\'') and sizePalavra < 1):
@@ -519,6 +536,7 @@ class Automato:
                     elif sizePalavra == 1 and self.lexemas.isCaracter(char):
                         word = word + char
                         token = Token(word, 'CAR', idxLine)
+                        self.states.append(token)
                         sizePalavra = 0
                         state = State(0)
                         word = ''
@@ -535,6 +553,7 @@ class Automato:
                         sizePalavra += 1
                 #####################{{ FIM q20 }}#########################
 
+
                 #####################{{ q21 }}#########################
                 elif state.getStateNumber() == 21:
                     if self.lexemas.isValidSimbol(char) or char == '\"':
@@ -544,6 +563,7 @@ class Automato:
                     elif self.lexemas.isCaracters(char):
                         word = word + char
                         token = Token(word, 'CAD', idxLine)
+                        self.states.append(token)
                         state = State(0)
                         word = ''
 
@@ -551,6 +571,7 @@ class Automato:
                         word = word + char
                         state = State(23)
                 #####################{{ FIM q21 }}#########################
+
 
                 #####################{{ q22 }}#########################
                 elif state.getStateNumber() == 22:
@@ -564,6 +585,7 @@ class Automato:
                         word = word + char
                         state = State(22)
                 #####################{{ FIM q22 }}#########################
+
 
                 #####################{{ q23 }}#########################
                 elif state.getStateNumber() == 23:
@@ -579,4 +601,20 @@ class Automato:
                         state = State(23)
                 #####################{{ FIM 23 }}#########################
 
+
+                #####################{{ q24 }}#########################
+                elif state.getStateNumber() == 24:
+                    if char == '}':
+                        word = word +char
+                        state = State(0)
+                    
+                    elif self.lexemas.isSpace(char) or char == '\n':
+                        word = word+ char
+                        state = State(19)
+                    
+                    else:
+                        word = word + char
+                        state = State(19)
+                #####################{{ FIM 24 }}#########################
+                        
         return {'states': self.states, 'errors': self.errors}

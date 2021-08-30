@@ -46,8 +46,10 @@ class Lexemas:
             # OPERADORES LÓGICOS
             13: {'q13', 'FIRST_&'},  # RETURNS TOKEN 'LOG' {{ & }}
             14: {'q14', 'FIRST_|'},  # RETURNS TOKEN 'LOG' {{ | }}
-            99: {'q15', 'FINAL_LOG'},  # RETURNS TOKEN 'LOG' {{ & | '|' }}
-            16: {'q16', 'FINAL_EXCLAMATION'},  # RETURNS TOKEN 'LOG'  {{ ! }}
+            99: {'q99', 'FINAL_LOG'},  # RETURNS TOKEN 'LOG' {{ & | '|' }}
+            
+            15: {'q15', 'START_DELIMITTER'}, # RETURNS TOKEN 'DEL'  {{ '{' | ( | [ }}
+            16: {'q16', 'END_DELIMITTER'},  # RETURNS TOKEN 'DEL'  {{ '}' | ) | ] }}
 
             17: {'q17', 'LINE_COMMENT'},  # IGNORES THE WHOLE LINE     {{ % }}
             # MANDATORY TO RECEIVE '#' {{ '#' }}
@@ -59,6 +61,8 @@ class Lexemas:
             21: {'q21', 'ERROR_CoMF'},  # RETURNS ERROR 'OpMF'      _OTHER_
 
             22: {'q22', 'SYMBOL'},  # RETURNS ERROR 'SII'      SIMBOLS
+            
+            23: {'q23', 'ERROR_CMF'},   # RETURNS ERROR 'CMF'      CADEIA MAL FORMADA
         }
 
         self.RESERVERD_WORDS = [
