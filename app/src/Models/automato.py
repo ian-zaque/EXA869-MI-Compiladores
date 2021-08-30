@@ -20,7 +20,8 @@ class Automato:
             word = ''
 
             for idxChar, char in enumerate(line):
-                #print('Posição:', idxChar, 'Char: ', char, 'Ascii:', bytes(char, 'ascii').hex())
+                print('Posição:', idxChar, 'Char: ', char,
+                      'state:', state.getStateNumber())
 
                 #####################{{ q0 }}#########################
                 if state.getStateNumber() == 0:
@@ -139,6 +140,8 @@ class Automato:
                         state = State(0)
 
                     elif self.lexemas.isLogicalOperator(char) or self.lexemas.isArithmeticOperator(char) or self.lexemas.isRelationalOperator(char):
+                        token = Token(word, 'IDE', idxLine)
+                        self.states.append(token)
                         word = word + char
                         state = State(9)
 
@@ -146,8 +149,21 @@ class Automato:
                         word = word + char
                         state = State(22)
 
+                    elif self.lexemas.isCaracter(char):
+                        token = Token(word, 'IDE', idxLine)
+                        self.states.append(token)
+                        word = char
+                        state = State(20)
+
+                    elif self.lexemas.isCaracters(char):
+                        token = Token(word, 'IDE', idxLine)
+                        self.states.append(token)
+                        word = char
+                        state = State(21)
+
                     else:
                         state = State(0)
+                        print('error')
                 #####################{{ FIM q1 }}#########################
 
                 #####################{{ q2 }}#########################
@@ -519,6 +535,7 @@ class Automato:
                     elif sizePalavra == 1 and self.lexemas.isCaracter(char):
                         word = word + char
                         token = Token(word, 'CAR', idxLine)
+                        self.states.append(token)
                         sizePalavra = 0
                         state = State(0)
                         word = ''
@@ -537,13 +554,19 @@ class Automato:
 
                 #####################{{ q21 }}#########################
                 elif state.getStateNumber() == 21:
-                    if self.lexemas.isValidSimbol(char) or char == '\"':
+                    if self.lexemas.isValidSimbol(char):
                         word = word + char
-                        state = State(21)
 
                     elif self.lexemas.isCaracters(char):
                         word = word + char
                         token = Token(word, 'CAD', idxLine)
+                        self.states.append(token)
+                        state = State(0)
+                        word = ''
+
+                    elif bytes(char, 'ascii').hex() == '0a':
+                        token = Token(word, 'CMF', idxLine)
+                        self.errors.append(token)
                         state = State(0)
                         word = ''
 
@@ -576,7 +599,6 @@ class Automato:
 
                     else:
                         word = word + char
-                        state = State(23)
                 #####################{{ FIM 23 }}#########################
 
         return {'states': self.states, 'errors': self.errors}
