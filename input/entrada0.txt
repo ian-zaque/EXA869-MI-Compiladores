@@ -4,6 +4,10 @@ UMA entrada <>
 === =
 = ====
 
+se'c'
+
+"retorno"
+
 duas+
 2-
 duas*
@@ -14,7 +18,9 @@ duas+a
 *
 *+
 /
-hahaha
+a"
+'a retorno
+hahaha'
 
 f <= a
 

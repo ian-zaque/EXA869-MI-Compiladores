@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#coding: utf-8
 from os.path import dirname, abspath
 from os import listdir
 from automato import Automato
@@ -23,7 +24,7 @@ def getInputFiles(dir):
 def readFileInputs(path, pathOutput, filename, index):
     automato = Automato(path + '\\' + filename)
     #automato = Automato(path + '/' + filename)
-    tokens = automato.getNextToken()
+    tokens = automato.getTokens()
     lineTxt = []
 
     file = open(pathOutput+'\\saida'+str(index)+'.txt', 'w')

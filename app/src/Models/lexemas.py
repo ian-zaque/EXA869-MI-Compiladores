@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#coding: utf-8
 class Lexemas:
 
     def __init__(self):
@@ -91,8 +92,11 @@ class Lexemas:
     def isDigit(self, char):
         return char.isnumeric()
 
+    def isAsciiChar(self, char):
+        return len(char) == len(char.encode())
+    
     def isLetter(self, char):
-        return char.isalpha()
+        return char.isalpha() and self.isAsciiChar(char)
 
     def isSpace(self, char):
         return char.isspace()
@@ -124,7 +128,3 @@ class Lexemas:
     def isValidSimbol(self, char):
         simbol = int(bytes(char, 'ascii').hex(), 16)
         return (simbol > 31 and simbol < 127 and simbol != 34 and simbol != 39)
-
-    def isInvalidSimbol(self, char):
-        simbol = int(bytes(char, 'ascii').hex(), 16)
-        return (simbol == 34 or simbol == 39)

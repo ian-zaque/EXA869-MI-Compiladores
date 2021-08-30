@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#coding: utf-8
 class Token:
     def __init__(self, word, type, line):
         self.word = word
