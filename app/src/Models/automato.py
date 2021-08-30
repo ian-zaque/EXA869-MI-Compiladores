@@ -7,7 +7,7 @@ from State import State
 class Automato:
 
     def __init__(self, file):
-        self.file = open(file, 'r',encoding='UTF-8')
+        self.file = open(file, 'r')
         self.lexemas = Lexemas()
         self.states = []
         self.errors = []
@@ -525,16 +525,11 @@ class Automato:
 
                 #####################{{ FIM q18 }}#########################
 
-<<<<<<< HEAD
-=======
-
->>>>>>> d27decb6374de4594e54604900b4ffab4630f9ee
                 #####################{{ q19 }}#########################
                 elif state.getStateNumber() == 19:
                     if char == '#':
                         word = word + char
                         state = State(24)
-<<<<<<< HEAD
 
                     elif self.lexemas.isSpace(char) or char == '\n':
                         word = word + char
@@ -544,18 +539,6 @@ class Automato:
                         word = word + char
                         state = State(19)
                 #####################{{ FIM q19 }}#########################
-=======
-                    
-                    elif self.lexemas.isSpace(char) or char == '\n':
-                        word = word+ char
-                        state = State(19)
-                    
-                    else:
-                        word = word+ char
-                        state = State(19)                    
-                #####################{{ FIM q19 }}#########################
-                
->>>>>>> d27decb6374de4594e54604900b4ffab4630f9ee
 
                 #####################{{ q20 }}#########################
                 elif state.getStateNumber() == 20:
@@ -583,7 +566,6 @@ class Automato:
                         sizePalavra += 1
                 #####################{{ FIM q20 }}#########################
 
-
                 #####################{{ q21 }}#########################
                 elif state.getStateNumber() == 21:
                     if self.lexemas.isValidSimbol(char):
@@ -593,15 +575,12 @@ class Automato:
                         word = word + char
                         token = Token(word, 'CAD', idxLine)
                         self.states.append(token)
-<<<<<<< HEAD
                         state = State(0)
                         word = ''
 
                     elif bytes(char, 'ascii').hex() == '0a':
                         token = Token(word, 'CMF', idxLine)
                         self.errors.append(token)
-=======
->>>>>>> d27decb6374de4594e54604900b4ffab4630f9ee
                         state = State(0)
                         word = ''
 
@@ -609,7 +588,6 @@ class Automato:
                         word = word + char
                         state = State(23)
                 #####################{{ FIM q21 }}#########################
-
 
                 #####################{{ q22 }}#########################
                 elif state.getStateNumber() == 22:
@@ -624,7 +602,6 @@ class Automato:
                         state = State(22)
                 #####################{{ FIM q22 }}#########################
 
-
                 #####################{{ q23 }}#########################
                 elif state.getStateNumber() == 23:
                     if self.lexemas.isCaracters(char):
@@ -638,7 +615,6 @@ class Automato:
                         word = word + char
                 #####################{{ FIM 23 }}#########################
 
-<<<<<<< HEAD
                 #####################{{ q24 }}#########################
                 elif state.getStateNumber() == 24:
                     if char == '}':
@@ -649,26 +625,9 @@ class Automato:
                         word = word + char
                         state = State(19)
 
-=======
-
-                #####################{{ q24 }}#########################
-                elif state.getStateNumber() == 24:
-                    if char == '}':
-                        word = word +char
-                        state = State(0)
-                    
-                    elif self.lexemas.isSpace(char) or char == '\n':
-                        word = word+ char
-                        state = State(19)
-                    
->>>>>>> d27decb6374de4594e54604900b4ffab4630f9ee
                     else:
                         word = word + char
                         state = State(19)
                 #####################{{ FIM 24 }}#########################
-<<<<<<< HEAD
 
-=======
-                        
->>>>>>> d27decb6374de4594e54604900b4ffab4630f9ee
         return {'states': self.states, 'errors': self.errors}
