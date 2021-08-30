@@ -1,0 +1,23 @@
+1 PRE funcao
+1 IDE escreverNoArquivo
+1 DEL (
+1 IDE arquivo
+2 IDE leia
+2 DEL (
+2 IDE arquivo
+3 IDE escreva
+3 DEL (
+3 IDE isso
+3 IDE um
+3 IDE teste
+5 IDE este
+5 IDE um
+5 IDE arquivo
+5 IDE de
+
+1 SII .txt){
+2 SII .txt);
+3 SII é
+3 CMF ");
+5 SII é
+5 SII teste#}

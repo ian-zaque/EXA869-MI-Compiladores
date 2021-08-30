@@ -1,0 +1,19 @@
+1 IDE erros
+1 IDE de
+1 IDE simbolos
+1 IDE na
+1 IDE linha
+1 NRO 6
+2 LOG &&
+2 LOG !
+2 PRE char
+3 IDE operacao
+3 PRE funcao
+4 IDE letraedigito12
+4 LOG ||
+5 IDE l3
+5 ART +
+5 ART -
+
+6 OpMF &
+6 SII __

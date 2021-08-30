@@ -1,0 +1,27 @@
+1 PRE funcao
+1 DEL (
+1 DEL )
+1 DEL {
+3 IDE um
+3 IDE teste
+5 IDE teste
+5 REL =
+5 DEL ;
+6 IDE teste2
+6 REL =
+6 NRO 6
+7 IDE teste3
+7 REL =
+7 NRO 8
+7 ART ++
+7 ART --
+7 NRO 1
+
+1 NMF 5bomdia
+2 SII $$
+3 OpMF +"isso
+3 SII é
+3 SII ;";
+4 SII teste@
+5 NMF 5+5
+6 OpMF +-1

@@ -1,0 +1,18 @@
+1 IDE sem
+1 IDE erros
+1 IDE por
+1 IDE ser
+1 IDE um
+1 IDE comentario
+3 IDE arquivo
+3 IDE com
+4 NRO 89
+5 PRE registro
+
+3 OpMF &rros
+4 NMF 98.8p9
+5 NMF 0algoritmo
+5 NMF 45constantes
+6 OpMF +*
+6 OpMF &&&
+7 CMF "Esta e uma cadeia de caracteres
