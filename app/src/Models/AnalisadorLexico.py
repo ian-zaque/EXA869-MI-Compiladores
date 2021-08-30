@@ -13,7 +13,6 @@ def getInputFiles(dir):
     for index, filename in enumerate(dir):
         if filename.startswith('entrada'):
             idx = int(''.join(i for i in filename if i.isdigit()))
-            print(idx)
             files.append([filename, idx])
 
     return files
