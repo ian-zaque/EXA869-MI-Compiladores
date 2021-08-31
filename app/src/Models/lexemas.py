@@ -59,13 +59,17 @@ class Lexemas:
             19: {'q19', 'WAITING_#_TO_MIDDLE_BLOCK_COMMENT'},
             # MANDATORY TO RECEIVE '}' {{ '}' }}
             
-            22: {'q22', 'SYMBOL'},  # RETURNS ERROR 'SII'      SIMBOLS
+            20: {'q20', 'CARACTER'},
+            21: {'q21', 'CHARACTER_CHAIN'},
+            
+            22: {'q22', 'ASCII SYMBOL'},  # RETURNS ERROR 'SII'      SIMBOLS
             
             23: {'q23', 'ERROR_CMF'},   # RETURNS ERROR 'CMF'      CADEIA MAL FORMADA
             
             24: {'q20', 'WAITING_}_TO_END_BLOCK_COMMENT'},
             25: {'q21', 'ERROR_CoMF'},  # RETURNS ERROR 'OpMF'      _OTHER_
 
+            26: {'q26', 'NON-ASCII SYMBOL'},  # RETURNS ERROR 'SII'      SIMBOLS
         }
 
         self.RESERVERD_WORDS = [
