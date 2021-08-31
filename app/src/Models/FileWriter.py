@@ -11,7 +11,7 @@ class FileWriter:
                 file.write(lineTxt)
                 file.write('\n')
 
-            if len(tokens['errors']) > 0:
+            if len(tokens['errors']) >= 1:
                 for idx, token in enumerate(tokens['errors']):
                     file.write('\n')
                     lineTxt = str(token.getLine()+1) + ' ' + \
