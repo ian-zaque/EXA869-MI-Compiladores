@@ -26,6 +26,10 @@ Correção: COLOCAR UMA LINHA vazia no final DE TODOS OS Arquivos de entrada
 
 Dúvidas:
 
-"\!3nsndsujnbsd3i34i9§=\"" retorna o que??
+"\!3nsndsujnbsd3i34i9§=\"" 		retorna o que??
+
+.1.1-00.01						retorna o que??
+
+Acentos e.g: "Não" são válidos dentro de uma string?
 
 CMF "\!3nsndsujnbsd3i34i9§=\" 		CMF "
