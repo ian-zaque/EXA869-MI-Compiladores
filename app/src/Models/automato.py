@@ -21,7 +21,8 @@ class Automato:
             word = ''
 
             for idxChar, char in enumerate(line):
-                #print('Posição:', idxChar, 'Char: ', char, 'state:', state.getStateNumber())
+                print('Posição:', idxChar, 'Char: ', char,
+                      'state:', state.getStateNumber())
 
                 #####################{{ q0 }}#########################
                 if state.getStateNumber() == 0:
@@ -139,7 +140,7 @@ class Automato:
 
                         word = char
                         state = State(15)
-                        
+
                     elif self.lexemas.isEndDelimiter(char):
                         token = Token(word, 'IDE', idxLine)
                         self.states.append(token)
@@ -154,7 +155,7 @@ class Automato:
                     elif self.lexemas.isAsciiChar(char) and self.lexemas.isValidSimbol(char):
                         word = word + char
                         state = State(22)
-                    
+
                     elif not self.lexemas.isAsciiChar(char):
                         word = word + char
                         state = State(26)
@@ -162,14 +163,15 @@ class Automato:
                     elif self.lexemas.isAsciiChar(char) and self.lexemas.isCaracter(char):
                         token = Token(word, 'IDE', idxLine)
                         self.states.append(token)
-                        
+
                         word = char
                         state = State(20)
+                        sizePalavra = 0
 
                     elif self.lexemas.isAsciiChar(char) and self.lexemas.isCaracters(char):
                         token = Token(word, 'IDE', idxLine)
                         self.states.append(token)
-                        
+
                         word = char
                         state = State(21)
 
@@ -270,20 +272,23 @@ class Automato:
                         state = State(0)
                         word = ''
 
+                    elif char == '.':
+                        word = word + char
+
                     elif self.lexemas.isStartDelimiter(char):
                         token = Token(word, 'NMF', idxLine)
                         self.errors.append(token)
-                        
+
                         word = char
                         state = State(15)
-                        
+
                     elif self.lexemas.isEndDelimiter(char):
                         token = Token(word, 'NMF', idxLine)
                         self.errors.append(token)
-                        
+
                         word = char
                         state = State(16)
-                    
+
                     else:
                         state = State(5)
                         word = word + char
@@ -356,20 +361,23 @@ class Automato:
                         state = State(0)
                         word = ''
 
+                    elif char == '.':
+                        word = word + char
+
                     elif self.lexemas.isStartDelimiter(char):
                         token = Token(word, 'OpMF', idxLine)
                         self.errors.append(token)
-                        
+
                         word = char
                         state = State(15)
-                        
+
                     elif self.lexemas.isEndDelimiter(char):
                         token = Token(word, 'OpMF', idxLine)
                         self.errors.append(token)
-                        
+
                         word = char
                         state = State(16)
-                        
+
                     else:
                         word = word + char
                         state = State(9)
@@ -484,20 +492,20 @@ class Automato:
                     if self.lexemas.isEndDelimiter(char) or self.lexemas.isStartDelimiter(char):
                         token = Token(word, 'DEL', idxLine)
                         self.states.append(token)
-                        
+
                         word = char
                         state = State(15)
-                    
+
                     elif self.lexemas.isSpace(char):
                         token = Token(word, 'DEL', idxLine)
                         self.states.append(token)
                         word = ''
                         state = State(0)
-                        
+
                     elif self.lexemas.isAsciiChar(char) and bytes(char, 'ascii').islower():
                         token = Token(word, 'DEL', idxLine)
                         self.states.append(token)
-                        
+
                         # tamanho da palavra
                         sizePalavra += 1
                         state = State(1)
@@ -506,31 +514,31 @@ class Automato:
                     elif self.lexemas.isAsciiChar(char) and bytes(char, 'ascii').isupper():
                         token = Token(word, 'DEL', idxLine)
                         self.states.append(token)
-                        
+
                         state = State(1)
                         word = char
 
                     elif self.lexemas.isDigit(char):
                         token = Token(word, 'DEL', idxLine)
                         self.states.append(token)
-                        
+
                         word = char
                         state = State(2)
-                    
+
                     elif self.lexemas.isAsciiChar(char) and self.lexemas.isCaracter(char):
                         token = Token(word, 'DEL', idxLine)
                         self.states.append(token)
-                        
+
                         word = char
                         state = State(20)
 
                     elif self.lexemas.isAsciiChar(char) and self.lexemas.isCaracters(char):
                         token = Token(word, 'DEL', idxLine)
                         self.states.append(token)
-                        
+
                         word = char
                         state = State(21)
-                    
+
                     else:
                         word = char
                         state = State(22)
@@ -541,10 +549,10 @@ class Automato:
                     if self.lexemas.isEndDelimiter(char) or self.lexemas.isStartDelimiter(char):
                         token = Token(word, 'DEL', idxLine)
                         self.states.append(token)
-                        
+
                         word = char
                         state = State(16)
-                    
+
                     elif self.lexemas.isSpace(char):
                         token = Token(word, 'DEL', idxLine)
                         self.states.append(token)
@@ -654,16 +662,27 @@ class Automato:
                         word = word + char
 
                     elif self.lexemas.isAsciiChar(char) and self.lexemas.isCaracters(char):
-                        word = word + char
-                        token = Token(word, 'CAD', idxLine)
-                        self.states.append(token)
-                        state = State(0)
-                        word = ''
+                        if errou:
+                            word = word + char
+                            token = Token(word, 'CMF', idxLine)
+                            self.errors.append(token)
+                            state = State(0)
+                            word = ''
+
+                        else:
+                            word = word + char
+                            token = Token(word, 'CAD', idxLine)
+                            self.states.append(token)
+                            state = State(0)
+                            word = ''
 
                     elif not self.lexemas.isAsciiChar(char):
+                        errou = True
                         word = word + char
-                        state = State(21)    
-                    
+                        state = State(21)
+
+                        print('ok')
+
                     elif bytes(char, 'ascii').hex() == '0a':
                         token = Token(word, 'CMF', idxLine)
                         self.errors.append(token)
@@ -682,18 +701,18 @@ class Automato:
                         self.errors.append(token)
                         state = State(0)
                         word = ''
-                    
+
                     elif self.lexemas.isStartDelimiter(char):
                         token = Token(word, 'SII', idxLine)
                         self.errors.append(token)
-                        
+
                         word = char
                         state = State(15)
-                        
+
                     elif self.lexemas.isEndDelimiter(char):
                         token = Token(word, 'SII', idxLine)
                         self.errors.append(token)
-                        
+
                         word = char
                         state = State(16)
 
@@ -704,7 +723,7 @@ class Automato:
                     elif not self.lexemas.isAsciiChar(char) and not self.lexemas.isValidSimbol(char):
                         word = word + char
                         state = State(26)
-                    
+
                     else:
                         word = word + char
                         state = State(22)
@@ -737,13 +756,13 @@ class Automato:
                         word = word + char
                         state = State(25)
                 #####################{{ FIM 24 }}#########################
-                
+
                 #####################{{ q25 }}#########################
                 elif state.getStateNumber() == 25:
                     if self.lexemas.isSpace(char) or char == '\n':
                         word = word + char
                         state = State(25)
-                    
+
                     else:
                         word = word + char
                         token = Token(word, 'CoMF', idxLine)
@@ -751,20 +770,22 @@ class Automato:
                         state = State(0)
                         word = ''
                 #####################{{ FIM 25 }}#########################
-                    
+
                 #####################{{ q26 }}#########################
                 elif state.getStateNumber() == 26:
                     if self.lexemas.isSpace(char) or char == '\n':
                         word = word + char
                         token = Token(word, 'SII', idxLine)
                         self.errors.append(token)
-                        
+
                         word = ''
                         state = State(0)
-                    
+
                     else:
                         word = word + char
                         state = State(26)
                 #####################{{ FIM 26 }}#########################
-                
+                print('Posição:', idxChar, 'Char: ', char,
+                      'state:', state.getStateNumber())
+
         return {'states': self.states, 'errors': self.errors}
