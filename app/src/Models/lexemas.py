@@ -58,8 +58,8 @@ class Lexemas:
             # MANDATORY TO RECEIVE '#' {{ '#' }}
             19: {'q19', 'WAITING_#_TO_MIDDLE_BLOCK_COMMENT'},
             # MANDATORY TO RECEIVE '}' {{ '}' }}
-            20: {'q20', 'WAITING_}_TO_END_BLOCK_COMMENT'},
-            21: {'q21', 'ERROR_CoMF'},  # RETURNS ERROR 'OpMF'      _OTHER_
+            24: {'q20', 'WAITING_}_TO_END_BLOCK_COMMENT'},
+            25: {'q21', 'ERROR_CoMF'},  # RETURNS ERROR 'OpMF'      _OTHER_
 
             22: {'q22', 'SYMBOL'},  # RETURNS ERROR 'SII'      SIMBOLS
             

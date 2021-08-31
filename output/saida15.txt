@@ -6,3 +6,5 @@
 3 DEL ;
 4 IDE se
 4 DEL (
+5 IDE a
+5 CAD "something"

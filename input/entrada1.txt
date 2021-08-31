@@ -1,3 +1,4 @@
 funcao oi (){
-escreva("Ola, tudo bom?");
+escreva("Olá, ¬£³ tudo bom?");
+a'
 }

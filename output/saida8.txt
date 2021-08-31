@@ -8,10 +8,7 @@
 1 DEL {
 2 IDE escreva
 2 DEL (
-2 IDE a
-2 IDE maior
-2 IDE que
-2 IDE b
+2 CAD "a maior que b"
+2 DEL )
+2 DEL ;
 3 DEL }
-
-2 CMF ");

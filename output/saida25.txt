@@ -27,14 +27,19 @@
 8 CAR 'M'
 8 DEL ;
 11 ART +
+11 CAD "\!3nsndsujnbsd3i34i9§=\"
 19 IDE de
+21 DEL }
 
 6 CMF "Testando a cadeia de caracteres
 10 SII §
+
 11 SII @
-11 CMF "\!3nsndsujnbsd3i34i9
-11 SII �=\""
+11 CMF "
 12 SII ¬
+
 13 SII ¢
+
 15 SII £
-21 SII bloco#}
+
+21 SII bloco#

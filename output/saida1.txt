@@ -1,9 +1,13 @@
 1 PRE funcao
 1 IDE oi
 1 DEL (
+1 DEL )
+1 DEL {
 2 IDE escreva
 2 DEL (
-2 IDE Ola
-2 DEL ,
-2 IDE tudo
-2 DEL bom)
+2 CAD "Olá, ¬£³ tudo bom?"
+2 DEL )
+2 DEL ;
+3 IDE a
+
+3 CaMF '

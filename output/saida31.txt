@@ -9,4 +9,3 @@
 3 NMF 45constantes
 4 OpMF +*
 4 OpMF &&&
-5 CMF "Esta e uma cadeia de caracteres

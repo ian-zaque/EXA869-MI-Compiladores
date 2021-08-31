@@ -16,3 +16,4 @@
 6 OpMF +*
 6 OpMF &&&
 7 CMF "Esta e uma cadeia de caracteres
+8 SII #

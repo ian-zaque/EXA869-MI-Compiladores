@@ -41,7 +41,6 @@
 11 DEL ]
 11 REL =
 11 DEL ;
-12 IDE contador
 12 DEL ;
 13 DEL }
 14 DEL }

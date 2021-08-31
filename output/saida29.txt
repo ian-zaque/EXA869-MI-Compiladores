@@ -7,13 +7,6 @@
 4 PRE variaveis
 4 PRE constantes
 4 PRE registro
-5 IDE uma
-5 PRE cadeia
-5 IDE de
-5 IDE caracteres
+5 CAD "Esta Ã© uma cadeia de caracteres"
 6 ART ++
 6 ART --
-
-5 CMF "Esta 
-5 SII ©
-5 CMF "

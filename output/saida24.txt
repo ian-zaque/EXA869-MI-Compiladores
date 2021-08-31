@@ -2,7 +2,7 @@
 1 PRE inteiro
 1 IDE soma
 1 DEL (
-1 PRE inteiro
+1 IDE inteiro
 1 IDE a
 1 DEL ,
 1 PRE inteiro
@@ -46,7 +46,7 @@
 14 DEL {
 15 IDE escreva
 15 DEL (
-15 IDE Entrou
+15 CAD "Entrou!"
 15 DEL )
 15 DEL ;
 16 DEL }
@@ -63,4 +63,3 @@
 18 DEL {
 
 8 NMF 66%
-15 OpMF Entrou!"

@@ -1,15 +1,19 @@
 %%%%
 %    {#aaaa
 { #2 #}
-char c =  exemplo"
+char	c =  e	xemplo"
 
 se ( F >= -10); && (f <);
 			escreva('palavra)
 	vari)avel
 	% vari_avel
 
-{# 
-algo aqui que nao deve aparecer depois no arquivo de saida correpondente
+
+¬
+
+{# iuyviuyf ¢³²5qw2¨
+ 2³£²¹¬¬**&
+algo aqui que nããão deve aparecer depois no arquivo de saída correpondente
 #} ds
 
 

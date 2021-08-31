@@ -35,5 +35,7 @@
 17 DEL }
 
 5 SII #
-5 SII Testa67�¢£³ndo
-5 SII com�entáriªo
+5 SII Testa67¬¢£³ndo 
+5 SII com§entáriªo 
+13 CoMF {####
+13 SII ###
