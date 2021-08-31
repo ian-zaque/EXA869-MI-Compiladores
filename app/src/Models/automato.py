@@ -19,10 +19,10 @@ class Automato:
             sizePalavra = 0
             state = State(0)
             word = ''
+            errou = False
 
             for idxChar, char in enumerate(line):
-                print('Posição:', idxChar, 'Char: ', char,
-                      'state:', state.getStateNumber())
+                #print('Posição:', idxChar, 'Char: ', char, 'state:', state.getStateNumber())
 
                 #####################{{ q0 }}#########################
                 if state.getStateNumber() == 0:
@@ -681,8 +681,6 @@ class Automato:
                         word = word + char
                         state = State(21)
 
-                        print('ok')
-
                     elif bytes(char, 'ascii').hex() == '0a':
                         token = Token(word, 'CMF', idxLine)
                         self.errors.append(token)
@@ -785,7 +783,6 @@ class Automato:
                         word = word + char
                         state = State(26)
                 #####################{{ FIM 26 }}#########################
-                print('Posição:', idxChar, 'Char: ', char,
-                      'state:', state.getStateNumber())
+                #print('Posição:', idxChar, 'Char: ', char, 'state:', state.getStateNumber())
 
         return {'states': self.states, 'errors': self.errors}
