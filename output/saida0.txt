@@ -7,6 +7,7 @@
 7 REL =
 8 REL =
 10 IDE se
+10 CAR 'c'
 12 CAD "retorno"
 19 ART ++
 21 ART *
@@ -21,7 +22,6 @@
 6 SII $
 7 OpMF ===
 8 OpMF ====
-10 CaMF 'c'
 14 OpMF duas+
 15 NMF 2-
 16 OpMF duas*
@@ -33,3 +33,5 @@
 25 CaMF 'a retorno
 
 26 CaMF '
+
+30 OpMF f<0

@@ -17,6 +17,7 @@
 7 ART ++
 7 ART --
 7 NRO 1
+10 DEL }
 
 1 NMF 5bomdia
 2 SII $$

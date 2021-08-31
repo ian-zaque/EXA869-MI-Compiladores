@@ -64,10 +64,10 @@
 16 IDE deu
 16 IDE ruim
 17 DEL }
+18 DEL }
 
 1 SII v@r!aveis
-6 OpMF +459849
-6 SII 4545
+6 OpMF +459849.4545
 7 SII teste@
 11 OpMF i++
 12 OpMF n2>100

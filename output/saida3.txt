@@ -19,6 +19,7 @@
 5 IDE arquivo
 5 IDE de
 5 DEL }
+7 DEL }
 
 1 SII txt
 2 SII txt

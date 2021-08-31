@@ -10,3 +10,4 @@
 5 CAD "Esta é uma cadeia de caracteres"
 6 ART ++
 6 ART --
+6 LOG &&

@@ -15,6 +15,8 @@ class Automato:
 
     def getTokens(self):
         file = self.file.readlines()
+        file[len(file)-1] = file[len(file)-1] + ' '
+        file.append("\n")
         for idxLine, line in enumerate(file):
             sizePalavra = 0
             state = State(0)
@@ -274,6 +276,7 @@ class Automato:
 
                     elif char == '.':
                         word = word + char
+                        state = State(5)
 
                     elif self.lexemas.isStartDelimiter(char):
                         token = Token(word, 'NMF', idxLine)
@@ -331,7 +334,7 @@ class Automato:
                         state = State(0)
 
                     # ! or !! or !!! ...
-                    elif self.lexemas.isLetter(char) or char == '!':
+                    elif bytes(char, 'ascii').isupper() or bytes(char, 'ascii').islower() or char == '!':
                         word = word + char
                         state = State(9)
 
@@ -371,7 +374,7 @@ class Automato:
                         word = char
                         state = State(15)
 
-                    elif self.lexemas.isEndDelimiter(char):
+                    elif self.lexemas.isEndDelimiter(char) and char != '.' and char != ';':
                         token = Token(word, 'OpMF', idxLine)
                         self.errors.append(token)
 
@@ -558,7 +561,14 @@ class Automato:
                         self.states.append(token)
                         word = ''
                         state = State(0)
+                    
+                    elif self.lexemas.isDigit(char):
+                        token = Token(word, 'DEL', idxLine)
+                        self.states.append(token)
 
+                        word = char
+                        state = State(2)            
+                    
                     else:
                         word = char
                         state = State(22)
@@ -586,12 +596,21 @@ class Automato:
                         state = State(0)
                         word = ''
 
-                    elif self.lexemas.isLetter(char):
+                    elif self.lexemas.isAsciiChar(char) and bytes(char, 'ascii').islower():
                         token = Token(word, 'DEL', idxLine)
                         self.states.append(token)
-
-                        word = char
+                        
+                        # tamanho da palavra
+                        sizePalavra = 1
                         state = State(1)
+                        word = char
+
+                    elif self.lexemas.isAsciiChar(char) and bytes(char, 'ascii').isupper():
+                        token = Token(word, 'DEL', idxLine)
+                        self.states.append(token)
+                        
+                        state = State(1)
+                        word = char
 
                     elif self.lexemas.isDigit(char):
                         token = Token(word, 'DEL', idxLine)
@@ -662,6 +681,12 @@ class Automato:
                         word = word + char
 
                     elif self.lexemas.isAsciiChar(char) and self.lexemas.isCaracters(char):
+                        # word = word + char
+                        # token = Token(word, 'CAD', idxLine)
+                        # self.states.append(token)
+                        # state = State(0)
+                        # word = ''
+                        
                         if errou:
                             word = word + char
                             token = Token(word, 'CMF', idxLine)
@@ -700,6 +725,10 @@ class Automato:
                         state = State(0)
                         word = ''
 
+                    elif self.lexemas.isDigit(char):
+                        word = word + char
+                        state = State(5)
+                    
                     elif self.lexemas.isStartDelimiter(char):
                         token = Token(word, 'SII', idxLine)
                         self.errors.append(token)
@@ -707,7 +736,7 @@ class Automato:
                         word = char
                         state = State(15)
 
-                    elif self.lexemas.isEndDelimiter(char):
+                    elif self.lexemas.isEndDelimiter(char) and char != '.':
                         token = Token(word, 'SII', idxLine)
                         self.errors.append(token)
 

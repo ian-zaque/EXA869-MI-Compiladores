@@ -5,5 +5,6 @@
 3 IDE um
 3 IDE comentario
 3 IDE incompleto
+4 DEL }
 
 3 SII é 

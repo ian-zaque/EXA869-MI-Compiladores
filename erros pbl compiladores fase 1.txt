@@ -1,10 +1,19 @@
-se'c' 		-> está retornando IDE se		CaMF 'c'
+se'c' 		-> está retornando IDE se		CAR 'c' CORRIGIDO
 
--2.0		-> está retornando NMF -2		SII .0
+a"		-> está retornando IDE a 		CMF " CORRIGIDO
 
-'D'		-> está retornando CaMF
+-2.0		-> está retornando NMF -2.0	CORRIGIDO
 
-+459849.4545	-> está retornando OpMF +459849		SII .4545
+'D'		-> está retornando CAR		CORRIGIDO
+
++459849.4545	-> está retornando OpMF +459849.4545 CORRIGIDO
+
+"sucesso!	-> está retornando CMF "sucesso!		CORRIGIDO
+
+"falhou :/"	-> está retornando CAD "falhou :/"	CORRIGIDO
+
+"Esta é uma cadeia de caracteres"	->está retornando:
+	CMF "Esta é uma cadeia de caracteres" 		CORRIGIDO
 
 
 COMENTARIOS DE BLOCO NAO FUNCIONAM
@@ -13,6 +22,10 @@ NÃO LÊ A ULTIMA LINHA SE NÃO TIVER LINHA VAZIA DEPOIS
 
 NÃO LÊ O ULTIMO CARACTER SE NÃO TIVER ESPAÇO DEPOIS
 
+Correção: COLOCAR UMA LINHA vazia no final DE TODOS OS Arquivos de entrada
+
 Dúvidas:
 
 "\!3nsndsujnbsd3i34i9§=\"" retorna o que??
+
+CMF "\!3nsndsujnbsd3i34i9§=\" 		CMF "

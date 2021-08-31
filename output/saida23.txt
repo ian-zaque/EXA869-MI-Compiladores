@@ -19,9 +19,10 @@
 5 REL =
 5 REL =
 5 IDE R
+5 NRO 101
 
 1 NMF 2=1+1
-3 SII R$10
+3 NMF R$10
 3 SII R$
 5 SII $
 5 SII $
