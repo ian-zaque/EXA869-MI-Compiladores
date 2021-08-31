@@ -7,7 +7,8 @@
 4 PRE variaveis
 4 PRE constantes
 4 PRE registro
-5 CAD "Esta é uma cadeia de caracteres"
 6 ART ++
 6 ART --
 6 LOG &&
+
+5 CMF "Esta é uma cadeia de caracteres"

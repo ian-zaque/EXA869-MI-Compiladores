@@ -5,10 +5,10 @@
 1 DEL {
 2 IDE escreva
 2 DEL (
-2 CAD "Olá, ¬£³ tudo bom?"
 2 DEL )
 2 DEL ;
 3 IDE a
 4 DEL }
 
+2 CMF "Olá, ¬£³ tudo bom?"
 3 CaMF '

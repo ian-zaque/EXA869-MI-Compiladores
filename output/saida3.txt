@@ -11,7 +11,6 @@
 2 DEL ;
 3 IDE escreva
 3 DEL (
-3 CAD "isso é um teste"
 3 DEL )
 3 DEL ;
 5 IDE este
@@ -23,5 +22,6 @@
 
 1 SII txt
 2 SII txt
+3 CMF "isso é um teste"
 5 SII é 
 5 SII teste#
