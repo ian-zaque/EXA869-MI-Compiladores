@@ -17,15 +17,22 @@ class Automato:
         file = self.file.readlines()
         file[len(file)-1] = file[len(file)-1] + ' '
         file.append("\n")
+        blockComment = False
+        
         for idxLine, line in enumerate(file):
             sizePalavra = 0
             state = State(0)
-            word = ''
             errou = False
+            
+            if blockComment == False:
+                word = ''
 
             for idxChar, char in enumerate(line):
                 #print('Posição:', idxChar, 'Char: ', char, 'state:', state.getStateNumber())
 
+                if blockComment == True:
+                    state = State(19)
+                
                 #####################{{ q0 }}#########################
                 if state.getStateNumber() == 0:
                     if char == '\n' or char == '\t' or self.lexemas.isSpace(char):
@@ -641,10 +648,12 @@ class Automato:
                 #####################{{ q19 }}#########################
                 elif state.getStateNumber() == 19:
                     if char == '#':
+                        blockComment = True
                         word = word + char
                         state = State(24)
 
                     else:
+                        blockComment = True
                         word = word + char
                         state = State(19)
                 #####################{{ FIM q19 }}#########################
@@ -773,13 +782,16 @@ class Automato:
                 elif state.getStateNumber() == 24:
                     if char == '}':
                         word = word + char
+                        blockComment = False
                         state = State(0)
 
                     elif self.lexemas.isSpace(char) or char == '\n':
+                        blockComment = True
                         word = word + char
                         state = State(19)
 
                     else:
+                        blockComment = False
                         word = word + char
                         state = State(25)
                 #####################{{ FIM 24 }}#########################

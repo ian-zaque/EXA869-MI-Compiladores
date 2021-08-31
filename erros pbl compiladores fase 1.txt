@@ -16,13 +16,19 @@ a"		-> está retornando IDE a 		CMF " CORRIGIDO
 	CMF "Esta é uma cadeia de caracteres" 		CORRIGIDO
 
 
-COMENTARIOS DE BLOCO NAO FUNCIONAM
+COMENTARIOS DE BLOCO NAO FUNCIONAM						CORRIGIDOOOOO :)
 
 NÃO LÊ A ULTIMA LINHA SE NÃO TIVER LINHA VAZIA DEPOIS
 
 NÃO LÊ O ULTIMO CARACTER SE NÃO TIVER ESPAÇO DEPOIS
 
 Correção: COLOCAR UMA LINHA vazia no final DE TODOS OS Arquivos de entrada
+
+
+
+
+"estou \"morrendo\" de fome"		DEVE SER UMA CAD
+
 
 Dúvidas:
 

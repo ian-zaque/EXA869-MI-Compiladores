@@ -26,20 +26,18 @@
 8 REL =
 8 CAR 'M'
 8 DEL ;
-11 ART +
-19 IDE de
-21 DEL }
+10 CAR 'a'
+13 ART +
 
 6 CMF "Testando a cadeia de caracteres
-10 SII §
+10 OpMF +'a'
+12 SII §
 
-11 SII @
-11 CMF "\!3nsndsujnbsd3i34i9§=\"
-11 CMF "
-12 SII ¬
+13 SII @
+13 CMF "\!3nsndsujnbsd3i34i9§=\"
+13 CMF "
+14 SII ¬
 
-13 SII ¢
+15 SII ¢
 
-15 SII £
-
-21 SII bloco#
+17 SII £

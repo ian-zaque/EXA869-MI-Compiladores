@@ -4,6 +4,8 @@ variaveis {
    char msg[20] = "";
 }
 
+"\'"
+
 contador = 2..45;
 
 se(contador >=1 && !sinal) {

@@ -13,15 +13,7 @@
 3 DEL (
 3 DEL )
 3 DEL ;
-5 IDE este
-5 IDE um
-5 IDE arquivo
-5 IDE de
-5 DEL }
-7 DEL }
 
 1 SII txt
 2 SII txt
 3 CMF "isso é um teste"
-5 SII é 
-5 SII teste#

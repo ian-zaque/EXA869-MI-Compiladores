@@ -11,6 +11,8 @@ def readFileInputs(path, pathOutput, filename, index):
     FileWriter.write(path, pathOutput, filename, index,tokens)
 
 def main():
+    # os.chdir(os.path.abspath(
+    #         os.path.dirname(__file__)))
     path = dirname(dirname(dirname(dirname(abspath(__file__)))))
     pathOutput = path + '\\output'
     pathInput = path + '\\input'

@@ -17,21 +17,6 @@
 7 IDE escreva
 7 DEL (
 8 IDE vari
-17 IDE algo
-17 IDE aqui
-17 IDE que
-17 IDE deve
-17 IDE aparecer
-17 IDE depois
-17 IDE no
-17 IDE arquivo
-17 IDE de
-17 IDE correpondente
-18 DEL }
-18 IDE ds
-21 IDE dsf
-21 ART ++
-22 IDE a
 
 3 NMF #2
 3 SII #
@@ -42,10 +27,3 @@
 
 8 SII avel
 12 SII ¬
-
-15 SII ²5qw2¨
-
-16 NMF 2³£²¹¬¬**&
-17 SII nããão 
-17 SII saída 
-18 SII #

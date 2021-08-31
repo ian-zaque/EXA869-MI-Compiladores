@@ -24,18 +24,7 @@
 10 IDE msg2
 10 DEL ;
 11 DEL }
-15 PRE funcao
-15 PRE vazio
-15 IDE vazio
-15 DEL (
-15 DEL ,
-15 DEL )
-15 DEL {
-16 PRE retorno
-17 DEL }
 
 5 SII #
 5 SII Testa67¬¢£³ndo 
 5 SII com§entáriªo 
-13 CoMF {####
-13 SII ###
