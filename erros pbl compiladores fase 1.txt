@@ -1,0 +1,18 @@
+se'c' 		-> está retornando IDE se		CaMF 'c'
+
+-2.0		-> está retornando NMF -2		SII .0
+
+'D'		-> está retornando CaMF
+
++459849.4545	-> está retornando OpMF +459849		SII .4545
+
+
+COMENTARIOS DE BLOCO NAO FUNCIONAM
+
+NÃO LÊ A ULTIMA LINHA SE NÃO TIVER LINHA VAZIA DEPOIS
+
+NÃO LÊ O ULTIMO CARACTER SE NÃO TIVER ESPAÇO DEPOIS
+
+Dúvidas:
+
+"\!3nsndsujnbsd3i34i9§=\"" retorna o que??

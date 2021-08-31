@@ -697,6 +697,14 @@ class Automato:
                         word = char
                         state = State(16)
 
+                    elif self.lexemas.isAsciiChar(char) and self.lexemas.isValidSimbol(char):
+                        word = word + char
+                        state = State(22)
+
+                    elif not self.lexemas.isAsciiChar(char) and not self.lexemas.isValidSimbol(char):
+                        word = word + char
+                        state = State(26)
+                    
                     else:
                         word = word + char
                         state = State(22)
