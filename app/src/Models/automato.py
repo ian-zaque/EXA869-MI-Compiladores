@@ -431,9 +431,15 @@ class Automato:
 
                     elif char == '+':
                         word = word + char
-                        
                         state = State(11)
 
+                    elif self.lexemas.isCommentDelimiter(char):
+                        token = Token(word, 'ART', idxLine)
+                        self.states.append(token)
+                        
+                        word = char
+                        state = State(17)
+                                            
                     else:
                         word = word + char
                         state = State(9)

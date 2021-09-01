@@ -25,14 +25,10 @@
 6 REL =
 6 NRO 3.14
 6 DEL ;
-8 IDE Isto
-8 IDE uma
-8 IDE porcentagem
-8 IDE aleatoria
+8 ART +
 10 PRE cadeia
 10 IDE mensagem
 10 REL =
-10 CAD "Ola, mundo!"
 10 DEL ;
 12 PRE real
 12 IDE numero
@@ -67,5 +63,4 @@
 18 DEL {
 18 DEL }
 
-8 OpMF +%
-8 SII é 
+10 CMF "Olá, mundo!"
