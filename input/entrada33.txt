@@ -6,3 +6,7 @@ arquivo com &rros
 +* &&&
 "Esta e uma cadeia de caracteres
 #}
+
+adasdads
++ = +
+sem erros por ser um comentario

@@ -9,6 +9,7 @@
 7 IDE Para
 7 ART -
 8 DEL .
+8 NRO 1.1
 9 IDE Leia
 
 1 OpMF +"fsdfsdf;;;sdfsd\""
@@ -19,4 +20,4 @@
 6 OpMF FUNCA!
 6 NMF -2.0
 7 NMF 10.01s
-8 NMF 1.1-00.01
+8 OpMF -00.01

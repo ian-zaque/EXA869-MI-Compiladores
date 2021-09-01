@@ -1,4 +1,3 @@
-se'c' 		-> está retornando IDE se		CAR 'c' CORRIGIDO
 
 a"		-> está retornando IDE a 		CMF " CORRIGIDO
 
@@ -30,12 +29,9 @@ Correção: COLOCAR UMA LINHA vazia no final DE TODOS OS Arquivos de entrada
 "estou \"morrendo\" de fome"		DEVE SER UMA CAD
 
 
-Dúvidas:
+a"		-> está retornando IDE a 		CMF "
 
-"\!3nsndsujnbsd3i34i9§=\"" 		retorna o que??
 
-.1.1-00.01						retorna o que??
 
-Acentos e.g: "Não" são válidos dentro de uma string?
 
-CMF "\!3nsndsujnbsd3i34i9§=\" 		CMF "
+COMENTARIOS DE BLOCO NÃO PEGA O FINAL

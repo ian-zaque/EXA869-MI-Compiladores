@@ -3,8 +3,12 @@
 3 CAD "54621"
 4 CAD "sss"
 4 IDE a
-6 CAD "hello world"
-6 CAD " duas cadeias"
+5 IDE a
+6 IDE se
+6 CAR 'c'
+9 CAD "hello world"
+9 CAD " duas cadeias"
 
-5 CMF "aa
-7 CMF "
+5 CMF "
+7 NMF -2.0
+10 CMF "

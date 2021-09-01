@@ -1,3 +1,4 @@
+1 IDE v
 1 DEL {
 2 PRE inteiro
 2 IDE n1
@@ -9,6 +10,7 @@
 6 IDE n2
 6 REL =
 6 IDE n1
+7 IDE teste
 9 IDE para
 9 DEL (
 9 DEL (
@@ -66,9 +68,9 @@
 17 DEL }
 18 DEL }
 
-1 SII v@r!aveis
+1 SII @r!aveis
 6 OpMF +459849.4545
-7 SII teste@
+7 SII @
 11 OpMF i++
 12 OpMF n2>100
 13 CMF "sucesso!); {# ai sim,

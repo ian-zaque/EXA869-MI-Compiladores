@@ -2,6 +2,9 @@
 "teste de cadeia de caracteres"
 "54621"
 "sss"a
-"aa
+a"
+se'c'
+-2.0
+"aa'
 "hello world"  " duas cadeias"
 "

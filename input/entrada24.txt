@@ -5,7 +5,7 @@ funcao inteiro soma(inteiro a, inteiro b) {
 
 real pi = 3.14;
 
-66% % Isto  uma porcentagem aleatoria
++%  Isto é uma porcentagem aleatoria
 
 cadeia mensagem = "Ola, mundo!";
 

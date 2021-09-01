@@ -2,6 +2,7 @@
 3 DEL )
 4 DEL (
 4 DEL )
+5 IDE a
 7 IDE a
 7 REL ==
 7 IDE b
@@ -10,6 +11,7 @@
 8 IDE b
 8 ART +
 8 IDE c
+9 IDE a
 10 IDE a
 10 IDE b
 12 IDE a
@@ -20,8 +22,9 @@
 2 OpMF a*a
 3 OpMF a+a
 4 OpMF a+
-5 SII a$a
+5 SII $a
 6 OpMF a==b
-9 SII a\b
+9 SII \b
 10 SII \
 11 OpMF a/b
+13 SII @a

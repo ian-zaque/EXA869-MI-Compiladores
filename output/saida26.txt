@@ -51,6 +51,7 @@
 18 DEL {
 19 PRE retorno
 19 CAD "estou \"
+19 IDE morrendo
 19 IDE de
 19 IDE fome
 20 DEL }
@@ -61,5 +62,5 @@
 11 OpMF !sinal
 13 CaMF 'D'
 14 OpMF contador++;
-19 SII morrendo\"
+19 SII \"
 19 CMF ";

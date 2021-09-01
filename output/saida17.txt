@@ -17,6 +17,9 @@
 7 IDE escreva
 7 DEL (
 8 IDE vari
+8 DEL )
+8 IDE avel
+14 ART +
 
 3 NMF #2
 3 SII #
@@ -25,5 +28,4 @@
 6 OpMF <);
 7 CaMF 'palavra)
 
-8 SII avel
 12 SII ¬
