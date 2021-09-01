@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#coding: utf-8
+# coding: utf-8
 from Token import Token
 from lexemas import Lexemas
 from State import State
@@ -25,6 +25,8 @@ class Automato:
             state = State(0)
             word = ''
             errou = False
+            aspas = False
+            barra = False
 
             for idxChar, char in enumerate(line):
                 before = state.getStateNumber()
@@ -721,7 +723,14 @@ class Automato:
                 #####################{{ q21 }}#########################
                 elif state.getStateNumber() == 21:
                     sizePalavra += 1
-                    if self.lexemas.isAsciiChar(char) and self.lexemas.isValidSimbol(char):
+
+                    if self.lexemas.isAsciiChar(char) and bytes(char, 'ascii').hex() == '5c' and (self.lexemas.isCaracter(line[idxChar+1]) or self.lexemas.isCaracters(line[idxChar+1]) or bytes(line[idxChar+1], 'ascii').hex() == '5c'):
+                        word = word + char
+
+                    elif (bytes(char, 'ascii').hex() == '5c' and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracter(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracters(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c'):
+                        word = word + char
+
+                    elif self.lexemas.isAsciiChar(char) and self.lexemas.isValidSimbol(char):
                         word = word + char
 
                     elif sizePalavra == 2 and self.lexemas.isCaracters(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c':
@@ -732,11 +741,6 @@ class Automato:
                         word = ''
 
                     elif self.lexemas.isAsciiChar(char) and self.lexemas.isCaracters(char):
-                        # word = word + char
-                        # token = Token(word, 'CAD', idxLine)
-                        # self.states.append(token)
-                        # state = State(0)
-                        # word = ''
 
                         if errou:
                             word = word + char
@@ -752,20 +756,16 @@ class Automato:
                             state = State(0)
                             word = ''
 
-                    elif not self.lexemas.isAsciiChar(char):
-                        errou = True
-                        word = word + char
-                        state = State(21)
-
                     elif char == '\n':
                         token = Token(word, 'CMF', idxLine)
                         self.errors.append(token)
                         state = State(0)
                         word = ''
 
-                    else:
+                    elif not self.lexemas.isValidSimbol(char):
+                        errou = True
                         word = word + char
-                        state = State(23)
+
                 #####################{{ FIM q21 }}#########################
 
                 #####################{{ q22 }}#########################
@@ -808,8 +808,16 @@ class Automato:
                 #####################{{ FIM q22 }}#########################
 
                 #####################{{ q23 }}#########################
+
                 elif state.getStateNumber() == 23:
-                    if self.lexemas.isCaracters(char):
+                    sizePalavra += 1
+
+                    if self.lexemas.isAsciiChar(char) and self.lexemas.isCaracters(char) and line[idxChar+1] == '"':
+                        aspas = True
+                        word = word + char
+                        state = State(21)
+
+                    elif sizePalavra == 2 and self.lexemas.isCaracters(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c':
                         word = word + char
                         token = Token(word, 'CMF', idxLine)
                         self.errors.append(token)
@@ -818,13 +826,17 @@ class Automato:
 
                     else:
                         word = word + char
+                        aspas = False
+                        barra = False
+                        state = State(21)
+
                 #####################{{ FIM 23 }}#########################
 
                 #####################{{ q24 }}#########################
                 elif state.getStateNumber() == 24:
                     if char == '}':
                         word = word + char
-                        #token = Token(word, 'COM', idxLine)
+                        # token = Token(word, 'COM', idxLine)
                         # self.states.append(token)
                         # comments.pop()
                         blockComment = False
