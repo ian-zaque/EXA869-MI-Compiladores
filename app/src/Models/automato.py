@@ -708,13 +708,7 @@ class Automato:
                     if self.lexemas.isAsciiChar(char) and self.lexemas.isValidSimbol(char):
                         word = word + char
 
-                    elif self.lexemas.isAsciiChar(char) and self.lexemas.isCaracters(char):
-                        # word = word + char
-                        # token = Token(word, 'CAD', idxLine)
-                        # self.states.append(token)
-                        # state = State(0)
-                        # word = ''
-                        
+                    elif self.lexemas.isAsciiChar(char) and self.lexemas.isCaracters(char):                        
                         if errou:
                             word = word + char
                             token = Token(word, 'CMF', idxLine)
@@ -748,7 +742,7 @@ class Automato:
                 #####################{{ q22 }}#########################
                 elif state.getStateNumber() == 22:
                     if self.lexemas.isSpace(char) or char == '\n':
-                        token = Token(word, 'SII', idxLine)
+                        token = Token(word, 'SIB', idxLine)
                         self.errors.append(token)
                         state = State(0)
                         word = ''
@@ -758,14 +752,14 @@ class Automato:
                         state = State(5)
                     
                     elif self.lexemas.isStartDelimiter(char):
-                        token = Token(word, 'SII', idxLine)
+                        token = Token(word, 'SIB', idxLine)
                         self.errors.append(token)
 
                         word = char
                         state = State(15)
 
                     elif self.lexemas.isEndDelimiter(char) and char != '.':
-                        token = Token(word, 'SII', idxLine)
+                        token = Token(word, 'SIB', idxLine)
                         self.errors.append(token)
 
                         word = char
