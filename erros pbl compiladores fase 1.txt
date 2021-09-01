@@ -1,37 +1,19 @@
+"aa'									DEVE RETORNAR CaMF "aa'
 
-a"		-> está retornando IDE a 		CMF " CORRIGIDO
+'a'+'a'									DEVE RETORNAR OpMF 'a'+'a'
 
--2.0		-> está retornando NMF -2.0	CORRIGIDO
+"\'"									SÓ ACEITAR ASPAS SIMPLES ASSIM, COM A BARRA INVERTIDA
 
-'D'		-> está retornando CAR		CORRIGIDO
+"estou \"morrendo\" de fome"			DEVE SER UMA STRING VÁLIDA
 
-+459849.4545	-> está retornando OpMF +459849.4545 CORRIGIDO
+'D'										DEVE RETORNAR CAR 'D'
 
-"sucesso!	-> está retornando CMF "sucesso!		CORRIGIDO
-
-"falhou :/"	-> está retornando CAD "falhou :/"	CORRIGIDO
-
-"Esta é uma cadeia de caracteres"	->está retornando:
-	CMF "Esta é uma cadeia de caracteres" 		CORRIGIDO
+"Esta e uma cadeia de caracteres		DEVE RETORNAR CaMF
 
 
-COMENTARIOS DE BLOCO NAO FUNCIONAM						CORRIGIDOOOOO :)
-
-NÃO LÊ A ULTIMA LINHA SE NÃO TIVER LINHA VAZIA DEPOIS
-
-NÃO LÊ O ULTIMO CARACTER SE NÃO TIVER ESPAÇO DEPOIS
-
-Correção: COLOCAR UMA LINHA vazia no final DE TODOS OS Arquivos de entrada
+{#
+este é um comentario incompleto				DEVE RETORNAR CoMF
+}
 
 
-
-
-"estou \"morrendo\" de fome"		DEVE SER UMA CAD
-
-
-a"		-> está retornando IDE a 		CMF "
-
-
-
-
-COMENTARIOS DE BLOCO NÃO PEGA O FINAL
+COMENTARIO DE BLOCO CONSOME ATÉ O FINAL DO .TXT			DEVE PEGAR ATÉ ACHAR #}
