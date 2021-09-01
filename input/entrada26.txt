@@ -4,7 +4,11 @@ variaveis {
    char msg[20] = "";
 }
 
-"\'"
+"\\"
+
+'\''
+
+"aaaaaaaa\\"
 
 contador = 2..45;
 

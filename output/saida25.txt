@@ -34,8 +34,7 @@
 12 SII §
 
 13 SII @
-13 CMF "\!3nsndsujnbsd3i34i9§=\"
-13 CMF "
+13 CMF "\!3nsndsujnbsd3i34i9§=\""
 14 SII ¬
 
 15 SII ¢

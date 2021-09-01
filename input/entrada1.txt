@@ -1,4 +1,15 @@
-funcao oi (){
-escreva("Olá, ¬£³ tudo bom?");
-a'
-}
+exemplo teste; % codigo exemplo
+
+float f = - 3.5;
+
+string msg = "teste
+
+AnalisadorLexico.py
+
+"\'"
+
+if ( f >= -10) && (f < ) 
+	write("mensagem );
+@	
+{# exa869 mi processadores de 
+linguagem de programacao

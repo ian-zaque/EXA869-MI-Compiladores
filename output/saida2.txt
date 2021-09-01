@@ -26,3 +26,9 @@
 5 DEL ;
 6 DEL }
 7 DEL }
+9 CAR 'D'
+11 CAR 'a'
+13 IDE teste
+13 CAD "\""
+
+11 OpMF +'a'

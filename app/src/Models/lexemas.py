@@ -67,9 +67,8 @@ class Lexemas:
             23: {'q23', 'ERROR_CMF'},   # RETURNS ERROR 'CMF'      CADEIA MAL FORMADA
             
             24: {'q24', 'WAITING_}_TO_END_BLOCK_COMMENT'},
-            25: {'q25', 'ERROR_CoMF'},  # RETURNS ERROR 'OpMF'      _OTHER_
 
-            26: {'q26', 'NON-ASCII SYMBOL'},  # RETURNS ERROR 'SII'      SIMBOLS
+            25: {'q25', 'NON-ASCII SYMBOL'},  # RETURNS ERROR 'SII'      SIMBOLS
         }
 
         self.RESERVERD_WORDS = [

@@ -11,7 +11,7 @@ se ( F >= -10); && (f <);
 
 ¬
 
-+ {# iuyviuyf ¢³ #}
++ {# iuyviuyf ¢³ 
 ²5qw2¨
  2³£²¹¬¬**&
 algo aqui que nããão deve aparecer depois no arquivo de saída correpondente

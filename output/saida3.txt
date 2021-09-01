@@ -19,6 +19,8 @@
 5 IDE a
 5 DEL )
 5 DEL ;
+11 IDE aquiTemQueAparecer
+13 DEL }
 
 1 SII @as
 5 CMF "isso é um teste"

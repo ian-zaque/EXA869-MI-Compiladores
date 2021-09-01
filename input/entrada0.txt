@@ -1,5 +1,5 @@
 ()aaaa
-
+¬ £
 
 UMA entrada <>
 %   outra mais !aa
@@ -16,14 +16,14 @@ duas+
 duas*
 duas+a
 =-
-++
+++------------- --
 +=
 *
 *+
 /
 a"
 'a retorno
-hahaha'
+"hahaha"
 
 f <= a
 

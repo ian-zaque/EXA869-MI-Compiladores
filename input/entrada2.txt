@@ -5,3 +5,9 @@ booleano funcao par (inteiro aux){
 		retorno falso;
 	}
 }
+
+'D'
+
+'a'+'a'
+
+teste"\""

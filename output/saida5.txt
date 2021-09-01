@@ -6,7 +6,5 @@
 3 CAD "des"
 4 PRE retorno
 4 CAD "descomplica"
-5 CAD "complexo\"
+5 CAD "complexo\""
 6 DEL }
-
-5 CMF "

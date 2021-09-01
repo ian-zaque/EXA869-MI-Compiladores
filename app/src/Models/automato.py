@@ -121,7 +121,7 @@ class Automato:
 
                     elif not self.lexemas.isAsciiChar(char):
                         word = word + char
-                        state = State(26)
+                        state = State(25)
 
                     else:
                         # ALGUM ERRO
@@ -185,7 +185,7 @@ class Automato:
 
                     elif not self.lexemas.isAsciiChar(char):
                         word = word + char
-                        state = State(26)
+                        state = State(25)
 
                     elif self.lexemas.isAsciiChar(char) and self.lexemas.isCaracter(char):
                         token = Token(word, 'IDE', idxLine)
@@ -727,6 +727,10 @@ class Automato:
                     if self.lexemas.isAsciiChar(char) and bytes(char, 'ascii').hex() == '5c' and (self.lexemas.isCaracter(line[idxChar+1]) or self.lexemas.isCaracters(line[idxChar+1]) or bytes(line[idxChar+1], 'ascii').hex() == '5c'):
                         word = word + char
 
+                    elif not self.lexemas.isAsciiChar(char):
+                        errou = True
+                        word = word + char
+                    
                     elif (bytes(char, 'ascii').hex() == '5c' and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracter(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracters(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c'):
                         word = word + char
 
@@ -800,7 +804,7 @@ class Automato:
 
                     elif not self.lexemas.isAsciiChar(char) and not self.lexemas.isValidSimbol(char):
                         word = word + char
-                        state = State(26)
+                        state = State(25)
 
                     else:
                         word = word + char
@@ -808,7 +812,6 @@ class Automato:
                 #####################{{ FIM q22 }}#########################
 
                 #####################{{ q23 }}#########################
-
                 elif state.getStateNumber() == 23:
                     sizePalavra += 1
 
@@ -857,11 +860,7 @@ class Automato:
                 #####################{{ FIM 24 }}#########################
 
                 #####################{{ q25 }}#########################
-
-                #####################{{ FIM 25 }}#########################
-
-                #####################{{ q26 }}#########################
-                elif state.getStateNumber() == 26:
+                elif state.getStateNumber() == 25:
                     if self.lexemas.isSpace(char) or char == '\n':
                         word = word + char
                         token = Token(word, 'SII', idxLine)
@@ -872,8 +871,8 @@ class Automato:
 
                     else:
                         word = word + char
-                        state = State(26)
-                #####################{{ FIM 26 }}#########################
+                        state = State(25)
+                #####################{{ FIM 25 }}#########################
                 #print('Posição:', idxChar, 'Char: ', char, 'Before:', before, 'state:', state.getStateNumber())
 
         return {'states': self.states, 'errors': self.errors}
