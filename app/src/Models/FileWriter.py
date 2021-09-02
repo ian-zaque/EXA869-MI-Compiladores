@@ -12,16 +12,19 @@ class FileWriter:
                 file.write('\n')
 
             if len(tokens['errors']) >= 1:
+                print(len(tokens['errors']), "erro(s) detectados no arquivo: entrada" + str(index) + '.txt')
+                
                 for idx, token in enumerate(tokens['errors']):
                     file.write('\n')
                     lineTxt = str(token.getLine()+1) + ' ' + \
                         token.getType() + ' ' + token.getWord()
                     file.write(lineTxt)
+                    
             else:
-                print("Sucesso. Arquivo: "+ '\'saida'+str(index)+'.txt\'' + " sem erros léxicos!")
+                print("Sucesso! Arquivo:",'\'saida'+str(index)+'.txt\'', "sem erros léxicos!")
                 file.write('\n')
                 file.write("Sucesso!")
             file.close()
             
         except:
-            print("Ocorreu um erro ao escrever as saídas do arquivo: "+'\\saida'+str(index)+'.txt')
+            print("Ocorreu um erro ao escrever a saída do arquivo:",'entrada'+str(index)+'.txt')
