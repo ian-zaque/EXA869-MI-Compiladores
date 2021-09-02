@@ -1,0 +1,12 @@
+1 REL ==
+1 ART ++
+2 ART /
+3 REL >
+4 REL <=
+4 ART *
+5 ART ++
+5 REL >=
+6 REL =
+6 REL <
+
+Sucesso!

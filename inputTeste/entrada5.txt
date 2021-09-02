@@ -1,0 +1,6 @@
+funcao descomplica( {
+	"complica"
+	"des"
+	retorno "descomplica"
+	"complexo\""
+}

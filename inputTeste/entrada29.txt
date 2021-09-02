@@ -1,0 +1,6 @@
+arquivo sem erros
+89 98.89 
+% esse é um comentario
+algoritmo variaveis constantes registro
+"Esta é uma cadeia de caracteres"
+++ -- &&

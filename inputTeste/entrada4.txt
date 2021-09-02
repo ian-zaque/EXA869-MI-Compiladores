@@ -1,0 +1,10 @@
+funcao 5bomdia (){
+$$
++"isso é um teste;";
+teste@
+teste  = 5+5;
+teste2 = 6 +-1
+teste3 = 8 ++-- 1
+
+{#
+}
