@@ -3,8 +3,6 @@ exemplo teste; % codigo exemplo
 float f = - 3.5;
 
 'f*³£³'
-asd
-"f*³£³"
 
 string msg = "teste
 

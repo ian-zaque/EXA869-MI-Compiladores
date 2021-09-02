@@ -738,16 +738,26 @@ class Automato:
 
                     if self.lexemas.isAsciiChar(char) and bytes(char, 'ascii').hex() == '5c' and (self.lexemas.isCaracter(line[idxChar+1]) or self.lexemas.isCaracters(line[idxChar+1]) or bytes(line[idxChar+1], 'ascii').hex() == '5c'):
                         word = word + char
+                        state = State(21)
 
-                    elif not self.lexemas.isAsciiChar(char):
+                    if not self.lexemas.isAsciiChar(char):
                         errou = True
                         word = word + char
+<<<<<<< HEAD
                         state = State(21)
 
                     elif (bytes(char, 'ascii').hex() == '5c' and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracter(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracters(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c'):
                         word = word + char
 
+=======
+                        state = State(23)
+                    
+>>>>>>> 2a530f342496c6a84830ccd2c8aa1ba5cb458ea2
                     elif self.lexemas.isAsciiChar(char) and self.lexemas.isValidSimbol(char):
+                        word = word + char
+                        state = State(21)
+                    
+                    elif (self.lexemas.isAsciiChar(char) and self.lexemas.isValidSimbol(char)) and ((bytes(char, 'ascii').hex() == '5c' and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracter(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracters(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c')):
                         word = word + char
 
                     elif sizePalavra == 2 and self.lexemas.isCaracters(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c':
@@ -759,7 +769,7 @@ class Automato:
 
                     elif self.lexemas.isAsciiChar(char) and self.lexemas.isCaracters(char):
 
-                        if errou:
+                        if errou == True:
                             word = word + char
                             token = Token(word, 'CMF', idxLine)
                             self.errors.append(token)

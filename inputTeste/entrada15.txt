@@ -1,0 +1,5 @@
+algoritmo5_087fheru
+inteiro()
+anna;
+se( 
+a"something"

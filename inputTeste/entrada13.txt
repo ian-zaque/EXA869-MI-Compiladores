@@ -1,0 +1,11 @@
+algoritmo variaveis constantes 
+registro funcao
+retorno vazio se senao enquanto para leia
+escreva inteiro real boleano char cadeia 
+verdadeiro falso
+
+ALGORITMO VARIAVEIS CONSTANTES 
+REGISTRO FUNCAO
+RETORNO VAZIO SE SENAO ENQUANTO PARA LEIA
+ESCREVA INTEIRO REAL BOLEANO CHAR CADEIA 
+VERDADEIRO FALSO

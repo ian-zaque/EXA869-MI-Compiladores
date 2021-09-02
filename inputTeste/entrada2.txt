@@ -1,0 +1,13 @@
+booleano funcao par (inteiro aux){
+	se (aux / 2) * 2 == aux {
+		retorno verdadeiro;
+	senao
+		retorno falso;
+	}
+}
+
+'D'
+
+'a'+'a'
+
+teste"\""

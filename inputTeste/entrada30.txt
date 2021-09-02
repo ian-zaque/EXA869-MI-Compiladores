@@ -1,0 +1,7 @@
+erros de simbolos na linha 6
+&& ! char
+operacao funcao
+letraedigito12 ||
+l3 + -
+& __
+&&

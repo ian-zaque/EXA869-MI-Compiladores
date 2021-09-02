@@ -1,0 +1,5 @@
+arquivo com &rros
+89 98.8p9 
+0algoritmo 45constantes registro
++* &&&
+"Esta e uma cadeia de caracteres
