@@ -19,7 +19,8 @@ class FileWriter:
                     file.write(lineTxt)
             else:
                 print("Sucesso. Arquivo: "+ '\'saida'+str(index)+'.txt\'' + " sem erros léxicos!")
-            
+                file.write('\n')
+                file.write("Sucesso!")
             file.close()
             
         except:

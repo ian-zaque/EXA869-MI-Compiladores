@@ -696,7 +696,11 @@ class Automato:
 
                 #####################{{ q20 }}#########################
                 elif state.getStateNumber() == 20:
-                    if ((self.lexemas.isValidSimbol(char) or char == '\'') and sizePalavra < 1):
+                    if not self.lexemas.isAsciiChar(char):
+                        word = word + char
+                        state = State(20)
+                    
+                    elif ((self.lexemas.isValidSimbol(char) or char == '\'') and sizePalavra < 1):
                         sizePalavra += 1
                         word = word + char
 
@@ -730,6 +734,7 @@ class Automato:
                     elif not self.lexemas.isAsciiChar(char):
                         errou = True
                         word = word + char
+                        state = State(21)
                     
                     elif (bytes(char, 'ascii').hex() == '5c' and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracter(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracters(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c'):
                         word = word + char
