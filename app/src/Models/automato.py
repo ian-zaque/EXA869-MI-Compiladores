@@ -25,13 +25,13 @@ class Automato:
             state = State(0)
             word = ''
             errou = False
-            aspas = False
-            barra = False
+            sizeFile = len(file)
+            sizeFileid = idxLine
 
             for idxChar, char in enumerate(line):
                 before = state.getStateNumber()
 
-                if blockComment == True:
+                if blockComment == True and state.getStateNumber() == 0 and not(sizeFile-1 == sizeFileid):
                     if len(self.errors) > 0:
                         if self.errors[len(self.errors)-1].getType() == 'CoMF':
                             word = comments[0]
@@ -690,6 +690,14 @@ class Automato:
                         state = State(0)
                         word = ''
 
+                    elif char == " ":
+                        word = word + char
+                        token = Token(word, 'CoMF', idxLine)
+                        comments.append(word)
+                        self.errors.append(token)
+                        state = State(0)
+                        word = ''
+
                     else:
                         word = word + char
                 #####################{{ FIM q19 }}#########################
@@ -699,7 +707,7 @@ class Automato:
                     if not self.lexemas.isAsciiChar(char):
                         word = word + char
                         state = State(20)
-                    
+
                     elif ((self.lexemas.isValidSimbol(char) or char == '\'') and sizePalavra < 1):
                         sizePalavra += 1
                         word = word + char
@@ -735,7 +743,7 @@ class Automato:
                         errou = True
                         word = word + char
                         state = State(21)
-                    
+
                     elif (bytes(char, 'ascii').hex() == '5c' and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracter(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c') or (self.lexemas.isCaracters(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c'):
                         word = word + char
 
@@ -817,26 +825,6 @@ class Automato:
                 #####################{{ FIM q22 }}#########################
 
                 #####################{{ q23 }}#########################
-                elif state.getStateNumber() == 23:
-                    sizePalavra += 1
-
-                    if self.lexemas.isAsciiChar(char) and self.lexemas.isCaracters(char) and line[idxChar+1] == '"':
-                        aspas = True
-                        word = word + char
-                        state = State(21)
-
-                    elif sizePalavra == 2 and self.lexemas.isCaracters(char) and bytes(line[idxChar-1], 'ascii').hex() == '5c':
-                        word = word + char
-                        token = Token(word, 'CMF', idxLine)
-                        self.errors.append(token)
-                        state = State(0)
-                        word = ''
-
-                    else:
-                        word = word + char
-                        aspas = False
-                        barra = False
-                        state = State(21)
 
                 #####################{{ FIM 23 }}#########################
 
@@ -844,14 +832,21 @@ class Automato:
                 elif state.getStateNumber() == 24:
                     if char == '}':
                         word = word + char
-                        # token = Token(word, 'COM', idxLine)
+                        #token = Token(word, 'COM', idxLine)
                         # self.states.append(token)
-                        # comments.pop()
                         blockComment = False
                         state = State(0)
                         word = ''
 
                     elif char == "\n":
+                        word = word + char
+                        token = Token(word, 'CoMF', idxLine)
+                        comments.append(word)
+                        self.errors.append(token)
+                        state = State(0)
+                        word = ''
+
+                    elif char == " ":
                         word = word + char
                         token = Token(word, 'CoMF', idxLine)
                         comments.append(word)
