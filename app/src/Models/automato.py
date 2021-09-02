@@ -272,7 +272,7 @@ class Automato:
                         state = State(0)
                         word = ''
 
-                    elif self.lexemas.isEndDelimiter(char):
+                    elif self.lexemas.isEndDelimiter(char) and char != '.':
                         token = Token(word, 'NRO', idxLine)
                         self.states.append(token)
 
@@ -313,7 +313,7 @@ class Automato:
                         word = char
                         state = State(15)
 
-                    elif self.lexemas.isEndDelimiter(char):
+                    elif self.lexemas.isEndDelimiter(char) and char != '.':
                         token = Token(word, 'NMF', idxLine)
                         self.errors.append(token)
 
