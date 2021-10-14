@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 #coding: utf-8
+
 from os.path import dirname, abspath
+from AnalisadorSintatico import *
 from FileReader import FileReader
 from FileWriter import FileWriter
 from automato import Automato
@@ -9,6 +11,9 @@ from automato import Automato
 def readFileInputs(path, pathOutput, filename, index):
     tokens = Automato(path + '\\' + filename).getTokens()
     #tokens = Automato(path + '/' + filename).getTokens()
+    
+    AnalisadorSintatico(tokens).parse()
+    
     FileWriter.write(path, pathOutput, filename, index, tokens)
 
 

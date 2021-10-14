@@ -1,4 +1,11 @@
+%asdlkf asf
+
+constantes {
+    cadeia frase = "frase aqui";
+}
+
 ()aaaa
+%asdlkf asf
 ¬ £
 
 UMA entrada <>
