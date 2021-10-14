@@ -32,12 +32,19 @@ class AnalisadorSintatico:
             return Token("EOF","EOF",-1)
     
     def parse(self):
-        
-        # CHAMAR FUNCAO START AQUI -- ELA VAI CONTER ::=
         #   <declaracao_reg> <declaration_const> <declaration_var> <function_declaration> | <var_atr> | <expressao>
         self.getNextToken()
-        self.declaracao_const()
+        self.start()
+    
+    def start(self):
+        if self.getToken().getType() == 'EOF':
+            return
         
+        elif self.counter < len(self.tokens):
+            self.declaracao_const()
+            
+            self.getNextToken()
+            self.declaracao_var()
     
     # <declaration_const>  ::= constantes '{' <declaration_const1>
     def declaracao_const(self):
@@ -45,14 +52,11 @@ class AnalisadorSintatico:
             return
         
         elif self.counter < len(self.tokens):
-            print('PALAVRA 0',self.palavra)
-            print('TOKEN',self.getToken().getWord(),self.getToken().getType())
-            
             if self.getToken().getType() == 'PRE' and self.getToken().getWord() == 'constantes':
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
                 self.declaracao_const()
-                
+                            
             if self.getToken().getType() == 'DEL' and self.getToken().getWord() == '{':
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
@@ -103,7 +107,6 @@ class AnalisadorSintatico:
             elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '}':
                 # FIM DERIVACAO 2
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
                 print('fim_constantes',self.palavra, '\n')
                 return
                 
@@ -207,7 +210,6 @@ class AnalisadorSintatico:
             elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '}':
                 #FIM
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
                 print('fim_variaveis',self.palavra, '\n')
                 return
             
