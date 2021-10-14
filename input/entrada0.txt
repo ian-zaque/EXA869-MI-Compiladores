@@ -6,11 +6,7 @@ constantes {
     real    b = 2.23,c = 23.40;
 }
 
-constantes {
-    booleano bola = falso;
-}
-
-variaveis{
+variaveis {
     inteiro valor, outro, um;
     inteiro teste   = 2;
     real    teste_2 = 2.23,c = 23.40;
