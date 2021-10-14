@@ -5,7 +5,7 @@ class Lexemas:
     def __init__(self):
         self.tokens = [
             # tokens
-            'PRE', 'IDE', 'NRO', 'DEL', 'REL', 'LOG', 'ART', 'SII', 'CAR', 'CAD',
+            'PRE', 'IDE', 'NRO', 'DEL', 'REL', 'LOG', 'ART', 'SII', 'CAR', 'CAD', 'EOF'
 
             # errors
             'SII', 'CMF', 'NMF', 'CaMF', 'CoMF', 'OpMF',

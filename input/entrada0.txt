@@ -2,36 +2,18 @@
 
 constantes {
     cadeia frase = "frase aqui";
+    inteiro a = 2;
+    real    b = 2.23,c = 23.40;
 }
 
-()aaaa
-%asdlkf asf
-¬ £
+constantes {
+    booleano bola = falso;
+}
 
-UMA entrada <>
-%   outra mais !aa
-{ $
-=== =
-= ====
-
-se'c'
-
-"retorno"
-
-duas+
-2-
-duas*
-duas+a
-=-
-++------------- --
-+=
-*
-*+
-/
-a"
-'a retorno
-"hahaha"
-
-f <= a
-
-f<0
+variaveis{
+    inteiro valor, outro, um;
+    inteiro teste   = 2;
+    real    teste_2 = 2.23,c = 23.40;
+    cadeia  c;
+    booleano d      = verdadeiro;
+}
