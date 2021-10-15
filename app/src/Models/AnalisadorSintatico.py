@@ -169,7 +169,7 @@ class AnalisadorSintatico:
                 self.getNextToken()
                 return self.declaracao_var()
                 
-            if self.getToken().getType() == 'DEL' and self.getToken().getWord() == '{':
+            if self.getToken().getType() == 'DEL' and (self.getToken().getWord() == '{' or self.getToken().getWord() == ','):
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
                 return self.declaracao_var()
@@ -197,6 +197,16 @@ class AnalisadorSintatico:
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
                 return self.declaracao_var1()
+            
+            if self.getToken().getType() == 'DEL' and self.getToken().getWord() == ';':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_var1()
+            
+            if self.getToken().getType() == 'DEL' and self.getToken().getWord() == ',':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_var3()
                 
             if self.getToken().getType() == 'REL':
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
@@ -236,7 +246,7 @@ class AnalisadorSintatico:
             #     #GO TO DEF. VECTOR_MATRIX
             
             #THIRD DERIV.
-            elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == ',':
+            elif self.getToken().getType() == 'DEL' and (self.getToken().getWord() == ',' or self.getToken().getWord() == ';'):
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
                 return self.declaracao_var3()
@@ -261,7 +271,7 @@ class AnalisadorSintatico:
                 return self.declaracao_var2()
             
             #SECOND DERIV.
-            elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == ';':
+            elif self.getToken().getType() == 'PRE':
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
                 return self.declaracao_var1()
