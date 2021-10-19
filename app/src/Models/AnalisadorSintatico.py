@@ -188,6 +188,7 @@ class AnalisadorSintatico:
                 return self.declaracao_var1()
             
             elif self.getToken().getWord() == '}':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
                 print('fim_variaveis',self.palavra, '\n')
                 self.palavra = ''
                 return
@@ -285,7 +286,6 @@ class AnalisadorSintatico:
                 return self.declaracao_var1()
             
             elif self.getToken().getWord() == '}':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
                 return self.declaracao_var()
             
             else:
