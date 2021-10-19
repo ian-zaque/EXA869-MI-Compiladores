@@ -149,6 +149,7 @@ class AnalisadorSintatico:
                 return
             ############## fim '}' ##############
                 
+                
             ############## erro ##############
             else:
                 print('erro 1',self.palavra)
