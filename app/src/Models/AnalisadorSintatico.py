@@ -446,7 +446,14 @@ class AnalisadorSintatico:
                 self.getNextToken()
                 return self.declaracao_reg1()
             ############## fim <declaracao_reg1> ##############
-    
+
+
+            ############## vazio ##############
+            if self.getToken().getType() == 'PRE' and self.getToken().getWord() != 'registro':
+                self.palavra = self.getToken().getWord() + '$'
+                return
+            ############## fim vazio ##############
+            
             
             ############## erro ##############
             else:
