@@ -432,11 +432,11 @@ class AnalisadorSintatico:
             
             
             ############## '}' ##############
-            elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '}':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                print('fim_registro_1',self.palavra, '\n')
-                self.palavra = ''
-                return
+            # elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '}':
+            #     self.palavra = self.palavra + self.getToken().getWord() + '$'
+            #     print('fim_registro_1',self.palavra, '\n')
+            #     self.palavra = ''
+            #     return
             ############## fim '}' ##############
             
             
