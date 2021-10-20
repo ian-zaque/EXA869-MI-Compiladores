@@ -43,6 +43,9 @@ class AnalisadorSintatico:
             return
         
         elif self.counter < len(self.tokens):
+            self.declaracao_reg()
+            
+            self.getNextToken()
             self.declaracao_const()
         
             self.getNextToken()
@@ -114,6 +117,7 @@ class AnalisadorSintatico:
                 self.getNextToken()
                 return self.declaracao_const1()
             ############## fim id ##############
+            
             
             ############## '=' ##############
             if self.getToken().getWord() == '=':
@@ -206,6 +210,7 @@ class AnalisadorSintatico:
                 return self.declaracao_const1()
             ############## fim ';' ##############
             
+            
             ############## erro ##############
             else:
                 print('erro 2',self.palavra)
@@ -235,6 +240,7 @@ class AnalisadorSintatico:
                 self.getNextToken()
                 return self.declaracao_var()
             ############## fim '}' ##############
+
 
             ############## <declaracao_var1> ##############
             elif self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE':
@@ -389,3 +395,224 @@ class AnalisadorSintatico:
                 print('erro_variaveis_2',self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
+        
+    
+    # <declaracao_reg> ::= registro id '{' <declaracao_reg1> |
+    def declaracao_reg(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('REGISTRO_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+
+            #FIRST DERIV.
+            ############## registro ##############
+            if self.getToken().getType() == 'PRE' and self.getToken().getWord() == 'registro':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg()
+            ############## fim registro ##############
+            
+            
+            ############## id ##############
+            elif self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg()
+            ############## fim id ##############
+            
+            
+            ############## '{' ##############   
+            elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '{':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg()
+            ############## fim '{' ##############
+            
+            
+            ############## '}' ##############
+            elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '}':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                print('fim_registro_1',self.palavra, '\n')
+                self.palavra = ''
+                return
+            ############## fim '}' ##############
+            
+            
+            ############## <declaracao_reg1> ##############
+            elif self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg1()
+            ############## fim <declaracao_reg1> ##############
+    
+            
+            ############## erro ##############
+            else:
+                print('erro_registro_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+    
+    
+    # <declaracao_reg1> ::= <primitive_type> id <declaracao_reg4> <declaracao_reg2> | id id <declaracao_reg4> <declaracao_reg2> 
+    def declaracao_reg1(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('REGISTRO_1',self.palavra)
+            print('TOKEN_1',self.getToken().getWord())
+
+            #FIRST DERIV.
+            ############## id ##############
+            if self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg1()
+            ############## fim id ##############
+            
+            
+            ############## <v_m_access> OR VAZIO ##############
+            # TESTAR ACESSO DE MATRIZ E VETOR AQUI
+                # self.palavra = self.palavra + self.getToken().getWord() + '$'
+                # self.getNextToken()
+                # return self.declaracao_reg4()
+            ############## fim <v_m_access> OR VAZIO ##############
+
+            
+            #SECOND DERIV. OR <declaracao_reg2>
+            elif self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg2()
+
+            
+            ############## erro ##############
+            else:
+                print('erro_registro_1',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+    
+    
+    # <declaracao_reg2>  ::= ',' id <declaracao_reg2> | ';' <declaracao_reg5>
+    def declaracao_reg2(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('REGISTRO_2',self.palavra)
+            print('TOKEN_2',self.getToken().getWord())
+
+            #FIRST DERIV.
+            ############## id ##############
+            if self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg2()
+            ############## fim id ##############
+            
+
+            ############## ',' ##############
+            elif self.getToken().getWord() == ',':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg2()
+            ############## fim ',' ##############
+
+            
+            # SECOND DERIV.
+            ############## ';' ##############
+            elif self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getWord() == ';':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg2()
+            ############## fim ';' ##############
+
+
+            ############## '}' ##############
+            elif self.getToken().getWord() == '}':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                print('fim_registro_2',self.palavra, '\n')
+                self.palavra = ''
+                self.getNextToken()
+                return self.declaracao_reg()
+            ############## fim '}' ##############    
+                
+                
+            ############## erro ##############
+            else:
+                print('erro_registro_2',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
+    # <declaracao_reg3>   ::= '}' <declaracao_reg>
+    def declaracao_reg3(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('REGISTRO_3',self.palavra)
+            print('TOKEN_3',self.getToken().getWord())
+
+            ############## '}' ##############
+            if self.getToken().getWord() == '}':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                print('fim_registro_3',self.palavra, '\n')
+                self.palavra = ''
+                self.getNextToken()
+                return self.declaracao_reg()
+            ############## fim '}' ##############
+    
+
+            ############## erro ##############
+            else:
+                print('erro_registro_2',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+    
+    # <declaracao_reg4>   ::= <v_m_access> |
+    def declaracao_reg4(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('REGISTRO_4',self.palavra)
+            print('TOKEN_4',self.getToken().getWord())
+
+            #FIRST DERIV.
+            
+    
+    # <declaracao_reg5> ::= <declaracao_reg1> | <declaracao_reg3>
+    def declaracao_reg5(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('REGISTRO_5',self.palavra)
+            print('TOKEN_5',self.getToken().getWord())
+
+            #FIRST DERIV.
+            ############## <declaracao_reg1> ##############
+            if self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg1()
+            ############## fim id ##############
+            
+            
+            #SECOND DERIV.
+            ############## <declaracao_reg3> ##############
+            elif self.getToken().getWord() == 'registro':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg3()
+            ############## fim '}' ##############
+            
+            
+            ############## erro ##############
+            else:
+                print('erro_registro_5',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
