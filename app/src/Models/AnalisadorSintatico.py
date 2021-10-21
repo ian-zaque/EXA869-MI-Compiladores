@@ -23,6 +23,12 @@ class AnalisadorSintatico:
         else:
             return Token("EOF","EOF",-1)
     
+    def getPrevToken(self):
+        if self.counter < len(self.tokens) and self.counter > 1:
+            return self.tokens[self.counter-1]
+        else:
+            return Token("EOF","EOF",-1)
+    
     def getNextToken(self):
         self.counter = self.counter + 1
         if self.counter < len(self.tokens):
@@ -50,6 +56,9 @@ class AnalisadorSintatico:
         
             self.getNextToken()
             self.declaracao_var()
+            
+            self.getNextToken()
+            self.declaracao_funcao()
     
     # <declaration_const>  ::= constantes '{' <declaration_const1>
     def declaracao_const(self):
@@ -68,7 +77,7 @@ class AnalisadorSintatico:
             ############## fim constantes ##############
             
             ############## '{' ##############
-            if self.getToken().getType() == 'DEL' and self.getToken().getWord() == '{':
+            elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '{':
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
                 return self.declaracao_const()
@@ -309,7 +318,10 @@ class AnalisadorSintatico:
             
             #SECOND DERIV.
             ############## <vector_matrix> ##############
-            # TESTAR INICIO DE MATRIZ E VETOR AQUI
+            elif self.getToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.vector_matrix()
             ############## fim <vector_matrix> ##############
             
             #LAST PART OF FIRST DERIV. AND THIRD DERIV.
@@ -552,7 +564,6 @@ class AnalisadorSintatico:
             print('TOKEN_4',self.getToken().getWord())
 
             #FIRST DERIV.
-            
             
     
     # <declaracao_reg5> ::= <declaracao_reg1> | <declaracao_reg3>
