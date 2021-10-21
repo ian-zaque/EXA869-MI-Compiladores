@@ -318,10 +318,7 @@ class AnalisadorSintatico:
             
             #SECOND DERIV.
             ############## <vector_matrix> ##############
-            elif self.getToken().getWord() == '[':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.vector_matrix()
+            # TESTAR INICIO DE MATRIZ E VETOR AQUI
             ############## fim <vector_matrix> ##############
             
             #LAST PART OF FIRST DERIV. AND THIRD DERIV.
