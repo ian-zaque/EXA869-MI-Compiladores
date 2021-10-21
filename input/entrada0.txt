@@ -1,5 +1,17 @@
 %asdlkf asf
 
+registro teste_registro {
+    inteiro a, z, y, w;
+    real    b;
+    cadeia  c;
+}
+
+registro teste_registro {
+    inteiro a, z, y, w;
+    real    b;
+    cadeia  c;
+}
+
 constantes {
     cadeia frase = "frase aqui";
     inteiro a = 2;
