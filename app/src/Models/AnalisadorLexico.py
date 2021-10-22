@@ -12,18 +12,7 @@ def readFileInputs(path, pathOutput, filename, index):
     #tokens = Automato(path + '\\' + filename).getTokens()
     tokens = Automato(path + '/' + filename).getTokens()
 
-    if len(tokens['errors']) >= 1:
-        for idx, token in enumerate(tokens['errors']):
-            lineTxt = str(token.getLine()+1) + ' ' + \
-                token.getType() + ' ' + token.getWord()
-            print(lineTxt)
-            print('\n')
-        print(len(tokens['errors']),
-              "erro(s) léxico(s) detectado no arquivo: entrada" + str(index) + '.txt')
-        print('Por favor, corrija entes de prosseguir...')
-        print('\n')
-    else:
-        AnalisadorSintatico(tokens).parse()
+    AnalisadorSintatico(tokens).parse(index)
 
     FileWriter.write(path, pathOutput, filename, index, tokens)
 

@@ -7,43 +7,63 @@ from Token import Token
 class AnalisadorSintatico:
 
     def __init__(self, tokens):
+        self.errors = tokens['errors']
         self.tokens = tokens['states']
         self.tokens.append(Token("EOF", "EOF", -1))
         self.counter = 0
-        self.primitives_types = [
-            'inteiro', 'real', 'booleano', 'char', 'cadeia', 'vazio'
-        ]
+        self.primitives_types = ['inteiro', 'real',
+                                 'booleano', 'char', 'cadeia', 'vazio']
         self.palavra = ''
-        self.errors = []
         self.grammars = ['constantes', 'variaveis']
-        self.grammar = ''
+        self.grammar = 0
 
     def getCounter(self):
         return self.counter
 
     def getToken(self):
-        if len(self.tokens) > 0:
+        if len(self.tokens) > 1:
             return self.tokens[0]
         else:
             return Token("EOF", "EOF", -1)
 
     def getNextToken(self):
-        if len(self.tokens) > 0:
+        if len(self.tokens) > 1:
+            if(len(self.grammars) > self.grammar+1):
+                if(self.grammars[self.grammar+1] == self.tokens[0].getWord()):
+                    self.grammar = self.grammar+1
             return self.tokens.pop(0)
         else:
             return Token("EOF", "EOF", -1)
 
     def lookahead(self, match):
-        if len(self.tokens) > 0:
-            return self.tokens[0].getToken().getWord() == match
+        if len(self.tokens) > 1:
+            return self.tokens[1].getWord() == match
+        else:
+            return Token("EOF", "EOF", -1)
+
+    def follow(self):
+        if len(self.tokens) > 1:
+            return self.tokens[1].getWord()
         else:
             return Token("EOF", "EOF", -1)
 
     def isPrimitiveType(self, word):
         return word in self.primitives_types
 
-    def parse(self):
-        self.getNextToken()
+    def parse(self, index):
+        if len(self.errors) > 0:
+            for i, lexema in enumerate(self.errors):
+                lineTxt = str(lexema.getLine()+1) + ' ' + \
+                    lexema.getType() + ' ' + lexema.getWord()
+                print(lineTxt)
+                print('\n')
+            print(len(self.errors),
+                  "erro(s) léxico(s) detectado no arquivo: entrada" + str(index) + '.txt')
+            print('Por favor, corrija...')
+            print('\n')
+
+        self.errors = []
+        self.getToken()
         self.start()
 
     # <Program> ::= <declaracao_reg> <declaration_const> <declaration_var> <function_declaration> | <var_atr> | <expressao>
@@ -58,20 +78,26 @@ class AnalisadorSintatico:
             self.declaracao_var()
 
     def errorSintatico(self, match):
-        error = 'Linha: ' + self.getToken().getLine() + 'Erro sintatico encontrado (' + \
-            self.getToken().getWord()
-        for idx, k in enumerate(self.grammars):
-            if k == self.grammar:
-                if len(self.grammars) <= (idx + 1):
-                    self.id_grammar = self.grammars[idx+1]
-                    if len(self.tokens) > 0:
-                        while self.getToken().getWord() != self.id_grammar:
-                            self.getNextToken()
-                            error = error + ',' + self.getToken()
-                        error = error + ') Esperado o seguinte:' + match
-                        self.errors.append(error)
-                else:
-                    return
+        if(self.follow() != 'EOF'):
+            error = 'Linha ' + str(self.getToken().getLine()
+                                   ) + ': Erro(s) sintatico(s) encontrado (' + self.getToken().getWord()
+            for idx, k in enumerate(self.grammars):
+                if k == self.grammars[self.grammar]:
+                    if len(self.grammars) >= (idx + 1):
+                        self.next_grammar = self.grammars[idx+1]
+                        if len(self.tokens) > 1:
+                            while self.follow() != self.next_grammar and self.follow() != 'EOF':
+                                self.getNextToken()
+                                error = error + ',' + self.getToken().getWord()
+                            error = error + '). Pois era esperado o seguinte: ' + match
+                            print(error)
+                            self.errors.append(error)
+        else:
+            error = 'Linha ' + str(self.getToken().getLine()) + \
+                ': Fim de arquivo encontrado era esperado o seguinte:' + match
+            print(error)
+            self.errors.append(error)
+            return
 
     # <declaration_const>  ::= constantes '{' <declaration_const1>
     def declaracao_const(self):
@@ -84,7 +110,6 @@ class AnalisadorSintatico:
 
             ############## constantes ##############
             if self.getToken().getType() == 'PRE' and self.getToken().getWord() == 'constantes':
-                self.grammar = 'constantes'
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 if(self.lookahead('{')):
                     self.getNextToken()
