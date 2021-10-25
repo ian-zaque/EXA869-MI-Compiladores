@@ -662,6 +662,11 @@ class AnalisadorSintatico:
                 return self.v_m_access2()
             ############## fim <v_m_access2> #############
             
+            elif self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg2()
+            
             #SECOND DERIV.
             ############## ']' ##############
             elif self.getToken().getWord() == ']' and self.getPrevToken().getType() == 'NRO':
