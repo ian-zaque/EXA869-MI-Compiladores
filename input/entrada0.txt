@@ -1,7 +1,11 @@
 %asdlkf asf
 
 registro teste_registro {
-    inteiro a, z, y, w;
+    inteiro a;
+    inteiro d[a];
+    inteiro vec[2][2];
+    Pessoa  teste[1][1];
+    Pessoa  teste_1[2];
     real    b;
     cadeia  c;
 }
