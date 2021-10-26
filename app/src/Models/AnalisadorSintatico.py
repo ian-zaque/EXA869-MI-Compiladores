@@ -655,8 +655,15 @@ class AnalisadorSintatico:
             print('TOKEN_1',self.getToken().getWord())
 
             # FIRST DERIV.
+            ############## id ##############
+            if self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access1()
+            ############## fim id ##############
+            
             ############## <v_m_access2> ##############
-            if (self.getToken().getWord() == '.' or self.getToken().getWord() == ']') and self.getPrevToken().getType() == 'IDE':
+            elif (self.getToken().getWord() == '.' or self.getToken().getWord() == ']') and self.getPrevToken().getType() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
                 return self.v_m_access2()
@@ -705,6 +712,11 @@ class AnalisadorSintatico:
                 self.getNextToken()
                 return self.elem_registro()
             ############## fim <elem_registro> ##############
+    
+            elif self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg2()
     
             ############## ']' ##############
             # ADD TESTE DE ULTIMO CARACTER DE ELEM_REGISTRO
