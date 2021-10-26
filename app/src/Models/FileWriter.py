@@ -2,8 +2,8 @@ class FileWriter:
 
     def write(path, pathOutput, filename, index, tokens):
         try:
-            file = open(pathOutput+'\\saida'+str(index)+'.txt', 'w')
-            #file = open(pathOutput+'/saida'+str(index)+'.txt', 'w')
+            #file = open(pathOutput+'\\saida'+str(index)+'.txt', 'w')
+            file = open(pathOutput+'/saida'+str(index)+'.txt', 'w')
             lineTxt = []
 
             for idx, token in enumerate(tokens['states']):
