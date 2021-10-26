@@ -1,6 +1,0 @@
-algoritmo variaveisconstantes registro
-
-funca retorn  vazio se senaoenquanto
- para
-
-leia

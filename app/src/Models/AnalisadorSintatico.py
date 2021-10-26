@@ -57,8 +57,8 @@ class AnalisadorSintatico:
             self.getNextToken()
             self.declaracao_var()
             
-            self.getNextToken()
-            self.declaracao_funcao()
+            # self.getNextToken()
+            # self.declaracao_funcao()
     
     # <declaration_const>  ::= constantes '{' <declaration_const1>
     def declaracao_const(self):
@@ -458,15 +458,15 @@ class AnalisadorSintatico:
                 return self.declaracao_reg1()
             ############## fim id ##############
             
-            ############## <v_m_access> OR VAZIO ##############
-            # TESTAR ACESSO DE MATRIZ E VETOR AQUI
-                # self.palavra = self.palavra + self.getToken().getWord() + '$'
-                # self.getNextToken()
-                # return self.declaracao_reg4()
-            ############## fim <v_m_access> OR VAZIO ##############
+            ############## <declaracao_reg4> OR VAZIO ##############
+            elif self.getPrevToken().getType()== 'IDE' and self.getToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg4()
+            ############## fim <declaracao_reg4> OR VAZIO ##############
 
             #SECOND DERIV. OR <declaracao_reg2>
-            elif self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
+            elif (self.getPrevToken().getWord()== ']' or self.getPrevToken().getType() =='IDE') and (self.getToken().getWord() == ',' or self.getToken().getWord() == ';'):
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
                 return self.declaracao_reg2()
@@ -501,6 +501,11 @@ class AnalisadorSintatico:
                 self.getNextToken()
                 return self.declaracao_reg2()
             ############## fim ',' ##############
+            
+            elif self.getToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg4()
             
             # SECOND DERIV.
             ############## ';' ##############
@@ -546,7 +551,7 @@ class AnalisadorSintatico:
 
             ############## erro ##############
             else:
-                print('erro_registro_2',self.palavra)
+                print('erro_registro_3',self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
     
@@ -561,7 +566,22 @@ class AnalisadorSintatico:
             print('TOKEN_4',self.getToken().getWord())
 
             #FIRST DERIV.
+            ############## <v_m_access> ##############
+            if self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access()
+            ############## fim <v_m_access> ##############
             
+            # elif self.getPrevToken().getWord() == ']' and (self.getToken().getWord() == ',' or self.getToken().getWord() == ';'):
+            #     self.palavra = self.palavra + self.getToken().getWord() + '$'
+            #     return self.declaracao_reg2()
+            
+            ############## erro ##############
+            else:
+                print('erro_registro_4',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
     
     # <declaracao_reg5> ::= <declaracao_reg1> | <declaracao_reg3>
     def declaracao_reg5(self):
@@ -578,7 +598,7 @@ class AnalisadorSintatico:
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
                 return self.declaracao_reg1()
-            ############## fim id ##############
+            ############## fim <declaracao_reg1> ##############
             
             #SECOND DERIV.
             ############## <declaracao_reg3> ##############
@@ -593,4 +613,269 @@ class AnalisadorSintatico:
                 print('erro_registro_5',self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
+    
+    
+    # <v_m_access>  ::= '[' <v_m_access1>
+    def v_m_access(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('VM_ACCESS_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+
+            ############## '[' ##############
+            if self.getToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access()
+            ############## fim '[' ##############
             
+            ############## <v_m_access1> ##############
+            elif self.getToken().getWord() == '.' or self.getToken().getWord() == ']':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access1()
+            ############## fim <v_m_access1> ##############
+    
+            ############## erro ##############
+            else:
+                print('erro_v_m_access_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+    
+    
+    # <v_m_access1>  ::= id <v_m_access2> | number ']' <v_m_access3> 
+    def v_m_access1(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('VM_ACCESS_1',self.palavra)
+            print('TOKEN_1',self.getToken().getWord())
+
+            # FIRST DERIV.
+            ############## id ##############
+            if self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access1()
+            ############## fim id ##############
+            
+            ############## <v_m_access2> ##############
+            elif (self.getToken().getWord() == '.' or self.getToken().getWord() == ']') and self.getPrevToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access2()
+            ############## fim <v_m_access2> #############
+            
+            elif self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg2()
+            
+            #SECOND DERIV.
+            ############## ']' ##############
+            elif self.getToken().getWord() == ']' and self.getPrevToken().getType() == 'NRO':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access1()
+            ############## fim ']' ##############
+            
+            ############## <v_m_access3> ##############
+            elif self.getToken().getWord() == '[' and self.getPrevToken().getWord() == ']':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access3()
+            ############## fim <v_m_access3> ##############
+            
+            ############## erro ##############
+            else:
+                print('erro_v_m_access_1',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
+            
+    # <v_m_access2>  ::= <elem_registro> ']' <v_m_access3> | ']' <v_m_access3>  
+    def v_m_access2(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('VM_ACCESS_2',self.palavra)
+            print('TOKEN_2',self.getToken().getWord())
+
+            # FIRST DERIV.
+            ############## <elem_registro> ##############
+            if self.getToken().getWord() == '.':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.elem_registro()
+            ############## fim <elem_registro> ##############
+    
+            elif self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.declaracao_reg2()
+    
+            ############## ']' ##############
+            # ADD TESTE DE ULTIMO CARACTER DE ELEM_REGISTRO
+            elif self.getToken().getWord() == ']':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access2()
+            ############## fim ']' ##############
+
+            # SECOND DERIV. 
+            ############## <v_m_access3> ##############
+            elif self.getToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access3() 
+            ############## fim <v_m_access3> ##############
+            
+            ############## erro ##############
+            else:
+                print('erro_v_m_access_2',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
+            
+    # <v_m_access3>  ::= '[' <v_m_access1> | 
+    def v_m_access3(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('VM_ACCESS_3',self.palavra)
+            print('TOKEN_3',self.getToken().getWord())
+
+            # FIRST DERIV.
+            ##############  <v_m_access1> ##############
+            if self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access1()
+            ############## fim <v_m_access1> ##############
+    
+            ############## erro ##############
+            else:
+                print('erro_v_m_access_3',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+    
+    
+    # <elem_registro>  ::= '.' id <nested_elem_registro>
+    def elem_registro(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('elem_registro_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+            
+            ############## '.' ##############
+            if self.getToken().getWord() == '.':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.elem_registro()
+            ############## fim '.' ##############
+    
+            ############## id ##############
+            elif self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.elem_registro()
+            ############## fim id ##############
+    
+            ############## <nested_elem_registro> ##############
+            elif self.getPrevToken().getWord() == '.' or self.getPrevToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.nested_elem_registro()
+            ############## fim <nested_elem_registro> ##############
+
+            ############## erro ##############
+            else:
+                print('erro_elem_registro_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+    
+    
+    # <nested_elem_registro>  ::= '.' id <nested_elem_registro1> | <v_m_access> <nested_elem_registro1> |
+    def nested_elem_registro(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('elem_registro_1',self.palavra)
+            print('TOKEN_1',self.getToken().getWord())
+
+            # FIRST DERIV.
+            ############## '.' ##############
+            if self.getToken().getWord() == '.':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.nested_elem_registro()
+            ############## fim '.' ##############
+            
+            ############## id ##############
+            elif self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.nested_elem_registro()
+            ############## fim id ##############
+    
+            ############## <nested_elem_registro1> ##############
+            elif self.getPrevToken().getType() == 'IDE' and self.getToken().getWord() == '.':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.nested_elem_registro1()
+            ############## fim <nested_elem_registro1> ##############
+    
+            # SECOND DERIV.
+            ############## <v_m_access> ##############
+            elif self.getToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access()
+            ############## fim <v_m_access> ##############
+            
+            ############## <nested_elem_registro1> ##############
+            # TESTAR ULTIMO CARACTER DE V_M_ACCESS
+            elif self.getPrevToken().getType() == 'IDE' and self.getToken().getWord() == '.':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.nested_elem_registro1()
+            ############## fim <nested_elem_registro1> ##############
+
+            ############## erro ##############
+            else:
+                print('erro_elem_registro_1',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
+            
+    # <nested_elem_registro1> ::= <elem_registro> | 
+    def nested_elem_registro1(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('elem_registro_2',self.palavra)
+            print('TOKEN_2',self.getToken().getWord())
+            
+            # FIRST DERIV.
+            ############## <elem_registro> ##############
+            if self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access()
+            ############## fim <elem_registro> ##############
+
+            ############## erro ##############
+            else:
+                print('erro_elem_registro_2',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+    
