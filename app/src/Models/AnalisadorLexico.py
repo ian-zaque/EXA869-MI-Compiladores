@@ -9,8 +9,8 @@ from automato import Automato
 
 
 def readFileInputs(path, pathOutput, filename, index):
-    #tokens = Automato(path + '\\' + filename).getTokens()
-    tokens = Automato(path + '/' + filename).getTokens()
+    tokens = Automato(path + '\\' + filename).getTokens()
+    #tokens = Automato(path + '/' + filename).getTokens()
 
     AnalisadorSintatico(tokens).parse(index)
 
@@ -21,8 +21,8 @@ def main():
     path = dirname(dirname(dirname(dirname(abspath(__file__)))))
     pathOutput = path + '\\output'
     pathInput = path + '\\input'
-    pathOutput = path + '/output'
-    pathInput = path + '/input'
+    #pathOutput = path + '/output'
+    #pathInput = path + '/input'
 
     try:
         inputFiles = FileReader.getInputFiles(pathInput)
