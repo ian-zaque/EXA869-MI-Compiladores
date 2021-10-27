@@ -60,7 +60,7 @@ class AnalisadorSintatico:
         else:
             return Token("EOF", "EOF", -1)
 
-    def follow(self):
+    def forward(self):
         if len(self.tokens) > 1:
             return self.tokens[1].getWord()
         else:
@@ -70,7 +70,7 @@ class AnalisadorSintatico:
         return word in self.primitives_types
 
     def errorSintatico(self, match):
-        if(self.follow() != 'EOF'):
+        if(self.forward() != 'EOF'):
             error = 'Linha ' + str(self.getToken().getLine()
                                    ) + ': Erro(s) sintatico(s) encontrado (' + self.getToken().getWord()
             for idx, k in enumerate(self.grammars):
@@ -78,7 +78,7 @@ class AnalisadorSintatico:
                     if len(self.grammars) >= (idx + 1):
                         self.next_grammar = self.grammars[idx+1]
                         if len(self.tokens) > 1:
-                            while self.follow() != self.next_grammar and self.follow() != 'EOF':
+                            while self.forward() != self.next_grammar and self.forward() != 'EOF':
                                 self.getNextToken()
                                 error = error + ',' + self.getToken().getWord()
                             error = error + '). Pois era esperado o seguinte: ' + match
