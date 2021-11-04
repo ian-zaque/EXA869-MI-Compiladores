@@ -1,5 +1,24 @@
 %asdlkf asf
 
+registro teste_registro {
+    inteiro a;
+    inteiro d[a], vec[2][2];
+    real    b;
+    inteiro vec[2][2];
+    real    b;
+    Pessoa  teste[1][1], vec[2][2];
+    real    b;
+    Pessoa  teste_1[2];
+    real    b;
+    cadeia  c;
+}
+
+registro teste_registro {
+    inteiro a, z, y, w;
+    real    b;
+    cadeia  c;
+}
+
 constantes {
     cadeia frase = "frase aqui";
     inteiro a = 2;
@@ -12,4 +31,16 @@ variaveis {
     real    teste_2 = 2.23,c = 23.40;
     cadeia  c;
     booleano d      = verdadeiro;
+}
+
+funcao real faca_algo(inteiro num, real mun, Pessoa pess[][], inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num,){
+
+}
+
+funcao booleano algoritmo(){
+
+}
+
+funcao inteiro outra_func(Pessoa pess[][]){
+
 }

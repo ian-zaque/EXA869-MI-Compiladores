@@ -1,3 +1,0 @@
-se(a > b) entao {
-	escreva("a maior que b");
-}
