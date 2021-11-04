@@ -90,7 +90,10 @@ class Lexemas:
         self.END_DELIMITERS = [';', ',', '.', ')', '}', ']', '\\t']
 
         self.COMMENT_DELIMMITERS = ['%', '{#', '#}']
-
+    
+    def getReservedWords(self):
+        return self.RESERVERD_WORDS
+    
     def isReservedWord(self, char):
         return char in self.RESERVERD_WORDS
 

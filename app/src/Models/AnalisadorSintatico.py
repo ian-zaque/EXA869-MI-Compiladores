@@ -2,6 +2,7 @@
 # coding: utf-8
 
 from Token import Token
+from lexemas import Lexemas
 
 
 class AnalisadorSintatico:
@@ -31,19 +32,8 @@ class AnalisadorSintatico:
         if len(self.prevToken) > 1:
             return self.prevToken[-2]
         else:
-<<<<<<< HEAD
-            return Token("EOF","EOF",-1)
-    
-    def getPrevToken(self):
-        if self.counter < len(self.tokens) and self.counter > 1:
-            return self.tokens[self.counter-1]
-        else:
-            return Token("EOF","EOF",-1)
-    
-=======
             return Token("EOF", "EOF", -1)
 
->>>>>>> test
     def getNextToken(self):
         if len(self.tokens) > 1:
             if(len(self.grammars) > self.grammar+1):
@@ -68,6 +58,10 @@ class AnalisadorSintatico:
 
     def isPrimitiveType(self, word):
         return word in self.primitives_types
+    
+    def isReservedWord(self,word):
+        return word in Lexemas().getReservedWords()
+
 
     def errorSintatico(self, match):
         if(self.forward() != 'EOF'):
@@ -111,33 +105,20 @@ class AnalisadorSintatico:
     def start(self):
         if self.getToken().getType() == 'EOF':
             return
-<<<<<<< HEAD
-        
-        elif self.counter < len(self.tokens):
-            self.declaracao_reg()
-            
-=======
 
         elif len(self.tokens) > 1:
             self.declaracao_reg()
 
->>>>>>> test
             self.getNextToken()
             self.declaracao_const()
 
             self.getNextToken()
             self.declaracao_var()
-<<<<<<< HEAD
             
-            # self.getNextToken()
-            # self.declaracao_funcao()
+            self.getNextToken()
+            self.declaracao_funcao()
     
-=======
-
-            # self.getNextToken()
-            # self.declaracao_funcao()
-
->>>>>>> test
+    
     # <declaration_const>  ::= constantes '{' <declaration_const1>
     def declaracao_const(self):
         if self.getToken().getType() == 'EOF':
@@ -149,60 +130,45 @@ class AnalisadorSintatico:
 
             ############## constantes ##############
             if self.getToken().getType() == 'PRE' and self.getToken().getWord() == 'constantes':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 if(self.lookahead('{')):
                     self.getNextToken()
                     return self.declaracao_const()
                 else:
                     self.errorSintatico('{')
             ############## fim constantes ##############
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> test
             ############## '{' ##############
             elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '{':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const()
             ############## fim '{' ##############
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> test
             ############## <declaracao_const1> ##############
             elif self.getToken().getType() == 'PRE' and self.isPrimitiveType(self.getToken().getWord()):
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const1()
             ############## fim <declaracao_const1> ##############
-<<<<<<< HEAD
-            
-            ############## '}' ############## 
-=======
+
 
             ############## '}' ##############
->>>>>>> test
             # 2 DERIVACAO DE <declaracao_const1>. FECHAMENTO DE BLOCO VAZIO DE CONSTANTE
             elif self.getToken().getWord() == '}':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                print('fim_constantes', self.palavra, '\n')
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                print('fim_constantes',self.palavra, '\n')
                 self.palavra = ''
                 return
             ############## fim '}' ##############
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> test
             ############## erro ##############
             else:
                 print('erro 0', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
 
+            
     # <declaration_const1> ::= <primitive_type> id '=' <value> <declaration_const2> | '}'
     def declaracao_const1(self):
         if self.getToken().getType() == 'EOF':
@@ -215,69 +181,48 @@ class AnalisadorSintatico:
             # FIRST DERIV.
             ############## id ##############
             if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const1()
             ############## fim id ##############
 
             ############## '=' ##############
             if self.getToken().getWord() == '=':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const1()
             ############## fim '=' ##############
-<<<<<<< HEAD
             
             ############## <value> ##############    
-=======
-
-            ############## <value> ##############
->>>>>>> test
             elif self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'PRE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const2()
             ############## fim <value> ##############
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> test
             ############## <declaracao_const2> ##############
             elif self.getToken().getType() == 'DEL' and self.getToken().getWord() != '}':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const2()
             ############## fim <declaracao_const2> ##############
-<<<<<<< HEAD
-            
-            #SECOND DERIV.
-=======
 
             # SECOND DERIV.
->>>>>>> test
             ############## '}' ##############
             elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '}':
                 # FIM DERIVACAO 2
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                print('fim_constantes', self.palavra, '\n')
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                print('fim_constantes',self.palavra, '\n')
                 self.palavra = ''
                 return
             ############## fim '}' ##############
-<<<<<<< HEAD
-                
-=======
 
->>>>>>> test
             ############## erro ##############
             else:
                 print('erro 1', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
-<<<<<<< HEAD
-        
-=======
->>>>>>> test
+
 
     # <declaration_const2> ::= ',' id '=' <value> <declaration_const2> | ';' <declaration_const1>
     def declaracao_const2(self):
@@ -291,46 +236,36 @@ class AnalisadorSintatico:
             # FIRST DERIV.
             ############## id ##############
             if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const2()
-<<<<<<< HEAD
-            ############## fim id ##############    
-                
-=======
             ############## fim id ##############
 
->>>>>>> test
             ############## '=' ##############
             if self.getToken().getWord() == '=':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const1()
             ############## fim '=' ##############
 
             ############## <value> ##############
             elif self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'PRE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const1()
             ############## fim <value> ##############
 
             ############## declaracao_const2> ##############
             elif self.getToken().getType() == 'DEL' and self.getToken().getWord() != ';':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const2()
             ############## fim <declaracao_const2> ##############
-<<<<<<< HEAD
-             
-            #SECOND DERIV.
-=======
 
             # SECOND DERIV.
->>>>>>> test
             ############## ';' ##############
             elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == ';':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const1()
             ############## fim ';' ##############
@@ -340,12 +275,8 @@ class AnalisadorSintatico:
                 print('erro 2', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
-<<<<<<< HEAD
-            
-            
-=======
 
->>>>>>> test
+            
     # <declaration_var>  ::= variaveis '{' <declaration_var1>
     def declaracao_var(self):
         if self.getToken().getType() == 'EOF':
@@ -357,54 +288,42 @@ class AnalisadorSintatico:
 
             ############## 'variaveis' ##############
             if self.getToken().getType() == 'PRE' and self.getToken().getWord() == 'variaveis':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var()
             ############## fim 'variaveis' ##############
-<<<<<<< HEAD
-            
-            ############## '{' ##############   
-=======
+
 
             ############## '{' ##############
->>>>>>> test
             elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '{':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var()
             ############## fim '}' ##############
 
             ############## <declaracao_var1> ##############
             elif self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var1()
             ############## fim <declaracao_var1> ##############
-<<<<<<< HEAD
-            
-            ############## '}' ############## 
-=======
 
-            ############## '}' ##############
->>>>>>> test
+            ############## '}' ############## 
             # 2 DERIVACAO DE <declaracao_var1>. FECHAMENTO DE BLOCO  DE VARIAVEL
             elif self.getToken().getWord() == '}':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                print('fim_variaveis', self.palavra, '\n')
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                print('fim_variaveis',self.palavra, '\n')
                 self.palavra = ''
                 return
             ############## fim '}' ##############
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> test
             ############## erro ##############
             else:
                 print('erro_variaveis_0', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
 
+            
     # <declaration_var1> ::= <type> id <declaration_var2> | '}'
     def declaracao_var1(self):
         if self.getToken().getType() == 'EOF':
@@ -417,38 +336,26 @@ class AnalisadorSintatico:
             # FIRST DERIV.
             ############## id ##############
             if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var1()
             ############## fim id ##############
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> test
             ############## <declaracao_var2> ##############
             # add teste de vetor e matriz
             elif self.getToken().getWord() == '=' or self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var2()
             ############## fim <declaracao_var2> ##############
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> test
             ############## erro ##############
             else:
                 print('erro_variaveis_1', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
-<<<<<<< HEAD
-    
-    
-=======
 
->>>>>>> test
+            
     # <declaration_var2> ::= '=' <value> <declaration_var3> | <vector_matrix> | <declaration_var3>
     def declaracao_var2(self):
         if self.getToken().getType() == 'EOF':
@@ -461,30 +368,17 @@ class AnalisadorSintatico:
             # FIRST DERIV.
             ############## <value> ##############
             if self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'PRE' or self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var2()
             ############## fim <value> ##############
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> test
             ############## '=' ##############
             elif self.getToken().getWord() == '=':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var2()
             ############## fim '=' ##############
-<<<<<<< HEAD
-            
-            #SECOND DERIV.
-            ############## <vector_matrix> ##############
-            # TESTAR INICIO DE MATRIZ E VETOR AQUI
-            ############## fim <vector_matrix> ##############
-            
-            #LAST PART OF FIRST DERIV. AND THIRD DERIV.
-=======
 
             # SECOND DERIV.
             ############## <vector_matrix> ##############
@@ -492,29 +386,20 @@ class AnalisadorSintatico:
             ############## fim <vector_matrix> ##############
 
             # LAST PART OF FIRST DERIV. AND THIRD DERIV.
->>>>>>> test
             ############## <declaracao_var3> ##############
             elif self.getToken().getType() == 'DEL' and (self.getToken().getWord() == ',' or self.getToken().getWord() == ';'):
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var3()
             ############## fim <declaracao_var3> ##############
-<<<<<<< HEAD
             
-=======
-
->>>>>>> test
             ############## erro ##############
             else:
                 print('erro_variaveis_2', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
-<<<<<<< HEAD
-    
-    
-=======
 
->>>>>>> test
+            
     # <declaration_var3> ::= ',' id <declaration_var2>  | ';' <declaration_var1>
     def declaracao_var3(self):
         if self.getToken().getType() == 'EOF':
@@ -527,49 +412,33 @@ class AnalisadorSintatico:
             # FIRST DERIV.
             ############## id ##############
             if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var3()
             ############## fim id ##############
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> test
             ############## <declaracao_var2> ##############
             # add teste de matriz/vetor aqui para declaracao var 2
             elif self.getToken().getWord() == '=' or self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var2()
             ############## fim <declaracao_var2> ##############
-<<<<<<< HEAD
-            
-            #SECOND DERIV.
-=======
 
             # SECOND DERIV.
->>>>>>> test
             ############## <declaracao_var1> ##############
             elif (self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE'):
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var1()
             ############## fim <declaracao_var1> ##############
-<<<<<<< HEAD
-            
-            ############## '}' ############## 
-=======
+
 
             ############## '}' ##############
->>>>>>> test
             # 2 DERIVACAO DE <declaracao_var1>. FECHAMENTO DE BLOCO  DE VARIAVEL
             elif self.getToken().getWord() == '}':
                 return self.declaracao_var()
             ############## fim '}' ##############
-<<<<<<< HEAD
-            
-=======
 
             ############## erro ##############
             else:
@@ -922,383 +791,12 @@ class AnalisadorSintatico:
                 return self.v_m_access3()
             ############## fim <v_m_access3> ##############
 
->>>>>>> test
             ############## erro ##############
             else:
                 print('erro_v_m_access_2', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
-<<<<<<< HEAD
-        
-    
-    # <declaracao_reg> ::= registro id '{' <declaracao_reg1> |
-    def declaracao_reg(self):
-        if self.getToken().getType() == 'EOF':
-            return
-        
-        elif self.counter < len(self.tokens):
-            print('REGISTRO_0',self.palavra)
-            print('TOKEN_0',self.getToken().getWord())
-
-            #FIRST DERIV.
-            ############## registro ##############
-            if self.getToken().getType() == 'PRE' and self.getToken().getWord() == 'registro':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg()
-            ############## fim registro ##############
             
-            ############## id ##############
-            elif self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg()
-            ############## fim id ##############
-            
-            ############## '{' ##############   
-            elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '{':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg()
-            ############## fim '{' ##############
-            
-            ############## '}' ##############
-            # elif self.getToken().getType() == 'DEL' and self.getToken().getWord() == '}':
-            #     self.palavra = self.palavra + self.getToken().getWord() + '$'
-            #     print('fim_registro_1',self.palavra, '\n')
-            #     self.palavra = ''
-            #     return
-            ############## fim '}' ##############
-            
-            ############## <declaracao_reg1> ##############
-            elif self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg1()
-            ############## fim <declaracao_reg1> ##############
-            
-            ############## vazio ##############
-            if self.getToken().getType() == 'PRE' and self.getToken().getWord() != 'registro':
-                self.palavra = self.getToken().getWord() + '$'
-                return
-            ############## fim vazio ##############
-            
-            ############## erro ##############
-            else:
-                print('erro_registro_0',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-    
-    
-    # <declaracao_reg1> ::= <primitive_type> id <declaracao_reg4> <declaracao_reg2> | id id <declaracao_reg4> <declaracao_reg2> 
-    def declaracao_reg1(self):
-        if self.getToken().getType() == 'EOF':
-            return
-        
-        elif self.counter < len(self.tokens):
-            print('REGISTRO_1',self.palavra)
-            print('TOKEN_1',self.getToken().getWord())
-
-            #FIRST DERIV.
-            ############## id ##############
-            if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg1()
-            ############## fim id ##############
-            
-            ############## <declaracao_reg4> OR VAZIO ##############
-            elif self.getPrevToken().getType()== 'IDE' and self.getToken().getWord() == '[':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg4()
-            ############## fim <declaracao_reg4> OR VAZIO ##############
-
-            #SECOND DERIV. OR <declaracao_reg2>
-            elif (self.getPrevToken().getWord()== ']' or self.getPrevToken().getType() =='IDE') and (self.getToken().getWord() == ',' or self.getToken().getWord() == ';'):
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg2()
-
-            ############## erro ##############
-            else:
-                print('erro_registro_1',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-    
-    
-    # <declaracao_reg2>  ::= ',' id <declaracao_reg2> | ';' <declaracao_reg5>
-    def declaracao_reg2(self):
-        if self.getToken().getType() == 'EOF':
-            return
-        
-        elif self.counter < len(self.tokens):
-            print('REGISTRO_2',self.palavra)
-            print('TOKEN_2',self.getToken().getWord())
-
-            #FIRST DERIV.
-            ############## id ##############
-            if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg2()
-            ############## fim id ##############
-
-            ############## ',' ##############
-            elif self.getToken().getWord() == ',':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg2()
-            ############## fim ',' ##############
-            
-            elif self.getToken().getWord() == '[':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg4()
-            
-            # SECOND DERIV.
-            ############## ';' ##############
-            elif self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getWord() == ';':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg2()
-            ############## fim ';' ##############
-
-            ############## '}' ##############
-            elif self.getToken().getWord() == '}':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                print('fim_registro_2',self.palavra, '\n')
-                self.palavra = ''
-                self.getNextToken()
-                return self.declaracao_reg()
-            ############## fim '}' ##############    
-                
-            ############## erro ##############
-            else:
-                print('erro_registro_2',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-            
-            
-    # <declaracao_reg3>   ::= '}' <declaracao_reg>
-    def declaracao_reg3(self):
-        if self.getToken().getType() == 'EOF':
-            return
-        
-        elif self.counter < len(self.tokens):
-            print('REGISTRO_3',self.palavra)
-            print('TOKEN_3',self.getToken().getWord())
-
-            ############## '}' ##############
-            if self.getToken().getWord() == '}':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                print('fim_registro_3',self.palavra, '\n')
-                self.palavra = ''
-                self.getNextToken()
-                return self.declaracao_reg()
-            ############## fim '}' ##############
-
-            ############## erro ##############
-            else:
-                print('erro_registro_3',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-    
-    
-    # <declaracao_reg4>   ::= <v_m_access> |
-    def declaracao_reg4(self):
-        if self.getToken().getType() == 'EOF':
-            return
-        
-        elif self.counter < len(self.tokens):
-            print('REGISTRO_4',self.palavra)
-            print('TOKEN_4',self.getToken().getWord())
-
-            #FIRST DERIV.
-            ############## <v_m_access> ##############
-            if self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.v_m_access()
-            ############## fim <v_m_access> ##############
-            
-            # elif self.getPrevToken().getWord() == ']' and (self.getToken().getWord() == ',' or self.getToken().getWord() == ';'):
-            #     self.palavra = self.palavra + self.getToken().getWord() + '$'
-            #     return self.declaracao_reg2()
-            
-            ############## erro ##############
-            else:
-                print('erro_registro_4',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-    
-    # <declaracao_reg5> ::= <declaracao_reg1> | <declaracao_reg3>
-    def declaracao_reg5(self):
-        if self.getToken().getType() == 'EOF':
-            return
-        
-        elif self.counter < len(self.tokens):
-            print('REGISTRO_5',self.palavra)
-            print('TOKEN_5',self.getToken().getWord())
-
-            #FIRST DERIV.
-            ############## <declaracao_reg1> ##############
-            if self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg1()
-            ############## fim <declaracao_reg1> ##############
-            
-            #SECOND DERIV.
-            ############## <declaracao_reg3> ##############
-            elif self.getToken().getWord() == 'registro':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg3()
-            ############## fim '}' ##############
-            
-            ############## erro ##############
-            else:
-                print('erro_registro_5',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-    
-    
-    # <v_m_access>  ::= '[' <v_m_access1>
-    def v_m_access(self):
-        if self.getToken().getType() == 'EOF':
-            return
-        
-        elif self.counter < len(self.tokens):
-            print('VM_ACCESS_0',self.palavra)
-            print('TOKEN_0',self.getToken().getWord())
-
-            ############## '[' ##############
-            if self.getToken().getWord() == '[':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.v_m_access()
-            ############## fim '[' ##############
-            
-            ############## <v_m_access1> ##############
-            elif self.getToken().getWord() == '.' or self.getToken().getWord() == ']':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.v_m_access1()
-            ############## fim <v_m_access1> ##############
-    
-            ############## erro ##############
-            else:
-                print('erro_v_m_access_0',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-    
-    
-    # <v_m_access1>  ::= id <v_m_access2> | number ']' <v_m_access3> 
-    def v_m_access1(self):
-        if self.getToken().getType() == 'EOF':
-            return
-        
-        elif self.counter < len(self.tokens):
-            print('VM_ACCESS_1',self.palavra)
-            print('TOKEN_1',self.getToken().getWord())
-
-            # FIRST DERIV.
-            ############## id ##############
-            if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.v_m_access1()
-            ############## fim id ##############
-            
-            ############## <v_m_access2> ##############
-            elif (self.getToken().getWord() == '.' or self.getToken().getWord() == ']') and self.getPrevToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.v_m_access2()
-            ############## fim <v_m_access2> #############
-            
-            elif self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg2()
-            
-            #SECOND DERIV.
-            ############## ']' ##############
-            elif self.getToken().getWord() == ']' and self.getPrevToken().getType() == 'NRO':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.v_m_access1()
-            ############## fim ']' ##############
-            
-            ############## <v_m_access3> ##############
-            elif self.getToken().getWord() == '[' and self.getPrevToken().getWord() == ']':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.v_m_access3()
-            ############## fim <v_m_access3> ##############
-            
-            ############## erro ##############
-            else:
-                print('erro_v_m_access_1',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-            
-            
-    # <v_m_access2>  ::= <elem_registro> ']' <v_m_access3> | ']' <v_m_access3>  
-    def v_m_access2(self):
-        if self.getToken().getType() == 'EOF':
-            return
-        
-        elif self.counter < len(self.tokens):
-            print('VM_ACCESS_2',self.palavra)
-            print('TOKEN_2',self.getToken().getWord())
-
-            # FIRST DERIV.
-            ############## <elem_registro> ##############
-            if self.getToken().getWord() == '.':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.elem_registro()
-            ############## fim <elem_registro> ##############
-    
-            elif self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.declaracao_reg2()
-    
-            ############## ']' ##############
-            # ADD TESTE DE ULTIMO CARACTER DE ELEM_REGISTRO
-            elif self.getToken().getWord() == ']':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.v_m_access2()
-            ############## fim ']' ##############
-
-            # SECOND DERIV. 
-            ############## <v_m_access3> ##############
-            elif self.getToken().getWord() == '[':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.v_m_access3() 
-            ############## fim <v_m_access3> ##############
-            
-            ############## erro ##############
-            else:
-                print('erro_v_m_access_2',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-            
-            
-    # <v_m_access3>  ::= '[' <v_m_access1> | 
-    def v_m_access3(self):
-        if self.getToken().getType() == 'EOF':
-            return
-        
-        elif self.counter < len(self.tokens):
-            print('VM_ACCESS_3',self.palavra)
-            print('TOKEN_3',self.getToken().getWord())
-=======
 
     # <v_m_access3>  ::= '[' <v_m_access1> |
     def v_m_access3(self):
@@ -1308,25 +806,20 @@ class AnalisadorSintatico:
         elif len(self.tokens) > 1:
             print('VM_ACCESS_3', self.palavra)
             print('TOKEN_3', self.getToken().getWord())
->>>>>>> test
 
             # FIRST DERIV.
             ##############  <v_m_access1> ##############
             if self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.v_m_access1()
             ############## fim <v_m_access1> ##############
-<<<<<<< HEAD
     
             ############## erro ##############
             else:
                 print('erro_v_m_access_3',self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
-    
-    
-=======
 
             ############## erro ##############
             else:
@@ -1334,155 +827,93 @@ class AnalisadorSintatico:
                 # self.getNextToken()
             ############## fim erro ##############
 
->>>>>>> test
+            
     # <elem_registro>  ::= '.' id <nested_elem_registro>
     def elem_registro(self):
         if self.getToken().getType() == 'EOF':
             return
-<<<<<<< HEAD
-        
-        elif self.counter < len(self.tokens):
-            print('elem_registro_0',self.palavra)
-            print('TOKEN_0',self.getToken().getWord())
-            
-=======
 
         elif len(self.tokens) > 1:
             print('elem_registro_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
 
->>>>>>> test
             ############## '.' ##############
             if self.getToken().getWord() == '.':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.elem_registro()
             ############## fim '.' ##############
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> test
             ############## id ##############
             elif self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.elem_registro()
             ############## fim id ##############
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> test
             ############## <nested_elem_registro> ##############
             elif self.getPrevToken().getWord() == '.' or self.getPrevToken().getWord() == '[':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.nested_elem_registro()
             ############## fim <nested_elem_registro> ##############
 
             ############## erro ##############
             else:
-<<<<<<< HEAD
-                print('erro_elem_registro_0',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-    
-    
-=======
                 print('erro_elem_registro_0', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
 
->>>>>>> test
+            
     # <nested_elem_registro>  ::= '.' id <nested_elem_registro1> | <v_m_access> <nested_elem_registro1> |
     def nested_elem_registro(self):
         if self.getToken().getType() == 'EOF':
             return
-<<<<<<< HEAD
-        
-        elif self.counter < len(self.tokens):
-            print('elem_registro_1',self.palavra)
-            print('TOKEN_1',self.getToken().getWord())
-=======
 
         elif len(self.tokens) > 1:
             print('elem_registro_1', self.palavra)
             print('TOKEN_1', self.getToken().getWord())
->>>>>>> test
 
             # FIRST DERIV.
             ############## '.' ##############
             if self.getToken().getWord() == '.':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.nested_elem_registro()
             ############## fim '.' ##############
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> test
             ############## id ##############
             elif self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.nested_elem_registro()
             ############## fim id ##############
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> test
             ############## <nested_elem_registro1> ##############
             elif self.getPrevToken().getType() == 'IDE' and self.getToken().getWord() == '.':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.nested_elem_registro1()
             ############## fim <nested_elem_registro1> ##############
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> test
             # SECOND DERIV.
             ############## <v_m_access> ##############
             elif self.getToken().getWord() == '[':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.v_m_access()
             ############## fim <v_m_access> ##############
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> test
             ############## <nested_elem_registro1> ##############
             # TESTAR ULTIMO CARACTER DE V_M_ACCESS
             elif self.getPrevToken().getType() == 'IDE' and self.getToken().getWord() == '.':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.nested_elem_registro1()
             ############## fim <nested_elem_registro1> ##############
 
             ############## erro ##############
             else:
-<<<<<<< HEAD
-                print('erro_elem_registro_1',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-            
-            
-    # <nested_elem_registro1> ::= <elem_registro> | 
-    def nested_elem_registro1(self):
-        if self.getToken().getType() == 'EOF':
-            return
-        
-        elif self.counter < len(self.tokens):
-            print('elem_registro_2',self.palavra)
-            print('TOKEN_2',self.getToken().getWord())
-            
-=======
                 print('erro_elem_registro_1', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
@@ -1496,24 +927,375 @@ class AnalisadorSintatico:
             print('elem_registro_2', self.palavra)
             print('TOKEN_2', self.getToken().getWord())
 
->>>>>>> test
             # FIRST DERIV.
             ############## <elem_registro> ##############
             if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.v_m_access()
             ############## fim <elem_registro> ##############
 
             ############## erro ##############
             else:
-<<<<<<< HEAD
                 print('erro_elem_registro_2',self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
-    
-=======
-                print('erro_elem_registro_2', self.palavra)
+      
+      
+    # <function_declaration>  ::= funcao <type> <function_declaration1>
+    def declaracao_funcao(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('funcao_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+            
+            ############# funcao ##############
+            if self.getToken().getWord() == 'funcao':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.declaracao_funcao()
+            ############## fim funcao ##############
+            
+            ############## <type> ##############
+            elif self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType== 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.declaracao_funcao()
+            ############## fim <type> ##############
+            
+            ############## <function_declaration1> ##############
+            elif (self.getToken().getWord() == 'algoritmo' or self.getToken().getType() == 'IDE') and (self.isPrimitiveType(self.getPrevToken().getWord()) or self.getPrevToken().getType== 'IDE'):
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.declaracao_funcao1()
+            ############## fim <function_declaration1> ##############
+                
+            ############# erro ##############
+            else:
+                print('erro_funcao_0',self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
->>>>>>> test
+    
+    
+    # <function_declaration1> ::= algoritmo <main_function> | <function_declaration2> 
+    def declaracao_funcao1(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('funcao_1',self.palavra)
+            print('TOKEN_1',self.getToken().getWord())
+
+            #FIRST DERIV.
+            ############# algoritmo #############
+            if self.getToken().getWord() == 'algoritmo':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.declaracao_funcao1()
+            ############# fim algoritmo #############
+
+            ############# <main_function> #############
+            elif self.getToken().getWord() == '(' and self.getPrevToken().getWord() == 'algoritmo':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.main_function()           
+            ############# fim <main_function> #############
+            
+            # SECOND DERIV.
+            ############# <function_declaration2>  #############
+            elif self.getToken().getWord() == '(' and self.getPrevToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.declaracao_funcao2()
+            ############# fim <function_declaration2> #############
+    
+            ############# erro ##############
+            else:
+                print('erro_funcao_1',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+    
+    # <function_declaration2> ::= id <function_parameters> '{' <function_body> '}' <function_declaration>
+    def declaracao_funcao2(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('funcao_2',self.palavra)
+            print('TOKEN_2',self.getToken().getWord())
+
+            #FIRST DERIV.
+            ############# id #############
+            if self.getToken().getType()== 'IDE' and self.getPrevToken().getType()== 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.declaracao_funcao2()            
+            ############# fim id #############
+            
+            elif self.getToken().getWord() == ')' and self.getPrevToken().getWord() == '(':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.declaracao_funcao2()
+            
+            ############# <function_parameters> #############
+            elif (self.getToken().getType()== 'IDE' or self.isPrimitiveType(self.getToken().getWord())) and self.getPrevToken().getWord() == '(':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.parametros_funcao()
+            ############# fim <function_parameters> ############# 
+
+            ############# '{' #############
+            elif self.getPrevToken().getWord() == ')' and self.getToken().getWord() == '{':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.declaracao_funcao2()
+            ############# fim '{' #############
+            
+            ############# <function_body> #############
+            # TESTAR FUNCTION_BODY AQUI
+            ############# fim <function_body> #############
+            
+            # ADD TESTE DE FUM DE CORPO DE FUNCAO OR getPrevToken().getWord == '{'
+            ############# '}' #############
+            elif self.getToken().getWord() == '}':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                print('fim_declaracao_funcao_2',self.palavra, '\n')
+                self.palavra = ''
+                self.getNextToken()
+                return self.declaracao_funcao()
+            ############# fim '}' #############
+            
+            ############# erro ##############
+            else:
+                print('erro_funcao_2',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
+    
+    # <main_function> ::= <function_parameters> '{' <function_body> '}'
+    def main_function(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('main_function_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+            
+            #FIRST DERIV.
+            if self.getToken().getWord() == ')' and self.getPrevToken().getWord() == '(':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.main_function()            
+            
+            ############# <function_parameters> #############
+            elif (self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getWord() == ')') and self.getPrevToken().getWord() == '(':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.parametros_funcao()
+            ############# fim <function_parameters> #############
+            
+            ############# '{' #############
+            elif self.getPrevToken().getWord() == ')' and self.getToken().getWord() == '{':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.declaracao_funcao2()
+            ############# fim '{' #############
+            
+            ############# <function_body> #############
+            # TESTAR FUNCTION_BODY AQUI
+            ############# fim <function_body> #############
+            
+            # ADD TESTE DE FUM DE CORPO DE FUNCAO
+            ############# '}' #############
+            elif self.getToken().getWord() == '}':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                print('fim_main_function',self.palavra, '\n')
+                self.palavra = ''
+                self.getNextToken()
+                return self.declaracao_funcao()
+            ############# fim '}' #############
+            
+            ############# erro ##############
+            else:
+                print('erro_main_function_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+
+    # <function_parameters>   ::= '(' <function_parameters1> 
+    def parametros_funcao(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('parametros_funcao_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+
+            ############# '(' #############
+            if self.getToken().getWord() == '(':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.parametros_funcao()
+            ############# fim '(' #############
+
+            ############# <function_parameters1>  #############
+            elif (self.getToken().getType()== 'IDE' or self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getWord() == ')'):
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.parametros_funcao1()
+            ############# fim <function_parameters1>  #############
+
+            ############# erro ##############
+            else:
+                print('erro_parametros_funcao_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+        
+            
+    # <function_parameters1>  ::= <function_parameters2> id <function_parameters3> | ')' 
+    def parametros_funcao1(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('parametros_funcao_1',self.palavra)
+            print('TOKEN_1',self.getToken().getWord())
+
+            # FIRST DERIV.
+            ############# id #############
+            if (self.getPrevToken().getType()== 'IDE' or self.isPrimitiveType(self.getPrevToken().getWord())) and self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.parametros_funcao1()
+            ############# fim id #############
+            
+            ############# <function_parameters3> #############
+            elif self.getPrevToken().getType() == 'IDE' and (self.getToken().getWord() == '[' or self.getToken().getWord()== ',' or self.getToken().getWord()== ')'):
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.parametros_funcao3()
+            ############# fim <function_parameters3> #############
+            
+            # SECOND DERIV.
+            ############# ') #############
+            elif self.getPrevToken().getWord() == ')' and self.getToken().getWord() == '{':
+                print('fim_parametros_funcao_1',self.palavra, '\n')
+                return 
+            ############# ') #############
+            
+            ############# erro ##############
+            else:
+                print('erro_parametros_funcao_1',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
+    # <function_parameters2>  ::= <primitive_type> | id 
+    
+    # <function_parameters3>  ::= '[' ']' <function_parameters4>  | <function_parameters5> 
+    def parametros_funcao3(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('parametros_funcao_3',self.palavra)
+            print('TOKEN_3',self.getToken().getWord())
+
+            # FIRST DERIV.
+            ############# ']' #############
+            if self.getToken().getWord() == ']' and self.getPrevToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.parametros_funcao3()
+            ############# fim ']' #############
+
+            ############# <function_parameters4> #############
+            elif (self.getToken().getWord() == '[' or self.getToken().getWord() == ',' or self.getToken().getWord() == ')') and self.getPrevToken().getWord() == ']':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.parametros_funcao4()
+            ############# fim <function_parameters4> #############
+            
+            #SECOND DERIV.
+            elif (self.getPrevToken().getWord() == ',' or self.getPrevToken().getWord() == ')'):
+                return self.parametros_funcao5()
+            
+            ############# ') #############
+            # TESTAR AQUI SE VEIO DE main_function() OU DE declaracao_funcao2()
+            # SE VEIO DE main_function() retornar main_function()
+            # SE VEIO DE declaracao_funcao2() retornar declaracao_funcao2()
+            elif self.getPrevToken().getWord() == ')' and self.getToken().getWord() == '{':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.declaracao_funcao2()
+            ############# ') #############            
+            
+            ############# erro ##############
+            else:
+                print('erro_parametros_funcao_3',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
+    
+    # <function_parameters4>  ::= '[' ']' <function_parameters5>  | <function_parameters5>
+    def parametros_funcao4(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('parametros_funcao_4',self.palavra)
+            print('TOKEN_4',self.getToken().getWord())
+
+            # FIRST DERIV.
+            ############# ']' #############
+            if self.getToken().getWord() == ']' and self.getPrevToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.parametros_funcao4()
+            ############# fim ']' #############
+
+            ############# <function_parameters4> #############
+            elif (self.getToken().getWord() == '[' or self.getToken().getWord() == ',' or self.getToken().getWord() == ')') and self.getPrevToken().getWord() == ']':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.parametros_funcao5()
+            ############# fim <function_parameters4> #############
+
+            ############# erro ##############
+            else:
+                print('erro_parametros_funcao_4',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+    
+    
+    # <function_parameters5>  ::= ','  <function_parameters1>  | ')'
+    def parametros_funcao5(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('parametros_funcao_5',self.palavra)
+            print('TOKEN_5',self.getToken().getWord())
+
+            # FIRST DERIV.
+            if (self.getToken().getType()== 'IDE' or self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getWord()==')' ) and self.getPrevToken().getWord() == ',':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.parametros_funcao1()
+            
+            #SECOND DERIV.
+            ############# ') #############
+            # SE VEIO DE main_function() retornar main_function()
+            # SE VEIO DE declaracao_funcao2() retornar declaracao_funcao2()
+            elif self.getPrevToken().getWord() == ')' and self.getToken().getWord() == '{':
+                print('fim_parametros_funcao_5',self.palavra, '\n')
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.declaracao_funcao2()
+            ############# ') #############
+            
+            ############# erro ##############
+            else:
+                print('erro_parametros_funcao_5',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############

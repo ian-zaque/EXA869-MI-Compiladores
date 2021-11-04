@@ -32,3 +32,15 @@ variaveis {
     cadeia  c;
     booleano d      = verdadeiro;
 }
+
+funcao real faca_algo(inteiro num, real mun, Pessoa pess[][], inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num,){
+
+}
+
+funcao booleano algoritmo(){
+
+}
+
+funcao inteiro outra_func(Pessoa pess[][]){
+
+}
