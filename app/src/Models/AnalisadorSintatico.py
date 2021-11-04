@@ -35,11 +35,12 @@ class AnalisadorSintatico:
             return Token("EOF", "EOF", -1)
 
     def getNextToken(self):
+        self.prevToken.append(self.tokens[0])
         if len(self.tokens) > 1:
             if(len(self.grammars) > self.grammar+1):
                 if(self.grammars[self.grammar+1] == self.tokens[0].getWord()):
                     self.grammar = self.grammar+1
-                    self.prevToken.append(self.tokens[0])
+                    # self.prevToken.append(self.tokens[0])
             return self.tokens.pop(0)
         else:
             return Token("EOF", "EOF", -1)
@@ -61,7 +62,6 @@ class AnalisadorSintatico:
     
     def isReservedWord(self,word):
         return word in Lexemas().getReservedWords()
-
 
     def errorSintatico(self, match):
         if(self.forward() != 'EOF'):
@@ -98,7 +98,7 @@ class AnalisadorSintatico:
             print('\n')
 
         self.errors = []
-        self.getNextToken()
+        # self.getNextToken()
         self.start()
 
     # <Program> ::= <declaracao_reg> <declaration_const> <declaration_var> <function_declaration> | <var_atr> | <expressao>
@@ -126,6 +126,8 @@ class AnalisadorSintatico:
 
         elif len(self.tokens) > 1:
             print('CONSTANTES_0', self.palavra)
+            print('PILHA PREV_0', self.prevToken)
+            print('TOKEN PREV_0', self.getPrevToken().getWord())
             print('TOKEN_0', self.getToken().getWord())
 
             ############## constantes ##############
@@ -176,6 +178,8 @@ class AnalisadorSintatico:
 
         elif len(self.tokens) > 1:
             print('CONSTANTES_1', self.palavra)
+            print('PILHA PREV_1', self.prevToken)
+            print('TOKEN PREV_1', self.getPrevToken().getWord())
             print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
@@ -231,6 +235,8 @@ class AnalisadorSintatico:
 
         elif len(self.tokens) > 1:
             print('CONSTANTES_2', self.palavra)
+            print('PILHA PREV_2', self.prevToken)
+            print('TOKEN PREV_2', self.getPrevToken().getWord())
             print('TOKEN_2', self.getToken().getWord())
 
             # FIRST DERIV.
@@ -818,12 +824,6 @@ class AnalisadorSintatico:
             ############## erro ##############
             else:
                 print('erro_v_m_access_3',self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
-
-            ############## erro ##############
-            else:
-                print('erro_v_m_access_3', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
 
