@@ -71,12 +71,7 @@ class AnalisadorSintatico:
                     if len(self.grammars) >= (idx + 1):
                         self.next_grammar = self.grammars[idx+1]
                         if len(self.tokens) > 1:
-                            print(self.grammars[self.grammar])
-                            print('hhhhhhhhh')
-                            print(self.getToken().getWord())
-                            print('kkkkkkkk')
                             while (self.getToken().getWord() != self.next_grammar and self.getToken().getWord() != self.grammars[self.grammar]) and self.forward() != 'EOF':
-                                print('aaaaaaaaa')
                                 self.getNextToken()
                                 error = error + ',' + self.getToken().getWord()
                             error = error + '). Pois era esperado: ' + match
