@@ -29,7 +29,7 @@ class AnalisadorSintatico:
             return Token("EOF", "EOF", -1)
 
     def getPrevToken(self):
-        if len(self.prevToken) > 1:
+        if len(self.prevToken) > 0:
             return self.prevToken[-1]
         else:
             return Token("EOF", "EOF", -1)
@@ -72,8 +72,8 @@ class AnalisadorSintatico:
                         self.next_grammar = self.grammars[idx+1]
                         if len(self.tokens) > 1:
                             while (self.getToken().getWord() != self.next_grammar and self.getToken().getWord() != self.grammars[self.grammar]) and self.forward() != 'EOF':
-                                self.getNextToken()
                                 error = error + ',' + self.getToken().getWord()
+                                self.getNextToken()
                             error = error + '). Pois era esperado: ' + match
                             print(error)
                             self.errors.append(error)
