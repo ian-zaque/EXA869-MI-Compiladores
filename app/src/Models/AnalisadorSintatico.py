@@ -188,7 +188,6 @@ class AnalisadorSintatico:
         elif len(self.tokens) > 1:
             print('REGISTRO_1', self.palavra)
             print('TOKEN_1', self.getToken().getWord())
-            print('TOKEN_1', self.getToken().getType())
 
             ############## <declaracao_reg1> ##############
             if self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE' and self.getPrevToken().getWord() == '{':
@@ -689,7 +688,6 @@ class AnalisadorSintatico:
 
         elif len(self.tokens) > 1:
             print('CONSTANTES_0', self.palavra)
-            print('TOKEN PREV_0', self.getPrevToken().getWord())
             print('TOKEN_0', self.getToken().getWord())
 
             ############## constantes ##############
@@ -743,7 +741,6 @@ class AnalisadorSintatico:
 
         elif len(self.tokens) > 1:
             print('CONSTANTES_1', self.palavra)
-            print('TOKEN PREV_1', self.getPrevToken().getWord())
             print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
@@ -803,7 +800,6 @@ class AnalisadorSintatico:
 
         elif len(self.tokens) > 1:
             print('CONSTANTES_2', self.palavra)
-            print('TOKEN PREV_2', self.getPrevToken().getWord())
             print('TOKEN_2', self.getToken().getWord())
 
             # FIRST DERIV.
