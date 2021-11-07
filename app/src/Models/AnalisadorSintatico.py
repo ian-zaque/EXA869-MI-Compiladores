@@ -103,10 +103,7 @@ class AnalisadorSintatico:
         if self.getToken().getType() == 'EOF':
             return
 
-        elif len(self.tokens) > 1:
-                    
-            self.chamada_funcao()
-            
+        elif len(self.tokens) > 1:            
             while (self.getToken().getWord() == 'registro'):
                 self.declaracao_reg()
 
