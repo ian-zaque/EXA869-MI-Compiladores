@@ -98,13 +98,15 @@ class AnalisadorSintatico:
         self.errors = []
         self.start()
 
-    # <Program> ::= <declaracao_reg> <declaration_const> <declaration_var> <function_declaration> | <var_atr> | <expressao>
+    # <Program> ::= <declaracao_reg> <declaration_const> <declaration_var> <function_declaration>
     def start(self):
         if self.getToken().getType() == 'EOF':
             return
 
         elif len(self.tokens) > 1:
-
+                    
+            self.chamada_funcao()
+            
             while (self.getToken().getWord() == 'registro'):
                 self.declaracao_reg()
 
@@ -713,7 +715,7 @@ class AnalisadorSintatico:
             ############## fim '=' ##############
 
             ############## <value> ##############
-            elif self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'PRE':
+            elif self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or (self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'):
                 self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const2()
@@ -774,7 +776,7 @@ class AnalisadorSintatico:
             ############## fim '=' ##############
 
             ############## <value> ##############
-            elif self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'PRE':
+            elif self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or (self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'):
                 self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_const1()
@@ -898,7 +900,7 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             ############## <value> ##############
-            if self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'PRE' or self.getToken().getType() == 'IDE':
+            if self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or (self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'):
                 self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var2()
@@ -1353,3 +1355,276 @@ class AnalisadorSintatico:
                 self.palavra = ''
                 return
             ############## fim erro ##############
+
+
+    # <var_atr> ::= <read_value> '=' <atr_value> <atr_1> 
+    def var_atr(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('var_atr_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+            
+            ############# <read_value> #############
+            if self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.read_value()
+            ############# fim <read_value> #############
+            
+            ############# '=' #############
+            # TESTAR AQUI ULTIMO TOKEN DE read_value()
+            elif self.getToken().getWord() == '=' and self.getPrevToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.var_atr()
+            ############# fim '=' #############
+
+            ############# <atr_value> #############
+            # ADD TESTE DE <expressao>
+            # <value_with_expressao>  ::= <expressao> | cad | char 
+            elif (self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE'):
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.atr_value()
+            ############# fim <atr_value> #############
+            
+            ############# <atr_1> FIRST DERIV. #############
+            # ','
+            elif self.getToken().getWord() == ',':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.atr_1()
+            ############# fim <atr_1> #############
+            
+            ############# <atr_1> SECOND DERIV. #############
+            # ';'
+            elif self.getToken().getWord() == ';':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                print('fim_var_atr_0',self.palavra, '\n')
+                self.palavra = ''
+                self.getNextToken()
+                return
+            ############# <atr_1> #############
+
+            ############# erro ##############
+            else:
+                print('erro_var_atr_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
+    
+    # <read_value> ::= id <read_value0>
+    def read_value(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('read_value_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+
+            # <read_value0> ::= <v_m_access> | <elem_registro> | <>
+            
+            if self.getToken().getWord() == '=':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.var_atr()
+            
+            ############## <read_value0> ##############
+            # <v_m_access>
+            elif (self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO') and self.getPrevToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.v_m_access()
+            ############## fim <read_value0> ##############
+
+            ############## <read_value0> ##############
+            # <elem_registro>
+            elif self.getToken().getWord() == '.' and self.getPrevToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.elem_registro()
+            ############## fim <read_value0> ##############
+            
+            ############# erro ##############
+            else:
+                print('erro_read_value_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
+
+    # <atr_1> ::= ',' <var_atr> | ';'
+    def atr_1(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('atr_1',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+
+            # FIRST DERIV.
+            ############## <var_atr> ##############
+            if self.getPrevToken().getWord() == ',' and self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.var_atr()
+            ############## fim <var_atr> ##############
+            
+            # SECOND DERIV.
+            ############## ';' ##############
+            elif self.getToken().getWord() == ';':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                print('fim_atr_1',self.palavra, '\n')
+                self.palavra = ''
+                self.getNextToken()
+                return
+            ############# ';' #############
+
+            ############# erro ##############
+            else:
+                print('erro_atr_1',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
+            
+    # <atr_value> ::= <value_with_expressao> | <functionCall>
+    def atr_value(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('atr_value_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+
+            # FIRST DERIV.
+            # <expressao>   ::= <expr_rel> <expr_log1> | '(' <expressao> ')' <expr_log2> | '!' <expressao> 
+            # ADD TESTE DE EXPRESSÃO AQUI
+            # if self.getPrevToken()
+            
+            #SECOND DERIV.
+            ############## <functionCall> ##############
+            if self.getToken().getWord() == '(' and self.getPrevToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.chamada_funcao()
+            ############## fim <functionCall> ##############
+            
+            ############# erro ##############
+            else:
+                print('erro_atr_value_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############     
+        
+            
+    # <functionCall> ::= id '(' <varList0> ')' ';'
+    def chamada_funcao(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('chamada_funcao_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+            
+            ############## id ##############
+            if self.getToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.chamada_funcao()
+            ############## fim id ##############
+            
+            ############## '(' ##############
+            elif self.getToken().getWord() == '(' and self.getPrevToken().getType() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.chamada_funcao()
+            ############## fim '(' ##############
+            
+            ############## <varList0> ##############
+            elif (self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or (self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso')) and (self.getPrevToken().getWord() == '('):
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.var_list0()
+            ############## fim <varList0> ##############
+
+            ############## ')' ##############
+            # ADD TESTE DE ULTIMO CARACTER DE <var_list0>
+            elif self.getToken().getWord() == ')':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.chamada_funcao()
+            ############## fim ')' ##############
+            
+            ############## ';' ##############
+            elif self.getToken().getWord() == ';' and self.getPrevToken().getWord() == ')':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                print('fim_chamada_funcao_0',self.palavra, '\n')
+                self.palavra = ''
+                self.getNextToken()
+                return
+            ############## fim ';' ##############
+            
+    
+    # <varList0> ::= <value> <varList2> | <read_value> <varList2> | <>
+    def var_list0(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('varList_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+
+            #FIRST DERIV. OR SECOND DERIV.
+            ############## <varList2> ##############
+            if self.getToken().getWord() == ',' and (self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getType() == 'CAD' or self.getPrevToken().getType() == 'CAR' or (self.getPrevToken().getWord() == 'verdadeiro' or self.getPrevToken().getWord() == 'falso')):    
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.var_list2()
+            ############## fim <varList2> ##############
+            
+            ############# erro ##############
+            else:
+                print('erro_varList_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ############## 
+            
+    # <varList1> ::= <value> <varList2> | <read_value> <varList2>
+    # def var_list1(self):
+    #     if self.getToken().getType() == 'EOF':
+    #         return
+        
+    #     elif self.counter < len(self.tokens):
+    #         print('varList_1',self.palavra)
+    #         print('TOKEN_1',self.getToken().getWord())
+    
+    
+    # <varList2> ::= ',' <varList1> | <> 
+    def var_list2(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('varList_2',self.palavra)
+            print('TOKEN_2',self.getToken().getWord())
+            
+            ############## <varList1> ##############
+            if (self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or (self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso')) and (self.getPrevToken().getWord() == ','):
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.var_list2()
+            ############## fim <varList1> ##############
+            
+            
+            elif self.getToken().getWord() == ')':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.chamada_funcao()           
+            
+            ############# erro ##############
+            else:
+                print('erro_varList_2',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ############## 
+            
+            
+            
