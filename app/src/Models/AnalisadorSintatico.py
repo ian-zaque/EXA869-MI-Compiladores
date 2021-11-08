@@ -2931,9 +2931,7 @@ class AnalisadorSintatico:
             
             ############## FIRST DERIV OF <init> ##############
             elif (self.getToken().getWord() == 'IDE') and self.getPrevToken().getWord() == '(':
-                self.palavra = self.palavra + self.getToken().getWord() + '$'
-                self.getNextToken()
-                return self.init()
+                return self.var_atr()
             ############## fim <init> ##############
             
             ############## SECOND DERIV OF <init> ##############
@@ -2992,8 +2990,4 @@ class AnalisadorSintatico:
                 print('erro_para_0',self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
-
-
-    # <init> ::= <var_atr> | ';'
-
-
+                
