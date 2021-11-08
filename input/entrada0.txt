@@ -2,11 +2,11 @@
 
 registro teste_registro {
     inteiro a;
-    inteiro d[a], vec[2][2];
+    inteiro d[a];
     real    b;
     inteiro vec[2][2];
     real    b;
-    Pessoa  teste[1][1], vec[2][2];
+    Pessoa  teste[1][1];
     real    b;
     Pessoa  teste_1[2];
     real    b;
