@@ -1806,7 +1806,7 @@ class AnalisadorSintatico:
 
             ############# erro ##############
             else:
-                print('erro_varList_2', self.palavra)
+                print('erro_vector_matrix_0', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
 
@@ -1929,7 +1929,7 @@ class AnalisadorSintatico:
 
             ############# erro ##############
             else:
-                print('erro_vector_matrix_1', self.palavra)
+                print('erro_vector_matrix_2', self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
 
