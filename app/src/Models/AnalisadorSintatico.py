@@ -914,12 +914,15 @@ class AnalisadorSintatico:
 
             # SECOND DERIV.
             ############## <vector_matrix> ##############
-            # TESTAR INICIO DE MATRIZ E VETOR AQUI
+            elif self.getToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.vector_matrix()          
             ############## fim <vector_matrix> ##############
 
             # LAST PART OF FIRST DERIV. AND THIRD DERIV.
             ############## <declaracao_var3> ##############
-            elif self.getToken().getType() == 'DEL' and (self.getToken().getWord() == ',' or self.getToken().getWord() == ';'):
+            elif self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
                 self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.declaracao_var3()
@@ -1022,7 +1025,6 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     # <function_declaration1> ::= algoritmo <main_function> | <function_declaration2>
-
     def declaracao_funcao1(self):
         if self.getToken().getType() == 'EOF':
             return
@@ -1381,11 +1383,7 @@ class AnalisadorSintatico:
             ############# fim '=' #############
 
             ############# <atr_value> #############
-            # ADD TESTE DE <expressao>
-            # <value_with_expressao>  ::= <expressao> | cad | char 
-            elif (self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE'):
-                self.palavra = self.palavra + self.getToken().getWord() + '$ '
-                self.getNextToken()
+            elif self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!':
                 return self.atr_value()
             ############# fim <atr_value> #############
             
@@ -1497,10 +1495,13 @@ class AnalisadorSintatico:
             print('TOKEN_0',self.getToken().getWord())
 
             # FIRST DERIV.
-            # <expressao>   ::= <expr_rel> <expr_log1> | '(' <expressao> ')' <expr_log2> | '!' <expressao> 
-            # ADD TESTE DE EXPRESSÃO AQUI
-            # if self.getPrevToken()
-            
+            ############## <value_with_expressao> ##############
+            if self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.expressao()                
+            ############## fim <value_with_expressao> ##############
+                
             #SECOND DERIV.
             ############## <functionCall> ##############
             if self.getToken().getWord() == '(' and self.getPrevToken().getType() == 'IDE':
@@ -1624,6 +1625,53 @@ class AnalisadorSintatico:
                 print('erro_varList_2',self.palavra)
                 # self.getNextToken()
             ############## fim erro ############## 
+    
+    # <vector_matrix>   ::= '[' <expr_number> ']' <vector_matrix_1>
+    def vector_matrix(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('vector_matrix_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+            
+            ############## '[' ##############
+            if self.getToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.vector_matrix()
+            ############## fim '[' ##############
+    
+            ############## <expr_number> ##############
+            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == '(') and self.getPrevToken().getWord() == '[':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.expr_number()
+            ############## fim <expr_number> ############## 
+
+            ############## ']' ##############
+            elif self.getToken().getWord() == ']':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.vector_matrix()
+            ############## ']' ##############
+
+            ############## '[' ##############
+            elif self.getToken().getWord() == '[' and self.getPrevToken().getWord() == ']':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.vector_matrix1()
+            ############## '[' ##############
+
+            ############# erro ##############
+            else:
+                print('erro_varList_2',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ############## 
+    
+    # <vector_matrix_1> ::= '[' <expr_number> ']' <vector_matrix_2> | '=' <init_vector> <declaration_var3> | <declaration_var3>
+    
+    
     
     
     # <expressao>   ::= <expr_rel> <expr_log1> | '(' <expressao> ')' <expr_log2> | '!' <expressao> 
