@@ -1,46 +1,103 @@
-%asdlkf asf
-
 registro teste_registro {
     inteiro a;
     inteiro d[a];
-    real    b;
-    inteiro vec[2][2];
-    real    b;
+    inteiro d[2][2];
     Pessoa  teste[1][1];
-    real    b;
     Pessoa  teste_1[2];
     real    b;
     cadeia  c;
 }
-
-registro teste_registro {
-    inteiro a, z, y, w;
+registro teste_registro_1 {
+    inteiro a,d,e,f;
     real    b;
     cadeia  c;
 }
-
+registro teste_registro_2 {
+    inteiro a,d,e,f;
+    real    b;
+    cadeia  c;
+}
 constantes {
-    cadeia frase = "frase aqui";
     inteiro a = 2;
     real    b = 2.23,c = 23.40;
 }
 
 variaveis {
-    inteiro valor, outro, um;
+    Pessoa  teste[0];
+    Pessoa  teste[2];
     inteiro teste   = 2;
     real    teste_2 = 2.23,c = 23.40;
     cadeia  c;
     booleano d      = verdadeiro;
+    inteiro a[2], teste[3], teste_a = 2, teste_b = 200;
+    inteiro b[2] = [0,1,2], m[1][1] = [1,2; 3,4];
+    real    c[2][2];
+    real    d[2][2] = [0.1, 0.2, 0.3; 1.1, 1.2, 1.3; 2.1, 2.2, 2.3];
 }
 
-funcao real faca_algo(inteiro num, real mun, Pessoa pess[][], inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num, inteiro num,){
-
+funcao inteiro funcao_teste_1 ( ){
+    retorno;
 }
 
-funcao booleano algoritmo(){
+funcao inteiro funcao_teste_2 ( Pessoa nova_pessoa, inteiro local_1, real local_2, cadeia a[], inteiro b[][]){
+    constantes {
+        inteiro local_a = 2;
+        real    local_b = 2.23,c = 23.40;
+    }
 
+    variaveis {
+        inteiro  local_teste   = 2;
+        real     locao_teste_2 = 2.23,c = 23.40;
+        cadeia   local_c;
+        booleano local_d      = verdadeiro; 
+    }
+    se ( a == b ) {
+        escreva( local_c, 45, local_a );
+    }
+    senao se ( verdadeiro ) {
+        leia( local_d, local_teste );
+    }
+    senao {
+        escreva( local_c, 45, local_a );
+    }
+    
+    escreva( local_c, 45, local_a );
+    leia( local_d, local_teste );
+    retorno;
 }
 
-funcao inteiro outra_func(Pessoa pess[][]){
-
+funcao vazio algoritmo () {
+    variaveis {
+        inteiro local = 1;
+        char    teste;    
+    }
+    a = 2;
+    a = Pessoa.idade;
+    a[2] = "Cadeia_de_cadeia";
+    b[2][2] = "Cadeia_de_cadeia";
+    
+    se( (a[1] >= 2) || ((2 + 3 * 4) / 2 <= a[1][0]) && Pessoa.hasCar != falso ) {
+           
+    }
+    senao {
+        se( Pessoa.a[1][1] == verdadeiro ) {
+           b = 2;
+           b = Pessoa.idade;
+           b[2] = "aaaa";
+           b[2][2] = "Cadeia_de_cadeia";
+          
+           funcao_teste_1();
+           
+           para( i = 2 ; i < ((teste + 2) / 3)  ; i ++ ){
+                se( (a + 2) != 3 ){
+                }
+           }
+        }
+        senao {
+            se((teste && teste) || (teste || teste) ){
+               retorno (a + b);
+            }
+        }    
+    }
+    retorno;
 }
