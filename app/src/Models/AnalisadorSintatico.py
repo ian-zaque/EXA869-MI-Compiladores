@@ -1240,11 +1240,13 @@ class AnalisadorSintatico:
                 return self.declaracao_funcao2()
             ############# fim '{' #############
 
-            ############# <function_body> #############
-            # TESTAR FUNCTION_BODY AQUI
-            ############# fim <function_body> #############
+            ############## <function_body> ##############
+            elif (self.getToken().getWord() == 'constantes' or self.getToken().getWord() == 'variaveis' or self.getToken().getWord() == 'enquanto' or self.getToken().getWord() == 'para' or self.getToken().getWord() == 'se' or self.getToken().getWord() == 'escreva' or self.getToken().getWord() == 'leia' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'retorno') and (self.getPrevToken().getWord() == '{'):
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.corpo_funcao()
+            ############## fim <function_body> ##############
 
-            # ADD TESTE DE FUM DE CORPO DE FUNCAO OR getPrevToken().getWord == '{'
             ############# '}' #############
             elif self.getToken().getWord() == '}':
                 self.palavra = self.palavra + self.getToken().getWord() + '$ '
@@ -1291,10 +1293,12 @@ class AnalisadorSintatico:
             ############# fim '{' #############
 
             ############# <function_body> #############
-            # TESTAR FUNCTION_BODY AQUI
-            ############# fim <function_body> #############
+            elif (self.getToken().getWord() == 'constantes' or self.getToken().getWord() == 'variaveis' or self.getToken().getWord() == 'enquanto' or self.getToken().getWord() == 'para' or self.getToken().getWord() == 'se' or self.getToken().getWord() == 'escreva' or self.getToken().getWord() == 'leia' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'retorno') and (self.getPrevToken().getWord() == '{'):
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.corpo_funcao()
+            ############## fim <function_body> ##############
 
-            # ADD TESTE DE FUM DE CORPO DE FUNCAO
             ############# '}' #############
             elif self.getToken().getWord() == '}':
                 self.palavra = self.palavra + self.getToken().getWord() + '$ '
@@ -3360,7 +3364,7 @@ class AnalisadorSintatico:
             
             # SECOND DERIV.
             ############## <function_body1> ##############
-            elif self.getToken().getWord() == 'variaveis' and self.getPrevToken().getWord() == '{':
+            elif (self.getToken().getWord() == 'variaveis' and self.getToken().getWord() == 'enquanto' or self.getToken().getWord() == 'para' or self.getToken().getWord() == 'se' or self.getToken().getWord() == 'escreva' or self.getToken().getWord() == 'leia' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'retorno') and (self.getPrevToken().getWord() == '{'):
                 self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
                 return self.corpo_funcao1()
@@ -3396,12 +3400,12 @@ class AnalisadorSintatico:
             ############## fim <corpo_funcao2> ##############
     
             # SECOND DERIV.
-            ############## <com_body> ##############
+            ############## <function_body2> ##############
             if self.getToken().getWord() == 'enquanto' or self.getToken().getWord() == 'para' or self.getToken().getWord() == 'se' or self.getToken().getWord() == 'escreva' or self.getToken().getWord() == 'leia' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'retorno':
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
                 return self.corpo_funcao2()
-            ############## fim <com_body> ##############
+            ############## fim <function_body2> ##############
     
             ############# erro ##############
             else:
