@@ -3044,3 +3044,153 @@ class AnalisadorSintatico:
                 print('erro_para_0',self.palavra)
                 # self.getNextToken()
             ############## fim erro ##############
+
+
+    # <se> ::= 'se' '(' <expressao> ')' '{' <com_body> '}' <se_body> 
+    def se(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('se_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+
+            # FIRST DERIV.
+            ############## 'se' ##############
+            if self.getToken().getWord() == 'se':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.se()
+            ############## fim 'se' ##############
+            
+            ############## '(' ##############
+            elif self.getToken().getWord() == '(' and self.getPrevToken().getWord() == 'se':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.se()
+            ############## fim '(' ##############
+            
+            ############## <expressao> ##############
+            elif self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.expressao()
+            ############## fim <expressao> ##############
+            
+            ############## ')' ##############
+            # ADD TESTE DE ULTIMO CARACTER DE EXPRESSAO
+            elif self.getToken().getWord() == ')':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.se()
+            ############## fim ')' ##############
+            
+            ############## '{' ##############
+            elif self.getToken().getWord() == '{' and self.getPrevToken().getWord() == ')':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.se()
+            ############## fim '{' ##############
+            
+            #
+            # ADD TESTE DE <com_body>
+            #
+            
+            ############## '}' ##############
+            # ADD TESTE DE ULTIMO CARACTER DE <com_body>
+            elif self.getToken().getWord() == '}':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.se()
+            ############## fim '}' ##############
+            
+            ############## <se_body> ##############
+            # <se_body>  ::= <senao> | <>
+            elif self.getToken().getWord() == 'senao' and self.getPrevToken().getWord() == '}':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                return self.senao()
+            ############## fim <senao> ##############
+            
+            elif self.getToken().getWord() != 'senao' and self.getPrevToken().getWord() == '}':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                print('fim_se', self.palavra, '\n')
+                self.palavra = ''
+                return
+            
+            ############# erro ##############
+            else:
+                print('erro_se_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ############## 
+
+
+    # <senao>  ::= 'senao' <se_senao>
+    def senao(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('senao_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+
+            # FIRST DERIV.
+            ############## 'senao' ##############
+            if self.getToken().getWord() == 'senao':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.senao()
+            ############## fim 'senao' ##############
+            
+            ############## '<se_senao> ##############
+            elif (self.getToken().getWord() == 'se' or self.getToken().getWord() == '{') and self.getPrevToken().getWord() == 'senao':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.se_senao()
+            ############## fim '<se_senao> ##############
+
+            ############# erro ##############
+            else:
+                print('erro_senao_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ############## 
+
+
+    # <se_senao>  ::= <se> | '{' <com_body> '}' 
+    def se_senao(self):
+        if self.getToken().getType() == 'EOF':
+            return
+        
+        elif self.counter < len(self.tokens):
+            print('se_0',self.palavra)
+            print('TOKEN_0',self.getToken().getWord())
+
+            # FIRST DERIV.            
+            ############## <se> ##############
+            if self.getToken().getWord() == '(' and self.getPrevToken().getWord() == 'se':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
+                return self.se()
+            ############## fim <se> ##############
+
+            # SECOND DERIV.
+            ############## <com_body> ##############
+            # ADD TESTE DE <com_body>
+            ############## fim <com_body> ##############
+                       
+            ############## '}' ##############
+            # ADD TESTE DE ULTIMO CARACTER DE <com_body>
+            elif self.getToken().getWord() == '}':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                print('fim_para', self.palavra, '\n')
+                self.palavra = ''
+                self.getNextToken()
+                return
+            ############## fim '}' ##############
+            
+            ############# erro ##############
+            else:
+                print('erro_se_senao_0',self.palavra)
+                # self.getNextToken()
+            ############## fim erro ##############
+            
