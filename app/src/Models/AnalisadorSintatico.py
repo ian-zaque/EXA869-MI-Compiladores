@@ -2196,6 +2196,11 @@ class AnalisadorSintatico:
             print('init_matrix_2', self.palavra)
             print('TOKEN_2', self.getToken().getWord())
 
+            if self.getToken().getWord() == ';' and self.getPrevToken().getWord() == ']':
+                self.palavra = self.palavra + self.getToken().getWord() + ' '
+                self.getNextToken()
+                return self.declaracao_var1()
+
             # FIRST DERIV. OR  SECOND DERIV.
             if self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
