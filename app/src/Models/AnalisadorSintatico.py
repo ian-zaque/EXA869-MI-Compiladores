@@ -754,9 +754,16 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == '{':
                     self.palavra = self.palavra + self.getToken().getWord() + '$ '
                     print('fim_constantes', self.palavra, '\n')
-                    self.palavra = ''
-                    self.getNextToken()
-                    return
+                    
+                    if self.origin == 'corpo_funcao':
+                        self.origin = ''
+                        self.getNextToken()
+                        return self.corpo_funcao()
+                    
+                    else:
+                        self.palavra = ''
+                        self.getNextToken()
+                        return
                 else:
                     self.errorSintatico('um { antes de }')
                     self.palavra = ''
@@ -832,9 +839,16 @@ class AnalisadorSintatico:
                     # FIM DERIVACAO 2
                     self.palavra = self.palavra + self.getToken().getWord() + '$ '
                     print('fim_constantes', self.palavra, '\n')
-                    self.palavra = ''
-                    self.getNextToken()
-                    return
+                    
+                    if self.origin == 'corpo_funcao':
+                        self.origin = ''
+                        self.getNextToken()
+                        return self.corpo_funcao()
+                    
+                    else:
+                        self.palavra = ''
+                        self.getNextToken()
+                        return
             ############## fim '}' ##############
 
             if self.getToken().getType() == 'PRE' and self.getToken().getWord() != 'constantes' and (not self.isPrimitiveType(self.getToken().getWord())):
@@ -999,9 +1013,16 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == ';' or self.getPrevToken().getWord() == '{':
                     self.palavra = self.palavra + self.getToken().getWord() + '$ '
                     print('fim_variaveis', self.palavra, '\n')
-                    self.palavra = ''
-                    self.getNextToken()
-                    return
+                    
+                    if self.origin == 'corpo_funcao1':
+                        self.origin = ''
+                        self.getNextToken()
+                        return self.corpo_funcao1()
+                    
+                    else:
+                        self.palavra = ''
+                        self.getNextToken()
+                        return
                 else:
                     self.errorSintatico(' { ou ; before } ')
                     self.palavra = ''
@@ -3443,24 +3464,25 @@ class AnalisadorSintatico:
 
         elif self.counter < len(self.tokens):
             print('corpo_funcao_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
+            print('TOKEN_0', self.getToken().getWord(), self.getToken().getType())
 
             # FIRST DERIV.
             ############## <declaration_const> ##############
             if self.getToken().getWord() == 'constantes':
                 self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
+                self.origin = 'corpo_funcao'
                 return self.declaracao_const()
             ############## fim <declaration_const> ##############
 
             ############## <function_body1> ##############
-            elif (self.getToken().getWord() == 'variaveis' and self.getToken().getWord() == 'enquanto' or self.getToken().getWord() == 'para' or self.getToken().getWord() == 'se' or self.getToken().getWord() == 'escreva' or self.getToken().getWord() == 'leia' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'retorno') and (self.getPrevToken().getWord() == '}'):
+            elif (self.getToken().getWord() == 'variaveis' or self.getToken().getWord() == 'enquanto' or self.getToken().getWord() == 'para' or self.getToken().getWord() == 'se' or self.getToken().getWord() == 'escreva' or self.getToken().getWord() == 'leia' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'retorno') and (self.getPrevToken().getWord() == '}'):
                 return self.corpo_funcao1()
             ############## fim <function_body1> ##############
 
             # SECOND DERIV.
             ############## <function_body1> ##############
-            elif (self.getToken().getWord() == 'variaveis' and self.getToken().getWord() == 'enquanto' or self.getToken().getWord() == 'para' or self.getToken().getWord() == 'se' or self.getToken().getWord() == 'escreva' or self.getToken().getWord() == 'leia' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'retorno') and (self.getPrevToken().getWord() == '{'):
+            elif (self.getToken().getWord() == 'variaveis' or self.getToken().getWord() == 'enquanto' or self.getToken().getWord() == 'para' or self.getToken().getWord() == 'se' or self.getToken().getWord() == 'escreva' or self.getToken().getWord() == 'leia' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'retorno'):
                 return self.corpo_funcao1()
             ############## fim <function_body1> ##############
 
@@ -3473,8 +3495,12 @@ class AnalisadorSintatico:
                     return self.declaracao_funcao2()
                 
                 elif self.origin == 'main_function':
-                    self.origin = ''     
+                    self.origin = ''  
                     return self.main_function()
+                
+                else:
+                    self.origin = ''
+                    return
             # FIM DE CORPO DE FUNCAO
 
             ############# erro ##############
@@ -3495,7 +3521,10 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             ############## <declaration_var> ##############
-            if self.getToken().getWord() == '{' and self.getPrevToken().getWord() == 'variaveis':
+            if self.getToken().getWord() == 'variaveis':
+                self.palavra = self.palavra + self.getToken().getWord() + '$ '
+                self.getNextToken()
+                self.origin = 'corpo_funcao1'
                 return self.declaracao_var()
             ############## fim <declaration_var> ##############
 
