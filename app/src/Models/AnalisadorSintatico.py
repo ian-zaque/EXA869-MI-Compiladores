@@ -19,6 +19,7 @@ class AnalisadorSintatico:
         self.palavra = ''
         self.grammars = ['registro', 'constantes', 'variaveis', 'funcao']
         self.grammar = 0
+        self.call == ''
 
     def getCounter(self):
         return self.counter
@@ -1053,7 +1054,6 @@ class AnalisadorSintatico:
             ############# <vector_matrix> ##############
             elif self.getToken().getWord() == '[':
                 if self.getPrevToken().getType() == 'IDE':
-                    print('kkkkkkk')
                     self.palavra = self.palavra + self.getToken().getWord() + '$ '
                     self.getNextToken()
                     return self.vector_matrix()
@@ -1159,6 +1159,7 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('funcao_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
+            self.call == 'declaracao_funcao'
 
             ############# funcao ##############
             if self.getToken().getWord() == 'funcao':
@@ -1199,6 +1200,7 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('funcao_1', self.palavra)
             print('TOKEN_1', self.getToken().getWord())
+            self.call == 'declaracao_funcao1'
 
             # FIRST DERIV.
             ############# algoritmo #############
@@ -1238,6 +1240,7 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('funcao_2', self.palavra)
             print('TOKEN_2', self.getToken().getWord())
+            self.call == 'declaracao_funcao2'
 
             # FIRST DERIV.
             ############# id #############
@@ -1295,6 +1298,7 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('main_function_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
+            self.call == 'main_function'
 
             # FIRST DERIV.
             if self.getToken().getWord() == ')' and self.getPrevToken().getWord() == '(':
@@ -1399,6 +1403,8 @@ class AnalisadorSintatico:
                 print('fim_parametros_funcao_1', self.palavra, '\n')
                 self.palavra = self.palavra + self.getToken().getWord() + '$ '
                 self.getNextToken()
+                if self.call == 'main_function':
+                    return self.main_function()
                 return self.declaracao_funcao2()
             ############# ') #############
 
