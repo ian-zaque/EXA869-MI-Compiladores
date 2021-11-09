@@ -12,9 +12,10 @@ def readFileInputs(path, pathOutput, filename, index):
     #tokens = Automato(path + '\\' + filename).getTokens()
     tokens = Automato(path + '/' + filename).getTokens()
 
-    AnalisadorSintatico(tokens).parse(index)
+    sintatico = AnalisadorSintatico(tokens).parse(index)
 
-    FileWriter.write(path, pathOutput, filename, index, tokens)
+    FileWriter.write(path, pathOutput, filename, index, sintatico)
+    #FileWriter.write(path, pathOutput, filename, index, tokens)
 
 
 def main():

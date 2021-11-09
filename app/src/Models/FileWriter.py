@@ -6,21 +6,30 @@ class FileWriter:
             file = open(pathOutput+'/saida'+str(index)+'.txt', 'w')
             lineTxt = []
 
-            for idx, token in enumerate(tokens['states']):
-                lineTxt = str(token.getLine()+1) + ' ' + \
-                    token.getType() + ' ' + token.getWord()
-                file.write(lineTxt)
-                file.write('\n')
-
-            if len(tokens['errors']) >= 1:
+            if len(tokens) >= 1:
                 print(len(
-                    tokens['errors']), "erro(s) detectados no arquivo: entrada" + str(index) + '.txt')
+                    tokens), "erro(s) detectados no arquivo: entrada" + str(index) + '.txt')
 
-                for idx, token in enumerate(tokens['errors']):
+                for idx, token in enumerate(tokens):
                     file.write('\n')
-                    lineTxt = str(token.getLine()+1) + ' ' + \
-                        token.getType() + ' ' + token.getWord()
+                    lineTxt = str(token)
                     file.write(lineTxt)
+
+            # for idx, token in enumerate(tokens['states']):
+            #    lineTxt = str(token.getLine()+1) + ' ' + \
+            #        token.getType() + ' ' + token.getWord()
+            #    file.write(lineTxt)
+            #    file.write('\n')
+
+            # if len(tokens['errors']) >= 1:
+            #    print(len(
+            #        tokens['errors']), "erro(s) detectados no arquivo: entrada" + str(index) + '.txt')
+
+            #    for idx, token in enumerate(tokens['errors']):
+            #        file.write('\n')
+            #        lineTxt = str(token.getLine()+1) + ' ' + \
+            #            token.getType() + ' ' + token.getWord()
+            #        file.write(lineTxt)
 
             else:
                 print("Sucesso! Arquivo:", '\'saida' +
