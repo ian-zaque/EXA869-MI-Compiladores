@@ -73,7 +73,7 @@ class AnalisadorSintatico:
                                    ) + ': Erro sintatico encontrado (' + self.palavra
             for idx, k in enumerate(self.grammars):
                 if k == self.grammars[self.grammar]:
-                    if len(self.grammars) >= (idx + 1):
+                    if len(self.grammars) > (idx + 1):
                         self.next_grammar = self.grammars[idx+1]
                         if len(self.tokens) > 1:
                             while (self.getToken().getWord() != self.next_grammar and self.getToken().getWord() != self.grammars[self.grammar]) and self.forward().getWord() != 'EOF':
