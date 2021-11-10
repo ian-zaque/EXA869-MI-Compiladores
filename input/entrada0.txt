@@ -38,7 +38,9 @@ variaveis {
     %real    d[2][2] = [0.1, 0.2, 0.3; 1.1, 1.2, 1.3; 2.1, 2.2, 2.3];
 }
 
-
+funcao inteiro funcao_teste_1 ( ){
+    retorno ;
+}
 
 funcao inteiro funcao_teste_2 (Pessoa nova_pessoa, inteiro local_1, real local_2, cadeia a[], inteiro b[][]){
     constantes {
@@ -74,9 +76,6 @@ funcao vazio algoritmo () {
         char    teste;    
     }
     a = 2;
-    chamado();
-    b = calling();
-    c = cahamd(algo, outro, 12);
     a = Pessoa.idade;
     a[2] = "Cadeia_de_cadeia";
     b[2][2] = "Cadeia_de_cadeia";

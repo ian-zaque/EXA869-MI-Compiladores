@@ -1215,6 +1215,7 @@ class AnalisadorSintatico:
             # SECOND DERIV.
             ############# <function_declaration2>  #############
             elif self.getToken().getType() == 'IDE' and (self.isPrimitiveType(self.getPrevToken().getWord()) or self.getPrevToken().getType() == 'IDE') and self.forward().getWord() == '(':
+
                 return self.declaracao_funcao2()
 
             elif self.getToken().getWord() == '(' and self.getPrevToken().getType() == 'IDE':
@@ -1346,6 +1347,20 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == '(':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
+                return self.parametros_funcao()
+            ############# fim '(' #############
+
+            elif self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE':
+                if self.getPrevToken().getWord() == '(':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    return self.parametros_funcao1()
+                else:
+                    self.errorSintatico(
+                        '( before ' + self.getToken().getWord())
+                    self.palavra = ''
+                    return
+            elif self.getToken().getWord() == ')':
                 return self.parametros_funcao1()
             ############# fim '(' #############
 
@@ -1367,23 +1382,29 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             ############# <type> #############
-            if self.getToken().getType() == 'IDE':
-                if self.getPrevToken().getType() == 'IDE' and self.getToken().getType() == 'IDE' and self.forward().getType() == 'IDE':
+            if self.isPrimitiveType(self.getToken().getWord()) and self.getPrevToken().getWord() == ',':
+                self.palavra = self.palavra + self.getToken().getWord() + ' '
+                self.getNextToken()
+                return self.parametros_funcao1()
+            elif self.getToken().getType() == 'IDE':
+                if self.getPrevToken().getType() == 'IDE' and self.forward().getType() == 'IDE':
                     self.errorSintatico('Only 2 IDE')
                     self.palavra = ''
                     return
-
-                elif self.isPrimitiveType(self.getPrevToken().getWord()):
+                else:
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
                     return self.parametros_funcao2()
 
-                elif self.getToken().getWord() == '[' or self.getToken().getWord() == ',':
-                    return self.parametros_funcao2()
+            elif self.isPrimitiveType(self.getToken().getWord()) and self.getPrevToken().getWord() == ',':
+                self.palavra = self.palavra + self.getToken().getWord() + ' '
+                self.getNextToken()
+                return self.parametros_funcao1()
 
             # SECOND DERIV.
             ############# ') #############
             elif self.getToken().getWord() == ')':
+                self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_parametros_funcao_1', self.palavra, '\n')
                 self.getNextToken()
 
@@ -1472,8 +1493,6 @@ class AnalisadorSintatico:
 
             ############# <function_parameters4> #############
             elif (self.getToken().getWord() == ',' or self.getToken().getWord() == ')') and self.getPrevToken().getWord() == ']':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
                 return self.parametros_funcao4()
             ############# fim <function_parameters4> #############
 
@@ -1503,6 +1522,7 @@ class AnalisadorSintatico:
             ############# ') #############
             elif self.getToken().getWord() == ')':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
+                print('fim_parametros_funcao_4', self.palavra, '\n')
                 self.getNextToken()
 
                 if self.origin == 'declaracao_funcao2':
