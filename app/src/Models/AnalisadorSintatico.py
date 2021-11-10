@@ -80,8 +80,8 @@ class AnalisadorSintatico:
                                 error = error + ',' + self.getToken().getWord()
                                 self.getNextToken()
                             error = error + '). Pois era esperado: ' + match
-                            print(error)
-                            self.errors.append(error)
+                    print(error)
+                    self.errors.append(error)
         else:
             error = 'Linha ' + str(self.getToken().getLine()) + \
                 ': Fim de arquivo encontrado era esperado o seguinte:' + match
@@ -1727,7 +1727,13 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             ############## <value_with_expressao> ##############
-            elif self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!':
+            elif (self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR'
+                    or self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '('):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -2263,14 +2269,24 @@ class AnalisadorSintatico:
             ############## fim '(' ##############
 
             ############## <expressao> ##############
-            elif self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!':
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '('):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
             ############## <expressao> ##############
 
             ############## ')' ##############
-            elif self.getToken().getWord() == ')' and (self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == 'verdadeiro' or self.getPrevToken().getWord() == 'falso' or self.getPrevToken().getWord() == '(' or self.getPrevToken().getWord() == '!'):
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '('):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -2292,7 +2308,12 @@ class AnalisadorSintatico:
             ############## fim '!' ##############
 
             ############## <expressao> ##############
-            elif (self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and self.getPrevToken().getWord() == '!':
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '(') and self.getPrevToken().getWord() == '!':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -2300,8 +2321,9 @@ class AnalisadorSintatico:
 
             ############# erro ##############
             else:
-                print('erro_expressao_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on expressao')
+                self.palavra = ''
+                return
             ############## fim erro ##############
 
     # <expr_log1> ::=  <operatorLog> <expressao> | <>
@@ -2323,7 +2345,12 @@ class AnalisadorSintatico:
             ############## fim <operatorLog> ##############
 
             ############## <expressao> ##############
-            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == '&&' or self.getPrevToken().getWord() == '||'):
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '(') and (self.getPrevToken().getWord() == '&&' or self.getPrevToken().getWord() == '||'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -2354,7 +2381,12 @@ class AnalisadorSintatico:
             ############## fim <operatorLog> ##############
 
             ############## <expressao> ##############
-            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == '&&' or self.getPrevToken().getWord() == '||'):
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '(') and (self.getPrevToken().getWord() == '&&' or self.getPrevToken().getWord() == '||'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -2369,7 +2401,12 @@ class AnalisadorSintatico:
             ############## fim <operator_multi> ##############
 
             ############## <expressao> ##############
-            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == '*' or self.getPrevToken().getWord() == '/'):
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '('):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -2384,7 +2421,12 @@ class AnalisadorSintatico:
             ############## fim <operator_rel> ##############
 
             ############## <expressao> ##############
-            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.isRelOperator(self.getPrevToken().getWord())):
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '(') and (self.isRelOperator(self.getPrevToken().getWord())):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -2399,7 +2441,12 @@ class AnalisadorSintatico:
             ############## fim <operator_soma> ##############
 
             ############## <expressao> ##############
-            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == '+' or self.getPrevToken().getWord() == '-'):
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '('):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -2741,7 +2788,12 @@ class AnalisadorSintatico:
             ############## fim '(' ##############
 
             ############## <expressao> ##############
-            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == '('):
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '(') and (self.getPrevToken().getWord() == '('):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -2859,7 +2911,13 @@ class AnalisadorSintatico:
             ############## fim '(' ##############
 
             ############## <value_with_expressao> ##############
-            elif (self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == '('):
+            elif (self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR'
+                    or self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '(') and (self.getPrevToken().getWord() == '('):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -2920,7 +2978,13 @@ class AnalisadorSintatico:
             ############## fim ',' ##############
 
             ############## <value_with_expressao> ##############
-            elif (self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == ','):
+            elif (self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR'
+                    or self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '(') and (self.getPrevToken().getWord() == ','):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 self.origin = 'escreva'
@@ -3083,7 +3147,12 @@ class AnalisadorSintatico:
 
             ############## <args> ##############
             # <args> ::= <expressao> |
-            elif self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!':
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '('):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -3165,7 +3234,12 @@ class AnalisadorSintatico:
             ############## fim <init> ##############
 
             ############## <stop> ##############
-            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == ';'):
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '(') and (self.getPrevToken().getWord() == ';'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -3180,7 +3254,12 @@ class AnalisadorSintatico:
             ############## fim ';' ##############
 
             ############## <step> ##############
-            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == ';'):
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '(') and (self.getPrevToken().getWord() == ';'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -3243,7 +3322,12 @@ class AnalisadorSintatico:
             ############## fim '(' ##############
 
             ############## <expressao> ##############
-            elif self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!':
+            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '('):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
@@ -3482,7 +3566,13 @@ class AnalisadorSintatico:
 
             ############## <com_retornar1> ##############
             # <com_retornar1> ::= <value_with_expressao> | <>
-            elif (self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getToken().getWord() == 'retorno'):
+            elif (self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR'
+                    or self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '(') and (self.getToken().getWord() == 'retorno'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expressao()
