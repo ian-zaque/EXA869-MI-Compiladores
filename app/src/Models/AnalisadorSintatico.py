@@ -2902,7 +2902,6 @@ class AnalisadorSintatico:
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_escreva_0', self.palavra, '\n')
                 
-                print('aaaaaaaaaaaaaaa',self.origin)
                 if self.origin == 'corpo_funcao2' or self.origin == '':
                     self.origin = ''
                     self.getNextToken()
@@ -3685,6 +3684,7 @@ class AnalisadorSintatico:
             ############## <com_retornar>##############
             if self.getToken().getWord() == 'retorno':
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
+                self.getNextToken()
                 return self.retornar_funcao()
             ############## fim <com_retornar> ##############
 
@@ -3707,27 +3707,27 @@ class AnalisadorSintatico:
             print('TOKEN_0', self.getToken().getWord())
 
            # FIRST DERIV.
-            ############## <com_enquanto> ##############
+            ############## retorno ##############
             if self.getToken().getWord() == 'retorno':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.retornar_funcao1()
-            ############## fim <com_enquanto> ##############
+            ############## fim retorno ##############
 
             elif self.getToken().getWord() == ';':
                 if self.getPrevToken().getWord() == 'retorno' or self.getPrevToken().getWord() == '&&' or self.getPrevToken().getWord() == '||' or self.getPrevToken().getWord() == ')' or self.getPrevToken().getWord() == 'verdadeiro' or self.getPrevToken().getWord() == 'falso' or self.getPrevToken().getWord() == '+' or self.getPrevToken().getWord() == '-' or self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']' or self.getPrevToken().getWord() == '++' or self.getPrevToken().getWord() == '--':
-                    self.palavra = self.palavra + self.getToken().getWord() + '$ '
                     print('fim_retornar_funcao_0', self.palavra, '\n')
                     self.getNextToken()
                     # FIM DE CORPO DE FUNCAO
+                    
                     if self.getToken().getWord() == '}':
                         print('fim_corpo_funcao_0', self.palavra, '\n')
-
-                        if self.origin == 'declaracao_funcao2':
+                        
+                        if (self.origin == 'declaracao_funcao2') or ('algoritmo' not in self.palavra):
                             self.origin = ''
                             return self.declaracao_funcao2()
 
-                        elif self.origin == 'main_function':
+                        elif (self.origin == 'main_function') or ('algoritmo' in self.palavra):
                             self.origin = ''
                             return self.main_function()
 
@@ -3764,6 +3764,7 @@ class AnalisadorSintatico:
 
             ############## cad | char ##############
             if self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR':
+                self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
                 return self.retornar_funcao()
 
