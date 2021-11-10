@@ -1609,22 +1609,27 @@ class AnalisadorSintatico:
             print('TOKEN_0', self.getToken().getWord())
 
             ############# <read_value> #############
-            if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.read_value()
+            # if self.getToken().getType() == 'IDE':
+            #     self.palavra = self.palavra + self.getToken().getWord() + ' '
+            #     self.getNextToken()
+            #     return self.read_value()
             ############# fim <read_value> #############
 
             ############# '=' #############
             # TESTAR AQUI ULTIMO TOKEN DE read_value()
-            elif self.getToken().getWord() == '=' and self.getPrevToken().getType() == 'IDE':
+            if self.getToken().getWord() == '=' and self.getPrevToken().getType() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.var_atr()
             ############# fim '=' #############
 
+            elif self.getToken().getWord() == '(' and self.getPrevToken().getWord() == 'IDE':
+                self.palavra = self.palavra + self.getToken().getWord() + ' '
+                self.getNextToken()
+                return self.chamada_funcao()
+            
             ############# <atr_value> #############
-            elif self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!':
+            elif (self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == '='):
                 return self.atr_value()
             ############# fim <atr_value> #############
 
@@ -1641,9 +1646,8 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == ';':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_var_atr_0', self.palavra, '\n')
-                self.palavra = ''
                 self.getNextToken()
-                return
+                return self.corpo_funcao2()
             ############# <atr_1> #############
 
             ############# erro ##############
@@ -1667,12 +1671,17 @@ class AnalisadorSintatico:
                 self.getNextToken()
                 return self.read_value()
 
-            # <read_value0> ::= <v_m_access> | <elem_registro> | <>
-            elif self.getToken().getWord() == '=':
+            elif self.getToken().getWord() == '(' and self.getPrevToken().getWord() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.var_atr()
-
+                return self.chamada_funcao()
+            
+            # <read_value0> ::= <v_m_access> | <elem_registro> | <>
+            elif self.getToken().getWord() == '=':
+                # self.palavra = self.palavra + self.getToken().getWord() + ' '
+                # self.getNextToken()
+                return self.var_atr()       
+            
             ############## <read_value0> ##############
             # <v_m_access>
             elif (self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO') and self.getPrevToken().getType() == 'IDE':
@@ -1749,14 +1758,11 @@ class AnalisadorSintatico:
             print('atr_value_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
 
-            # FIRST DERIV.
-            ############## <value_with_expressao> ##############
-            if self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!':
+            if self.getToken().getType() == 'IDE' and self.getPrevToken().getWord() == '=':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expressao()
-            ############## fim <value_with_expressao> ##############
-
+                return self.atr_value()
+            
             # SECOND DERIV.
             ############## <functionCall> ##############
             if self.getToken().getWord() == '(' and self.getPrevToken().getType() == 'IDE':
@@ -1764,6 +1770,14 @@ class AnalisadorSintatico:
                 self.getNextToken()
                 return self.chamada_funcao()
             ############## fim <functionCall> ##############
+            
+            # FIRST DERIV.
+            ############## <value_with_expressao> ##############
+            elif self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso' or self.getToken().getWord() == '(' or self.getToken().getWord() == '!':
+                self.palavra = self.palavra + self.getToken().getWord() + ' '
+                self.getNextToken()
+                return self.expressao()
+            ############## fim <value_with_expressao> ##############
 
             ############# erro ##############
             else:
@@ -1782,14 +1796,14 @@ class AnalisadorSintatico:
             print('TOKEN_0', self.getToken().getWord())
 
             ############## id ##############
-            if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.chamada_funcao()
+            # if self.getToken().getType() == 'IDE':
+            #     self.palavra = self.palavra + self.getToken().getWord() + ' '
+            #     self.getNextToken()
+            #     return self.chamada_funcao()
             ############## fim id ##############
 
             ############## '(' ##############
-            elif self.getToken().getWord() == '(' and self.getPrevToken().getType() == 'IDE':
+            if self.getToken().getWord() == '(' and self.getPrevToken().getType() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.chamada_funcao()
@@ -1814,9 +1828,15 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == ';' and self.getPrevToken().getWord() == ')':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_chamada_funcao_0', self.palavra, '\n')
-                self.palavra = ''
                 self.getNextToken()
-                return
+                
+                if self.origin == 'corpo_funcao2' or 'var_atr':
+                    self.origin =''
+                    return self.corpo_funcao2()
+                
+                else:
+                    self.origin = ''
+                    return
             ############## fim ';' ##############
 
     # <varList0> ::= <value> <varList2> | <read_value> <varList2> | <>
@@ -2259,11 +2279,14 @@ class AnalisadorSintatico:
                 return self.expr_rel()
             ############## fim <expr_rel> ##############
 
-            elif (self.getToken().getWord() == ',' or self.getToken().getWord() == ')') and (self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == 'verdadeiro' or self.getPrevToken().getWord() == 'falso'):
-                
+            elif (self.getToken().getWord() == ',' or self.getToken().getWord() == ';' or self.getToken().getWord() == ')') and (self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == 'verdadeiro' or self.getPrevToken().getWord() == 'falso'):
                 if self.origin == 'escreva':
                     self.origin = ''
                     return self.escreva()
+                
+                elif self.origin == 'var_atr':
+                    self.origin = ''
+                    return self.var_atr()
 
             ############## <expr_log1> ##############
             elif self.getToken().getWord() == '&&' or self.getToken().getWord() == '||':
@@ -3668,6 +3691,7 @@ class AnalisadorSintatico:
             if self.getToken().getType() == 'IDE' and self.forward().getWord() == '(':
                 self.palavra = self.palavra + self.getToken().getWord() + '$'
                 self.getNextToken()
+                self.origin = 'corpo_funcao2'
                 return self.chamada_funcao()
             ############## fim <functionCall> ##############
 
@@ -3677,6 +3701,7 @@ class AnalisadorSintatico:
             if self.getToken().getType() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
+                self.origin = 'var_atr'
                 return self.var_atr()
             ############## fim <var_atr> ##############
 
