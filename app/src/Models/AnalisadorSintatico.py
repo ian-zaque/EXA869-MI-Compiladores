@@ -5,7 +5,6 @@ from Token import Token
 from lexemas import Lexemas
 import copy
 
-
 class AnalisadorSintatico:
 
     def __init__(self, tokens):
@@ -601,6 +600,9 @@ class AnalisadorSintatico:
                 return self.elem_registro()
             ############## fim id ##############
 
+            elif self.getToken().getWord()== ';' and self.getPrevToken().getType() == 'IDE':
+                return self.atr_1()
+            
             ############## <nested_elem_registro> ##############
             elif self.getPrevToken().getWord() == '.' or self.getPrevToken().getWord() == '[':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
@@ -1605,10 +1607,8 @@ class AnalisadorSintatico:
             print('TOKEN_0', self.getToken().getWord())
 
             ############# <read_value> #############
-            # if self.getToken().getType() == 'IDE':
-            #     self.palavra = self.palavra + self.getToken().getWord() + ' '
-            #     self.getNextToken()
-            #     return self.read_value()
+            if self.getToken().getWord() == '[' and self.getPrevToken().getType() == 'IDE':
+                return self.read_value()
             ############# fim <read_value> #############
 
             ############# '=' #############
@@ -1678,6 +1678,9 @@ class AnalisadorSintatico:
                 # self.getNextToken()
                 return self.var_atr()       
             
+            elif self.getToken().getWord() == '[' and self.getPrevToken().getType() == 'IDE':
+                return self.v_m_access() 
+            
             ############## <read_value0> ##############
             # <v_m_access>
             elif (self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO') and self.getPrevToken().getType() == 'IDE':
@@ -1733,9 +1736,15 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == ';':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_atr_1', self.palavra, '\n')
-                self.palavra = ''
                 self.getNextToken()
-                return
+                
+                if self.origin == 'corpo_funcao2' or 'var_atr':
+                    self.origin =''
+                    return self.corpo_funcao2()
+                
+                else:
+                    self.origin = ''
+                    return
             ############# ';' #############
 
             ############# erro ##############
@@ -1758,6 +1767,10 @@ class AnalisadorSintatico:
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.atr_value()
+            
+            # <elem_registro>
+            elif self.getToken().getWord() == '.' and self.getPrevToken().getType() == 'IDE':
+                return self.elem_registro()
             
             # SECOND DERIV.
             ############## <functionCall> ##############
@@ -1844,7 +1857,7 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('varList_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
-
+            
             # FIRST DERIV. OR SECOND DERIV.
             ############## <varList2> ##############
             if self.getToken().getWord() == ',' and (self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getType() == 'CAD' or self.getPrevToken().getType() == 'CAR' or (self.getPrevToken().getWord() == 'verdadeiro' or self.getPrevToken().getWord() == 'falso')):
@@ -1878,6 +1891,11 @@ class AnalisadorSintatico:
             print('varList_2', self.palavra)
             print('TOKEN_2', self.getToken().getWord())
 
+            if self.getToken().getWord() == ',':
+                self.palavra = self.palavra + self.getToken().getWord() + ' '
+                self.getNextToken()
+                return self.var_list2()
+            
             ############## <varList1> ##############
             if (self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or (self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso')) and (self.getPrevToken().getWord() == ','):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
