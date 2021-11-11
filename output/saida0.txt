@@ -1,2 +1,2 @@
 
-Linha 57: Erro sintatico encontrado (funcao inteiro funcao_teste_2 ( Pessoa nova_pessoa , inteiro local_1 , real local_2 , cadeia a [ ] , inteiro b [ ] [ ] ) { constantes$ { inteiro local_a = 2 ; real local_b = 2.23 , c = 23.40 ; } variaveis { inteiro local_teste = 2 ; real locao_teste_2 = 2.23 , c = 23.40 ; cadeia local_c ; booleano local_d = verdadeiro ; } se ( a 
+Sucesso!
