@@ -1,0 +1,61 @@
+entrada:
+
+    variaveis {
+        inteiro a, z, y, w;
+        real    b;
+        cadeia  c;
+    }
+
+    funcao inteiro parse(inteiro algo){
+
+        variaveis {
+            inteiro a, z, y, w;
+            real    b;
+            cadeia  c;
+        }
+
+    }
+
+
+tabela_de_simbolos:
+    [
+        { simbolo: variaveis, tipo: '', escopo: global, atributo: bloco_var, id: 0 },
+        { simbolo: a, tipo: inteiro, escopo: global, atributo: '', id: 1 },
+        { simbolo: z, tipo: inteiro, escopo: global, atributo: '', id: 2 },
+        { simbolo: y, tipo: inteiro, escopo: global, atributo: '', id: 3 },
+        { simbolo: w, tipo: inteiro, escopo: global, atributo: '', id: 4 },
+        { simbolo: b, tipo: real, escopo: global, atributo: '', id: 5 },
+        { simbolo: c, tipo: cadeia, escopo: global, atributo: '', id: 6 },
+        { simbolo: parse, tipo: inteiro, escopo: global, atributo: funcao, id: 7 },
+        [
+            { simbolo: variaveis, tipo: '', escopo: local, atributo: bloco_var, id:6, belongs_to: 7, },
+            { simbolo: a, tipo: inteiro, escopo: local, atributo: '', id: 8, belongs_to: 7, },
+            { simbolo: z, tipo: inteiro, escopo: local, atributo: '', id: 9 },
+            { simbolo: y, tipo: inteiro, escopo: local, atributo: '', id: 10 },
+            { simbolo: w, tipo: inteiro, escopo: local, atributo: '', id: 11 },
+            { simbolo: b, tipo: real, escopo: local, atributo: '', id: 12 },
+            { simbolo: c, tipo: cadeia, escopo: local, atributo: '', id: 13 },
+        ]
+    ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
