@@ -16,6 +16,7 @@ class AnalisadorSintatico:
         self.counter = -1
         self.primitives_types = ['inteiro', 'real',
                                  'booleano', 'char', 'cadeia', 'vazio']
+        self.value = ['NRO', 'CAD', 'CAR', 'verdadeiro', 'falso']
         self.palavra = ''
         self.grammars = ['registro', 'constantes', 'variaveis', 'funcao']
         self.grammar = 0
@@ -60,6 +61,17 @@ class AnalisadorSintatico:
 
     def isPrimitiveType(self, word):
         return word in self.primitives_types
+
+    def isvalue(self, token):
+        if token.getType() in self.value:
+            if token.getType() == 'NRO':
+                if (token.getWord().find('.') == -1):
+                    return 'inteiro'
+                else:
+                    return 'real'
+            return True
+        else:
+            return False
 
     def isReservedWord(self, word):
         return word in Lexemas().getReservedWords()
@@ -418,6 +430,8 @@ class AnalisadorSintatico:
             ############## ] ##############
             elif self.getToken().getWord() == ']':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
+                print('fim_v_m_access1', self.palavra, '\n')
+                self.palavra = ''
                 self.getNextToken()
                 if self.origin[-1] == 'declaracao_reg2':
                     self.origin.pop()
@@ -613,6 +627,7 @@ class AnalisadorSintatico:
 
     # <declaration_const>  ::= constantes '{' <declaration_const1>
     def declaracao_const(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -627,69 +642,28 @@ class AnalisadorSintatico:
                 return self.declaracao_const()
             ############## fim constantes ##############
 
-            ############## '{' ##############
+            ############## '{' <declaracao_const1> ##############
             elif self.getToken().getWord() == '{':
                 if self.getPrevToken().getWord() == 'constantes':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_const()
+                    return self.declaracao_const1()
                 else:
                     self.errorSintatico('constantes antes de {')
                     self.palavra = ''
                     return
-            ############## fim '{' ##############
+            ############## fim '{' <declaracao_const1> ##############
 
-            ############## <declaracao_const1> ##############
-            elif self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE':
-                if self.getPrevToken().getWord() == '{':
-                    if self.getToken().getType() == 'IDE' and self.forward().getType() == 'IDE':
-                        self.errorSintatico('only 1 IDE')
-                        self.palavra = ''
-                        return
-                    self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.getNextToken()
-                    return self.declaracao_const1()
-                else:
-                    self.errorSintatico(
-                        '{ antes de ' + self.getToken().getWord())
-                    self.palavra = ''
-                    return
-            ############## fim <declaracao_const1> ##############
-
-            ############## '}' ##############
-            # 2 DERIVACAO DE <declaracao_const1>. FECHAMENTO DE BLOCO VAZIO DE CONSTANTE
-            elif self.getToken().getWord() == '}':
-                if self.getPrevToken().getWord() == '{':
-                    self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    print('fim_constantes', self.palavra, '\n')
-
-                    if self.origin == 'corpo_funcao':
-                        self.origin = ''
-                        self.getNextToken()
-                        return self.corpo_funcao()
-
-                    else:
-                        self.palavra = ''
-                        self.getNextToken()
-                        return
-                else:
-                    self.errorSintatico('um { antes de }')
-                    self.palavra = ''
-                    return
-            ############## fim '}' ##############
-
-            if self.getToken().getType() == 'PRE' and self.getToken().getWord() != 'constantes' and (not self.isPrimitiveType(self.getToken().getWord())):
-                return
-
-            ############## erro ##############
+            ############### erro ##############
             else:
-                self.errorSintatico('Outro token em declaracao_const')
+                self.errorSintatico('one declaracao_const')
                 self.palavra = ''
                 return
             ############## fim erro ##############
 
     # <declaration_const1> ::= <primitive_type> id '=' <value> <declaration_const2> | '}'
     def declaracao_const1(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -698,37 +672,45 @@ class AnalisadorSintatico:
             print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
-            ############## id ##############
-            if (self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE') and self.getPrevToken().getWord() == ';':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.declaracao_const1()
-
-            if self.getToken().getType() == 'IDE':
-                if self.getPrevToken().getType() == 'PRE' and self.isPrimitiveType(self.getPrevToken().getWord()):
+            ############## <primitive_type> ##############
+            if self.isPrimitiveType(self.getToken().getWord()):
+                if self.getPrevToken().getWord() == '{':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
                     return self.declaracao_const1()
                 else:
-                    self.errorSintatico('um PrimitiveType antes de um IDE')
+                    self.errorSintatico('{ before PrimitiveType')
                     self.palavra = ''
                     return
-            ############## fim id ##############
+            ############## fim <declaracao_const1> ##############
+
+            ############## <id> ##############
+            elif self.getToken().getType() == 'IDE':
+                if self.isPrimitiveType(self.getPrevToken().getWord()):
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    return self.declaracao_const1()
+                else:
+                    self.errorSintatico('PrimitiveType before IDE')
+                    self.palavra = ''
+                    return
+            ############## <id> ##############
 
             ############## '=' ##############
-            if self.getToken().getWord() == '=':
+            elif self.getToken().getWord() == '=':
                 if self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
                     return self.declaracao_const1()
                 else:
-                    self.errorSintatico('um IDE antes de =')
+                    self.errorSintatico('IDE before =')
                     self.palavra = ''
                     return
             ############## fim '=' ##############
 
             ############## <value> ##############
-            elif self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or (self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'):
+            elif (self.isvalue(self.getToken()) == 'real' or self.isvalue(self.getToken()) == 'inteiro'
+                    or self.isvalue(self.getToken())):
                 if self.getPrevToken().getWord() == '=':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
@@ -739,31 +721,29 @@ class AnalisadorSintatico:
                     return
             ############## fim <value> ##############
 
-           # SECOND DERIV.
+            # SECOND DERIV.
             ############## '}' ##############
             elif self.getToken().getWord() == '}':
-                if self.getPrevToken().getWord() == ';':
-                    # FIM DERIVACAO 2
+                if self.getPrevToken().getWord() == '{' or self.getPrevToken().getWord() == ';':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     print('fim_constantes', self.palavra, '\n')
+                    self.origin = ''
+                    self.getNextToken()
 
-                    if self.origin == 'corpo_funcao':
-                        self.origin = ''
-                        self.getNextToken()
+                    if self.origin[-1] == 'corpo_funcao':
+                        self.origin.pop()
                         return self.corpo_funcao()
-
                     else:
-                        self.palavra = ''
-                        self.getNextToken()
                         return
+                else:
+                    self.errorSintatico(' ; or { before }')
+                    self.palavra = ''
+                    return
             ############## fim '}' ##############
-
-            if self.getToken().getType() == 'PRE' and self.getToken().getWord() != 'constantes' and (not self.isPrimitiveType(self.getToken().getWord())):
-                return
 
             ############## erro ##############
             else:
-                self.errorSintatico('Outro token em declaracao_const1')
+                self.errorSintatico('other token on declaracao_const1')
                 self.palavra = ''
                 return
             ############## fim erro ##############
@@ -779,7 +759,8 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             if self.getToken().getWord() == ',':
-                if self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getType() == 'CAD' or self.getPrevToken().getType() == 'CAR' or (self.getPrevToken().getWord() == 'verdadeiro' or self.getPrevToken().getWord() == 'falso'):
+                if (self.isvalue(self.getPrevToken()) == 'real' or self.isvalue(self.getPrevToken()) == 'inteiro'
+                        or self.isvalue(self.getPrevToken())):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
                     return self.declaracao_const2()
@@ -804,22 +785,22 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_const1()
+                    return self.declaracao_const2()
                 else:
                     self.errorSintatico(' IDE before =')
                     self.palavra = ''
                     return
-            ##############
             ############## fim '=' ##############
 
             ############## <value> ##############
-            elif self.getToken().getType() == 'NRO' or self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR' or (self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'):
+            elif (self.isvalue(self.getToken()) == 'real' or self.isvalue(self.getToken()) == 'inteiro'
+                    or self.isvalue(self.getToken())):
                 if self.getPrevToken().getWord() == '=':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
                     return self.declaracao_const2()
                 else:
-                    self.errorSintatico(' = before value')
+                    self.errorSintatico('= before value')
                     self.palavra = ''
                     return
             ############## fim <value> ##############
@@ -827,7 +808,8 @@ class AnalisadorSintatico:
             # SECOND DERIV.
             ############## ';' ##############
             elif self.getToken().getWord() == ';':
-                if self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getType() == 'CAD' or self.getPrevToken().getType() == 'CAR' or (self.getPrevToken().getWord() == 'verdadeiro' or self.getPrevToken().getWord() == 'falso'):
+                if (self.isvalue(self.getPrevToken()) == 'real' or self.isvalue(self.getPrevToken()) == 'inteiro'
+                        or self.isvalue(self.getPrevToken())):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
                     return self.declaracao_const1()
@@ -839,7 +821,7 @@ class AnalisadorSintatico:
 
             ############## erro ##############
             else:
-                self.errorSintatico('Outro token em declaracao_const2')
+                self.errorSintatico('Other token on declaracao_const2')
                 self.palavra = ''
                 return
             ############## fim erro ##############
@@ -2384,7 +2366,7 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             ############## number ##############
-            if self.getToken().getType() == 'NRO':
+            if (self.isvalue(self.getToken()) == 'real' or self.isvalue(self.getToken()) == 'inteiro'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_expr_valor_mod_0', self.palavra, '\n')
                 self.palavra = ''
@@ -3529,7 +3511,7 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == '{':
                     self.palavra = self.palavra + self.getToken().getWord() + '$ '
                     self.getNextToken()
-                    self.origin = 'corpo_funcao'
+                    self.origin.append('corpo_funcao')
                     return self.declaracao_const()
                 else:
                     self.errorSintatico(' { antes de constantes')
