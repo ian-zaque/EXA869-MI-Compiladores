@@ -1,23 +1,6 @@
 %asdlkf asf
 
-registro teste_registro {
-    inteiro a;
-    inteiro d[a];
-    real    b;
-    inteiro vec[2][2];
-    real    b;
-    Pessoa  teste[1][1];
-    real    b;
-    Pessoa  teste_1[2];
-    real    b;
-    cadeia  c;
-}
 
-registro teste_registro {
-    inteiro a, z, y, w;
-    real    b;
-    cadeia  c;
-}
 
 constantes {
     cadeia frase = "frase aqui";
