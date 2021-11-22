@@ -438,9 +438,9 @@ class AnalisadorSintatico:
                 if self.origin[-1] == 'declaracao_reg2':
                     self.origin.pop()
                     return self.declaracao_reg2()
-                elif self.origin[-1] == 'nested_elem_registro':
+                elif self.origin[-1] == 'nested_elem_registro1':
                     self.origin.pop()
-                    return self.nested_elem_registro()
+                    return self.nested_elem_registro1()
                 elif self.origin[-1] == 'read_value0':
                     self.origin.pop()
                     return self.read_value0()
@@ -470,7 +470,7 @@ class AnalisadorSintatico:
             # SECOND DERIV.
             ############## vazio #############
             else:
-                if self.getPrevToken() == ']':
+                if self.getPrevToken().getWord() == ']':
                     if self.origin[-1] == 'declaracao_reg2':
                         self.origin.pop()
                         return self.declaracao_reg2()
@@ -499,7 +499,8 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.var_atr()
                     else:
-                        print('erro_v_m_access1')
+                        self.errorSintatico('erro_v_m_access1')
+                        self.palavra = ''
                         return
 
                 ############## erro ##############
@@ -511,6 +512,7 @@ class AnalisadorSintatico:
 
     # <elem_registro>  ::= '.' id <nested_elem_registro>
     def elem_registro(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -520,31 +522,32 @@ class AnalisadorSintatico:
 
             ############## '.' ##############
             if self.getToken().getWord() == '.':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.elem_registro()
+                if self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    return self.elem_registro()
+                else:
+                    self.errorSintatico(' IDE or ] before .')
+                    self.palavra = ''
+                    return
+
             ############## fim '.' ##############
 
             ############## id ##############
             elif self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.elem_registro()
+                if self.getPrevToken().getWord() == '.':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    return self.nested_elem_registro()
+                else:
+                    self.errorSintatico(' IDE or ] before .')
+                    self.palavra = ''
+                    return
             ############## fim id ##############
-
-            elif self.getToken().getWord() == ';' and self.getPrevToken().getType() == 'IDE':
-                return self.atr_1()
-
-            ############## <nested_elem_registro> ##############
-            elif self.getPrevToken().getWord() == '.' or self.getPrevToken().getWord() == '[':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.nested_elem_registro()
-            ############## fim <nested_elem_registro> ##############
 
             ############## erro ##############
             else:
-                self.errorSintatico('Outro token em elem_registro_0')
+                self.errorSintatico('other token on elem_registro')
                 self.palavra = ''
                 return
             ############## fim erro ##############
@@ -552,6 +555,7 @@ class AnalisadorSintatico:
     # <nested_elem_registro>  ::= '.' id <nested_elem_registro1> | <v_m_access> <nested_elem_registro1> |
 
     def nested_elem_registro(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -562,50 +566,82 @@ class AnalisadorSintatico:
             # FIRST DERIV.
             ############## '.' ##############
             if self.getToken().getWord() == '.':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.nested_elem_registro()
+                if self.getPrevToken().getType() == 'IDE':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    return self.nested_elem_registro()
+                else:
+                    self.errorSintatico(' IDE before .')
+                    self.palavra = ''
+                    return
             ############## fim '.' ##############
 
             ############## id ##############
             elif self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.nested_elem_registro()
+                if self.getPrevToken().getWord() == '.':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    return self.nested_elem_registro1()
+                else:
+                    self.errorSintatico(' . before IDE')
+                    self.palavra = ''
+                    return
             ############## fim id ##############
-
-            ############## <nested_elem_registro1> ##############
-            elif self.getPrevToken().getType() == 'IDE' and self.getToken().getWord() == '.':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.nested_elem_registro1()
-            ############## fim <nested_elem_registro1> ##############
 
             # SECOND DERIV.
             ############## <v_m_access> ##############
             elif self.getToken().getWord() == '[':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.v_m_access()
+                if self.getPrevToken().getType() == 'IDE':
+                    self.origin.append('nested_elem_registro1')
+                    return self.v_m_access()
+                else:
+                    self.errorSintatico(' IDE before [')
+                    self.palavra = ''
+                    return
             ############## fim <v_m_access> ##############
-
-            ############## <nested_elem_registro1> ##############
-            # TESTAR ULTIMO CARACTER DE V_M_ACCESS
-            elif self.getPrevToken().getType() == 'IDE' and self.getToken().getWord() == '.':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.nested_elem_registro1()
-            ############## fim <nested_elem_registro1> ##############
 
             ############## erro ##############
             else:
-                self.errorSintatico('Outro token em elem_registro_1')
-                self.palavra = ''
-                return
+                if self.getPrevToken().getType() == 'IDE':
+                    if self.origin[-1] == 'var_list2':
+                        self.origin.pop()
+                        return self.var_list2()
+
+                    elif self.origin[-1] == 'expr_multi':
+                        self.origin.pop()
+                        return self.expr_multi()
+
+                    elif self.origin[-1] == 'expr_valor_mod':
+                        self.origin.pop()
+                        return self.expr_valor_mod()
+
+                    elif self.origin[-1] == 'leia':
+                        self.origin.pop()
+                        return self.leia()
+
+                    elif self.origin[-1] == 'read_value_list':
+                        self.origin.pop()
+                        return self.read_value_list()
+
+                    elif self.origin[-1] == 'var_atr':
+                        self.origin.pop()
+                        return self.var_atr()
+
+                    else:
+                        self.errorSintatico('error_nested_elem_registro')
+                        self.palavra = ''
+                        return
+
+                ############## erro ##############
+                else:
+                    self.errorSintatico('other token on nested_elem_registro')
+                    self.palavra = ''
+                    return
             ############## fim erro ##############
 
     # <nested_elem_registro1> ::= <elem_registro> |
     def nested_elem_registro1(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -615,18 +651,47 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             ############## <elem_registro> ##############
-            if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.v_m_access()
+            if self.getToken().getWord() == '.':
+                return self.elem_registro()
             ############## fim <elem_registro> ##############
 
-            ############## erro ##############
             else:
-                self.errorSintatico('Outro token em elem_registro_2')
-                self.palavra = ''
-                return
-            ############## fim erro ##############
+                if self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']':
+                    if self.origin[-1] == 'var_list2':
+                        self.origin.pop()
+                        return self.var_list2()
+
+                    elif self.origin[-1] == 'expr_multi':
+                        self.origin.pop()
+                        return self.expr_multi()
+
+                    elif self.origin[-1] == 'expr_valor_mod':
+                        self.origin.pop()
+                        return self.expr_valor_mod()
+
+                    elif self.origin[-1] == 'leia':
+                        self.origin.pop()
+                        return self.leia()
+
+                    elif self.origin[-1] == 'read_value_list':
+                        self.origin.pop()
+                        return self.read_value_list()
+
+                    elif self.origin[-1] == 'var_atr':
+                        self.origin.pop()
+                        return self.var_atr()
+
+                    else:
+                        self.errorSintatico('error_nested_elem_registro1')
+                        self.palavra = ''
+                        return
+
+                ############## erro ##############
+                else:
+                    self.errorSintatico('other token on nested_elem_registro1')
+                    self.palavra = ''
+                    return
+                ############## fim erro ##############
 
     # <declaration_const>  ::= constantes '{' <declaration_const1>
     def declaracao_const(self):
@@ -677,12 +742,12 @@ class AnalisadorSintatico:
             # FIRST DERIV.
             ############## <primitive_type> ##############
             if self.isPrimitiveType(self.getToken().getWord()):
-                if self.getPrevToken().getWord() == '{':
+                if self.getPrevToken().getWord() == '{' or self.getPrevToken().getWord() == ';':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
                     return self.declaracao_const1()
                 else:
-                    self.errorSintatico('{ before PrimitiveType')
+                    self.errorSintatico('{ or ; before PrimitiveType')
                     self.palavra = ''
                     return
             ############## fim <declaracao_const1> ##############
@@ -737,7 +802,8 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.corpo_funcao1()
                     else:
-                        print('erro_declaracao_const1')
+                        self.errorSintatico('erro_declaracao_const1')
+                        self.palavra = ''
                         return
                 else:
                     self.errorSintatico(' ; or { before }')
@@ -911,7 +977,8 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.corpo_funcao2()
                     else:
-                        print('erro_declaracao_var1')
+                        self.errorSintatico('erro_declaracao_var1')
+                        self.palavra = ''
                         return
                 else:
                     self.errorSintatico(' { ou ; before } ')
@@ -1326,7 +1393,8 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.main_function()
                     else:
-                        print('erro_parametros_funcao1')
+                        self.errorSintatico('erro_parametros_funcao1')
+                        self.palavra = ''
                         return
                 else:
                     self.errorSintatico('( before )')
@@ -1496,7 +1564,8 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.main_function()
                     else:
-                        print('erro_parametros_funcao4')
+                        self.errorSintatico('erro_parametros_funcao4')
+                        self.palavra = ''
                         return
                 else:
                     self.errorSintatico(' ] or IDE before )')
