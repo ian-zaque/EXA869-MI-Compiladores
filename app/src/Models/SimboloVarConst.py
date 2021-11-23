@@ -29,4 +29,14 @@ class SimboloVarConst:
     def getInit(self):
         return self.init
     
+    def toString(self):
+        print('\n')
+        print('-------------')
+        print('| Nome -',self.getNome())
+        print('| Tipo -',self.getTipo())
+        print('| Categoria -',self.getCategoria())
+        print('| Dimensao -',self.getDimensao())
+        print('| Escopo -',self.getEscopo())
+        print('| Init -',self.getInit())
+        print('-------------')
     

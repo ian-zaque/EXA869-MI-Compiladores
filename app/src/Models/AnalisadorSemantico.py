@@ -23,7 +23,6 @@ class AnalisadorSemantico:
         #         continue
         
         # if isInTable == False:
-        print({symbol.getNome(): symbol})
         self.tabelaSimbolosVarConst.append({symbol.getNome(): symbol})
         return symbol
         # else:
@@ -68,16 +67,6 @@ class AnalisadorSemantico:
     
     def printTabelaVarConst(self):        
         for value in self.tabelaSimbolosVarConst:
-            print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',value)
-            # print('Nome',value.getNome())
-            # print('Tipo',value.getTipo())
-            # print('Categoria',value.getCategoria())
-            # print('Dimensao',value.getDimensao())
-            # print('Escopo',value.getEscopo())
-            # print('Init',value.getInit())
-            
-        
-        
-        
-        
+            for item in value.values():
+                item.toString()        
         
