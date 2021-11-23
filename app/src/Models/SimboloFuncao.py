@@ -33,3 +33,14 @@ class SimboloFuncao:
         toHash = self.nome + str(self.qtdParam) + ''.join(self.param)
         return toHash
     
+    def toString(self):
+        print('\n')
+        print('-------------')
+        print('| Nome -',self.getNome())
+        print('| Retorno -',self.getRetorno())
+        print('| QtdParam -',self.getQtdParam())
+        print('| Param -',self.getParam())
+        print('| Hash -',self.getHash())
+        print('| Unique Name -',self.getUniqueName())
+        print('-------------')
+        
