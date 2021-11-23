@@ -1626,6 +1626,7 @@ class AnalisadorSintatico:
     # <read_value> ::= id <read_value0>
 
     def read_value(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1636,52 +1637,63 @@ class AnalisadorSintatico:
             if self.getToken().getType() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.read_value()
-
-            elif self.getToken().getWord() == '(' and self.getPrevToken().getWord() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.chamada_funcao()
-
-            # <read_value0> ::= <v_m_access> | <elem_registro> | <>
-            elif self.getToken().getWord() == '=':
-                # self.palavra = self.palavra + self.getToken().getWord() + ' '
-                # self.getNextToken()
-                return self.var_atr()
-
-            elif self.getToken().getWord() == '[' and self.getPrevToken().getType() == 'IDE':
-                return self.v_m_access()
-
-            ############## <read_value0> ##############
-            # <v_m_access>
-            elif (self.getToken().getType() == 'IDE' or self.getToken().getType() == 'NRO') and self.getPrevToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.v_m_access()
-            ############## fim <read_value0> ##############
-
-            ############## <read_value0> ##############
-            # <elem_registro>
-            elif self.getToken().getWord() == '.' and self.getPrevToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.elem_registro()
-            ############## fim <read_value0> ##############
-
-            elif self.getToken().getWord() == ',' and self.getPrevToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.read_value_list()
-
-            elif self.getToken().getWord() == ')':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.leia()
+                return self.read_value0()
 
             ############# erro ##############
             else:
-                print('erro_read_value_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on read_value')
+                self.palavra = ''
+                return
+            ############## fim erro ##############
+
+    def read_value0(self):
+        print('ok')
+        if self.getToken().getType() == 'EOF':
+            return
+
+        elif self.counter < len(self.tokens):
+            print('read_value_0', self.palavra)
+            print('TOKEN_0', self.getToken().getWord())
+
+            # <read_value0> ::= <v_m_access> | <elem_registro> | <>
+            # <v_m_access>
+            if self.getToken().getWord() == '[' and self.getPrevToken().getType() == 'IDE':
+                return self.v_m_access()
+
+            # <elem_registro>
+            elif self.getToken().getWord() == '.' and self.getPrevToken().getType() == 'IDE':
+                return self.elem_registro()
+
+            ############# erro ##############
+            else:
+                if self.origin[-1] == 'var_atr':
+                    self.origin.pop()
+                    return self.var_atr()
+
+                elif self.origin[-1] == 'var_list2':
+                    self.origin.pop()
+                    return self.var_list2()
+
+                elif self.origin[-1] == 'expr_multi_pos':
+                    self.origin.pop()
+                    return self.expr_multi_pos()
+
+                elif self.origin[-1] == 'expr_valor_mod':
+                    self.origin.pop()
+                    return self.expr_valor_mod()
+
+                elif self.origin[-1] == 'read_value_list':
+                    self.origin.pop()
+                    return self.read_value_list()
+
+                elif self.origin[-1] == 'var_atr':
+                    self.origin.pop()
+                    return self.var_atr()
+
+                else:
+                    self.errorSintatico('other token on read_value0')
+                    self.palavra = ''
+                    return
             ############## fim erro ##############
 
     # <atr_1> ::= ',' <var_atr> | ';'
@@ -2680,7 +2692,7 @@ class AnalisadorSintatico:
 
             # <operator_auto> ::= '++' | '--' | <>
             ############## <operator_auto> ##############
-            elif self.getToken().getWord() == '++' or self.getToken().getWord() == '--' and (self.getPrevToken().getType() == 'IDE'):
+            elif self.getToken().getWord() == '++' or self.getToken().getWord() == '--' and (self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_expr_valor_mod_1', self.palavra, '\n')
                 self.palavra = ''
