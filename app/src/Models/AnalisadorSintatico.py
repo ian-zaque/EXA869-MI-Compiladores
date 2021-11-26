@@ -2311,6 +2311,7 @@ class AnalisadorSintatico:
     # <expressao>   ::= <expr_rel> <expr_log1> | '(' <expressao> ')' <expr_log2> | '!' <expressao>
 
     def expressao(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2320,25 +2321,13 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             ############## <expr_rel> ##############
-            if self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+            if (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'):
+                self.origin.append('expr_log1')
                 return self.expr_rel()
             ############## fim <expr_rel> ##############
-
-            elif (self.getToken().getWord() == ',' or self.getToken().getWord() == ';' or self.getToken().getWord() == ')') and (self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == 'verdadeiro' or self.getPrevToken().getWord() == 'falso'):
-                if self.origin == 'escreva':
-                    return self.escreva()
-
-                elif self.origin == 'var_atr':
-                    return self.var_atr()
-
-            ############## <expr_log1> ##############
-            elif self.getToken().getWord() == '&&' or self.getToken().getWord() == '||':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_log1()
-            ############## fim <expr_log1> ##############
 
             # SECOND DERIV.
             ############## '(' ##############
@@ -2348,36 +2337,12 @@ class AnalisadorSintatico:
                 return self.expressao()
             ############## fim '(' ##############
 
-            ############## <expressao> ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO'
-                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getType() == 'IDE'
-                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '(' or self.getToken().getWord() == '!'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expressao()
-            ############## <expressao> ##############
-
-            ############## ')' ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO'
-                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getType() == 'IDE'
-                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '('):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expressao()
-            ############## fim ')' ##############
-
-            ############## <expr_log2> ##############
-            elif ((self.getToken().getWord() == '&&' or self.getToken().getWord() == '||') or (self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE') or self.isRelOperator(self.getToken().getWord())) and (self.getPrevToken().getWord() == ')'):
+             ############## ')' ##############
+            elif self.getToken().getWord() == ')':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expr_log2()
-            ############## fim <expr_log2> ##############
+            ############## fim ')' ##############
 
             # THIRD DERIV.
             ############## '!' ##############
@@ -2386,18 +2351,6 @@ class AnalisadorSintatico:
                 self.getNextToken()
                 return self.expressao()
             ############## fim '!' ##############
-
-            ############## <expressao> ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO'
-                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getType() == 'IDE'
-                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and self.getPrevToken().getWord() == '!':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expressao()
-            ############## <expressao> ##############
 
             ############# erro ##############
             else:
@@ -2409,6 +2362,7 @@ class AnalisadorSintatico:
     # <expr_log1> ::=  <operatorLog> <expressao> | <>
 
     def expr_log1(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2426,23 +2380,27 @@ class AnalisadorSintatico:
 
             ############## <expressao> ##############
             elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE'
                     or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getType() == 'IDE'
                     or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == '&&' or self.getPrevToken().getWord() == '||'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expressao()
+                    or self.getToken().getWord() == '(' or self.getToken().getWord() == '!'):
 
+                if self.getPrevToken().getWord() == '&&' or self.getPrevToken().getWord() == '||':
+                    return self.expressao()
+                else:
+                    self.errorSintatico(
+                        ' && or  || before ' + self.getToken().getWord())
+                    self.palavra = ''
+                    return
             ############## fim <expressao> ##############
+
+            ############## <> ##############
+            elif self.getToken().getWord() == ')':
+                return self.expressao()
+            ############## fim <> ##############
 
             ############# erro ##############
             else:
-
-                print('expr_log1', self.palavra, '\n')
-                self.palavra = ''
-                self.getNextToken()
 
                 if self.origin[-1] == 'retornar_funcao':
                     if self.getToken().getWord() == ';':
@@ -2523,7 +2481,8 @@ class AnalisadorSintatico:
                     return self.write_value_list()
 
                 else:
-                    print('erro_expr_log1')
+                    self.errorSintatico('other token on expr_log1')
+                    self.palavra = ''
                     return
 
             ############## erro ##############
@@ -2532,6 +2491,7 @@ class AnalisadorSintatico:
     # <expr_log2> ::= <operatorLog> <expressao> | <operator_multi> <expressao> | <operator_rel> <expressao> | <operator_soma> <expressao> | <>
 
     def expr_log2(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2541,88 +2501,18 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             ############## <operatorLog> ##############
-            if self.getToken().getWord() == '&&' or self.getToken().getWord() == '||':
+            if (self.getToken().getWord() == '&&' or self.getToken().getWord() == '||'
+                    or self.getToken().getWord() == '*' or self.getToken().getWord() == '/'
+                    or self.getToken().getWord() == '==' or self.getToken().getWord() == '>='
+                    or self.getToken().getWord() == '<=' or self.getToken().getWord() == '!='
+                    or self.getToken().getWord() == '>' or self.getToken().getWord() == '<'
+                    or self.getToken().getWord() == '+' or self.getToken().getWord() == '-'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expr_log2()
+                return self.expressao()
             ############## fim <operatorLog> ##############
 
-            ############## <expressao> ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO'
-                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getType() == 'IDE'
-                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == '&&' or self.getPrevToken().getWord() == '||'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expressao()
-            ############## fim <expressao> ##############
-
-            # SECOND DERIV.
-            ############## <operator_multi> ##############
-            elif self.getToken().getWord() == '*' or self.getToken().getWord() == '/':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_log2()
-            ############## fim <operator_multi> ##############
-
-            ############## <expressao> ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO'
-                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getType() == 'IDE'
-                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '(' or self.getToken().getWord() == '!'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expressao()
-            ############## fim <expressao> ##############
-
-            # THIRD DERIV.
-            ############## <operator_rel> ##############
-            elif self.isRelOperator(self.getToken().getWord()):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_log2()
-            ############## fim <operator_rel> ##############
-
-            ############## <expressao> ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO'
-                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getType() == 'IDE'
-                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '(') and (self.isRelOperator(self.getPrevToken().getWord())):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expressao()
-            ############## fim <expressao> ##############
-
-            # FOURTH DERIV.
-            ############## <operator_soma> ##############
-            elif self.getToken().getWord() == '+' or self.getToken().getWord() == '-':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_log2()
-            ############## fim <operator_soma> ##############
-
-            ############## <expressao> ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO'
-                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getType() == 'IDE'
-                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '('):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expressao()
-            ############## fim <expressao> ##############
-
             else:
-                print('expr_log1', self.palavra, '\n')
-                self.palavra = ''
-                self.getNextToken()
 
                 if self.origin[-1] == 'retornar_funcao':
                     if self.getToken().getWord() == ';':
@@ -2704,7 +2594,8 @@ class AnalisadorSintatico:
 
             ############## erro ##############
                 else:
-                    print('erro_expr_log2')
+                    self.errorSintatico('other token on expr_log2')
+                    self.palavra = ''
                     return
             ############## fim erro ##############
 
