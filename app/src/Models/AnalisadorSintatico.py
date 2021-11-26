@@ -2334,6 +2334,7 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == '(':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
+                self.origin.append('expressao')
                 return self.expressao()
             ############## fim '(' ##############
 
@@ -2395,11 +2396,6 @@ class AnalisadorSintatico:
             ############## fim <expressao> ##############
 
             ############## <> ##############
-            elif self.getToken().getWord() == ')':
-                return self.expressao()
-            ############## fim <> ##############
-
-            ############# erro ##############
             else:
 
                 if self.origin[-1] == 'retornar_funcao':
@@ -2461,16 +2457,9 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.expressao()
                     else:
-                        self.origin.pop()
-                        return self.expressao()
-
-                elif self.origin[-1] == 'expr_log1':
-                    self.origin.pop()
-                    return self.expr_log1()
-
-                elif self.origin[-1] == 'expr_log2':
-                    self.origin.pop()
-                    return self.expr_log2()
+                        self.errorSintatico(' ) after an expressao')
+                        self.palavra = ''
+                        return
 
                 elif self.origin[-1] == 'atr_1':
                     self.origin.pop()
@@ -2484,7 +2473,7 @@ class AnalisadorSintatico:
                     self.errorSintatico('other token on expr_log1')
                     self.palavra = ''
                     return
-
+            ############## fim <> ##############
             ############## erro ##############
             ############## fim erro ##############
 
@@ -2512,6 +2501,7 @@ class AnalisadorSintatico:
                 return self.expressao()
             ############## fim <operatorLog> ##############
 
+            ############## <> ##############
             else:
 
                 if self.origin[-1] == 'retornar_funcao':
@@ -2573,16 +2563,9 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.expressao()
                     else:
-                        self.origin.pop()
-                        return self.expressao()
-
-                elif self.origin[-1] == 'expr_log1':
-                    self.origin.pop()
-                    return self.expr_log1()
-
-                elif self.origin[-1] == 'expr_log2':
-                    self.origin.pop()
-                    return self.expr_log2()
+                        self.errorSintatico(' ) after an expressao')
+                        self.palavra = ''
+                        return
 
                 elif self.origin[-1] == 'atr_1':
                     self.origin.pop()
