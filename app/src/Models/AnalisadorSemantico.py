@@ -10,52 +10,64 @@ class AnalisadorSemantico:
         self.tabelaSimbolosVarConst = []
         self.tabelaSimbolosFuncao = []
         
+    def isSimboloInTabelaVarConst(self,symbol):
+        isInTable = False
+        
+        for value in self.tabelaSimbolosVarConst:
+            if isInTable == True:
+                break
+            else:
+                for item in value.values():
+                    if item.getNome() == symbol:
+                        isInTable = True
+                        break
+                    
+                    elif item.getNome() != symbol:
+                        isInTable = False
+                    
+        return isInTable
+    
+    def isSimboloInTabelaFuncao(self,symbol):
+        isInTable = False
+        
+        for value in self.tabelaSimbolosFuncao:
+            if isInTable == True:
+                break
+            else:
+                for item in value.values():
+                    print('aaaaaaaaaaaaaaa0',item.getHash(), symbol)
+                    if item.getHash() == symbol:
+                        isInTable = True
+                        break
+                    
+                    elif item.getHash() != symbol:
+                        isInTable = False
+                        
+        return isInTable
 
     def addSimboloVarConst(self,symbol):
-        # isInTable = False
-        
-        # for value in self.tabelaSimbolosVarConst:
-        #     if value.getNome() == symbol.getNome():
-        #         isInTable = True
-        #         break
-        #     else:
-        #         isInTable = False
-        #         continue
-        
-        # if isInTable == False:
         self.tabelaSimbolosVarConst.append({symbol.getNome(): symbol})
+        self.printTabelaVarConst()
         return symbol
-        # else:
-        #     return False
         
     def addSimboloFuncao(self,symbol):
-        # isInTable = False
-        
-        # for value in self.tabelaSimbolosFuncao:
-        #     if value.getHash() == symbol.getHash():
-        #         isInTable = True
-        #         break
-        #     else:
-        #         isInTable = False
-        #         continue
-        
-        # if isInTable == False:
         self.tabelaSimbolosFuncao.append({symbol.getHash(): symbol})
+        self.printTabelaFuncao()
         return symbol
-        # else:
-        #     return False
     
     def getSimboloFuncao(self,symbol):       
         for value in self.tabelaSimbolosFuncao:
-            if value.getHash() == symbol.getHash():
-                return value
+            for item in value.values():
+                if item.getHash() == symbol:
+                    return value
     
         return False
     
     def getSimboloVarConst(self,symbol):        
         for value in self.tabelaSimbolosVarConst:
-            if value.getNome() == symbol.getNome():
-                return value
+            for item in value.values():
+                if item.getNome() == symbol:
+                    return value
     
         return False
     
@@ -69,4 +81,9 @@ class AnalisadorSemantico:
         for value in self.tabelaSimbolosVarConst:
             for item in value.values():
                 item.toString()        
-        
+    
+    def printTabelaFuncao(self):
+        for value in self.tabelaSimbolosFuncao:
+            for item in value.values():
+                item.toString()  
+    
