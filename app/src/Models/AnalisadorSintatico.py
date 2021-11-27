@@ -7,6 +7,7 @@ from lexemas import Lexemas
 from AnalisadorSemantico import AnalisadorSemantico
 from SimboloVarConst import SimboloVarConst
 from SimboloFuncao import SimboloFuncao
+from SimboloRegistro import SimboloRegistro
 import copy
 
 class AnalisadorSintatico:
@@ -188,6 +189,8 @@ class AnalisadorSintatico:
             elif self.getToken().getType() == 'IDE':
                 if self.getPrevToken().getWord() == 'registro':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['nome'] = self.getToken().getWord()
+                    self.semanticItem['atributos'] = []
                     self.getNextToken()
                     return self.declaracao_reg()
                 else:
@@ -247,7 +250,18 @@ class AnalisadorSintatico:
 
                 elif self.isPrimitiveType(self.getPrevToken().getWord()) or self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.getNextToken()
+                    
+                    isInRegistro = self.analisadorSemantico.isAtributoInRegistro(self.getToken().getWord(),self.semanticItem['atributos'])
+                
+                    if isInRegistro== False:
+                        self.semanticItem['atributos'].append([
+                            {'nome': self.getToken().getWord(), 
+                            'tipo': self.getPrevToken().getWord()}
+                        ])
+                    elif isInRegistro == True:
+                        self.checkSemanticItem(self.getToken().getWord(), ' já foi declarado(a) neste Registro' + self.semanticItem['nome'])
+                        self.getNextToken()
+                    
                     return self.declaracao_reg4()
 
                 else:
@@ -300,6 +314,17 @@ class AnalisadorSintatico:
             ############## id ##############
             elif self.getToken().getType() == 'IDE' and self.getPrevToken().getWord() == ',':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
+                
+                isInRegistro = self.analisadorSemantico.isAtributoInRegistro(self.getToken().getWord(),self.semanticItem['atributos'])
+                
+                if isInRegistro== False:
+                    self.semanticItem['atributos'].append([
+                        {'nome': self.getToken().getWord(), 
+                        'tipo': self.getPrevToken().getWord()}
+                    ])
+                elif isInRegistro == True:
+                    self.checkSemanticItem(self.getToken().getWord(), ' já foi declarado(a) neste Registro' + self.semanticItem['nome'])
+                
                 self.getNextToken()
                 return self.declaracao_reg2()
             ############## fim id ##############
@@ -340,6 +365,17 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == ';':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     print('fim_registro_3', self.palavra, '\n')
+                    
+                    semanticSymbol = SimboloRegistro(self.semanticItem['nome'], self.semanticItem['atriubtos'])
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaRegistro(semanticSymbol.getNome())
+                    self.semanticItem = {}
+                    
+                    if isInTable == False:
+                        self.analisadorSemantico.addSimboloRegistro(semanticSymbol)
+                    else:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'registro ' +  semanticSymbol.getNome() + ' ja declarado!')
+                    
+                    
                     self.palavra = ''
                     self.getNextToken()
                     return self.declaracao_reg()
@@ -892,6 +928,9 @@ class AnalisadorSintatico:
                     elif isValueOk == False:
                         self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
                                                ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                    elif semanticSymbol.getTipo() == 'vazio':
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
+                                               ' foi declarado(a) com valor vazio.')
                     
                     self.semanticItem = {}
                     self.semanticItem['tipo'] = tipo
@@ -964,6 +1003,9 @@ class AnalisadorSintatico:
                     elif isValueOk == False:
                         self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
                                                ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                    elif semanticSymbol.getTipo() == 'vazio':
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
+                                               ' foi declarado(a) com valor vazio.')
                     
                     self.semanticItem = {}
                     return self.declaracao_const1(escopo)
@@ -1182,6 +1224,9 @@ class AnalisadorSintatico:
                     elif isValueOk == False:
                         self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
                                                ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                    elif semanticSymbol.getTipo() == 'vazio':
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
+                                               ' foi declarado(a) com valor vazio.')
                     
                     self.semanticItem = {}
                     self.semanticItem['tipo'] = tipo
@@ -1227,6 +1272,9 @@ class AnalisadorSintatico:
                     elif isValueOk == False:
                         self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
                                                ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                    elif semanticSymbol.getTipo() == 'vazio':
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
+                                               ' foi declarado(a) com valor vazio.')
                     
                     self.semanticItem = {}
                     self.getNextToken()
@@ -1530,6 +1578,15 @@ class AnalisadorSintatico:
                     print('fim_parametros_funcao_1', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
+
+                    semanticSymbol = SimboloFuncao(self.semanticItem['nome'], self.semanticItem['retorno'], self.semanticItem['qtdParam'], self.semanticItem['params'])
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaFuncao(semanticSymbol.getHash())
+                    self.semanticItem = {}
+                    
+                    if isInTable == False:
+                        self.analisadorSemantico.addSimboloFuncao(semanticSymbol)
+                    else:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'função ' +  semanticSymbol.getNome() + ' ja declarada!')
 
                     if self.origin[-1] == 'declaracao_funcao2':
                         self.origin.pop()
