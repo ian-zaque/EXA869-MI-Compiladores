@@ -1,9 +1,0 @@
-+"fsdfsdf;;;sdfsd\"" 
-
-2.aLGORITMO 3vARIAVEIS
-$CONST!ANTES !rEGISTRO
-
-FUNCA! RETORN ! VAZIO SE -2.0 SENAOENQ - 10.01 UANTO
- Para - 10.01s
-.1.1-00.01
-Leia

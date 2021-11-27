@@ -4,8 +4,10 @@
 
 from Token import Token
 from lexemas import Lexemas
+from AnalisadorSemantico import AnalisadorSemantico
+from SimboloVarConst import SimboloVarConst
+from SimboloFuncao import SimboloFuncao
 import copy
-
 
 class AnalisadorSintatico:
 
@@ -22,6 +24,8 @@ class AnalisadorSintatico:
         self.grammars = ['registro', 'constantes', 'variaveis', 'funcao']
         self.grammar = 0
         self.origin = []
+        self.analisadorSemantico = AnalisadorSemantico()
+        self.semanticItem = {}
 
     def getCounter(self):
         return self.counter
@@ -38,7 +42,7 @@ class AnalisadorSintatico:
         else:
             return Token("EOF", "EOF", -1)
 
-    def getNextToken(self):
+    def getNextToken(self):        
         if len(self.tokens) > 1:
             if(len(self.grammars) > self.grammar+1):
                 if(self.grammars[self.grammar+1] == self.tokens[0].getWord()):
@@ -79,6 +83,12 @@ class AnalisadorSintatico:
 
     def isRelOperator(self, word):
         return word in ['<', '>', '==', '<=', '>=', '!=']
+    
+    def checkSemanticItem(self, name, match):
+        error = 'Linha ' + str(self.getToken().getLine()
+                                ) + ': Erro semantico encontrado: ' + "\"" + name + '\" ' + match
+        print(error)
+        self.errors.append(error)
 
     def errorSintatico(self, match):
         if(self.forward().getWord() != 'EOF'):
@@ -127,10 +137,10 @@ class AnalisadorSintatico:
                 self.declaracao_reg()
 
             while (self.getToken().getWord() == 'constantes'):
-                self.declaracao_const()
+                self.declaracao_const('global')
 
             while (self.getToken().getWord() == 'variaveis'):
-                self.declaracao_var()
+                self.declaracao_var('global')
 
             while (self.getToken().getWord() == 'funcao'):
                 self.declaracao_funcao()
@@ -694,7 +704,7 @@ class AnalisadorSintatico:
                 ############## fim erro ##############
 
     # <declaration_const>  ::= constantes '{' <declaration_const1>
-    def declaracao_const(self):
+    def declaracao_const(self,escopo):
         print('ok')
         if self.getToken().getType() == 'EOF':
             return
@@ -702,12 +712,13 @@ class AnalisadorSintatico:
         elif len(self.tokens) > 1:
             print('CONSTANTES_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
+            self.semanticItem['escopo'] = escopo
 
             ############## constantes ##############
             if self.getToken().getWord() == 'constantes':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.declaracao_const()
+                return self.declaracao_const(escopo)
             ############## fim constantes ##############
 
             ############## '{' <declaracao_const1> ##############
@@ -715,7 +726,7 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == 'constantes':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_const1()
+                    return self.declaracao_const1(escopo)
                 else:
                     self.errorSintatico('constantes antes de {')
                     self.palavra = ''
@@ -730,7 +741,7 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     # <declaration_const1> ::= <primitive_type> id '=' <value> <declaration_const2> | '}'
-    def declaracao_const1(self):
+    def declaracao_const1(self,escopo):
         print('ok')
         if self.getToken().getType() == 'EOF':
             return
@@ -738,14 +749,15 @@ class AnalisadorSintatico:
         elif len(self.tokens) > 1:
             print('CONSTANTES_1', self.palavra)
             print('TOKEN_1', self.getToken().getWord())
-
+            self.semanticItem['escopo'] = escopo
             # FIRST DERIV.
             ############## <primitive_type> ##############
             if self.isPrimitiveType(self.getToken().getWord()):
                 if self.getPrevToken().getWord() == '{' or self.getPrevToken().getWord() == ';':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['tipo'] = self.getToken().getWord()
                     self.getNextToken()
-                    return self.declaracao_const1()
+                    return self.declaracao_const1(escopo)
                 else:
                     self.errorSintatico('{ or ; before PrimitiveType')
                     self.palavra = ''
@@ -756,8 +768,10 @@ class AnalisadorSintatico:
             elif self.getToken().getType() == 'IDE':
                 if self.isPrimitiveType(self.getPrevToken().getWord()):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    
+                    self.semanticItem['nome'] = self.getToken().getWord()
                     self.getNextToken()
-                    return self.declaracao_const1()
+                    return self.declaracao_const1(escopo)
                 else:
                     self.errorSintatico('PrimitiveType before IDE')
                     self.palavra = ''
@@ -769,7 +783,8 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_const1()
+                    self.semanticItem['init'] = True
+                    return self.declaracao_const1(escopo)
                 else:
                     self.errorSintatico('IDE before =')
                     self.palavra = ''
@@ -782,7 +797,9 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == '=':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_const2()
+                    self.semanticItem['categoria'] = 'constante'
+                    self.semanticItem['dimensao'] = None
+                    return self.declaracao_const2(escopo)
                 else:
                     self.errorSintatico('= before value')
                     self.palavra = ''
@@ -797,12 +814,17 @@ class AnalisadorSintatico:
                     print('fim_constantes', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
-
-                    if self.origin[-1] == 'corpo_funcao1':
-                        self.origin.pop()
-                        return self.corpo_funcao1()
+                    
+                    if len(self.origin) > 0:
+                        if self.origin[-1] == 'corpo_funcao1':
+                            self.origin.pop()
+                            return self.corpo_funcao1()
+                        
+                        else:
+                            self.errorSintatico('erro_declaracao_const1')
+                            self.palavra = ''
+                            return
                     else:
-                        self.errorSintatico('erro_declaracao_const1')
                         self.palavra = ''
                         return
                 else:
@@ -819,7 +841,7 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     # <declaration_const2> ::= ',' id '=' <value> <declaration_const2> | ';' <declaration_const1>
-    def declaracao_const2(self):
+    def declaracao_const2(self, escopo):
         print('ok')
         if self.getToken().getType() == 'EOF':
             return
@@ -827,24 +849,39 @@ class AnalisadorSintatico:
         elif len(self.tokens) > 1:
             print('CONSTANTES_2', self.palavra)
             print('TOKEN_2', self.getToken().getWord())
-
+            self.semanticItem['escopo'] = escopo
+            
             # FIRST DERIV.
             if self.getToken().getWord() == ',':
                 if (self.isvalue(self.getPrevToken()) == 'real' or self.isvalue(self.getPrevToken()) == 'inteiro'
                         or self.isvalue(self.getPrevToken())):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_const2()
+                    
+                    semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem['categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    tipo = self.semanticItem['tipo']
+                    self.semanticItem = {}
+                    self.semanticItem['tipo'] = tipo
+                    
+                    if isInTable == False:
+                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                    else:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + semanticSymbol.getCategoria() + ' ja declarado (a)!')
+                    
+                    return self.declaracao_const2(escopo)
                 else:
                     self.errorSintatico('value before , ')
                     self.palavra = ''
                     return
+                
             ############## id ##############
             elif self.getToken().getType() == 'IDE':
                 if self.getPrevToken().getType() == 'DEL' and self.getPrevToken().getWord() == ',':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['nome'] = self.getToken().getWord()
                     self.getNextToken()
-                    return self.declaracao_const2()
+                    return self.declaracao_const2(escopo)
                 else:
                     self.errorSintatico(' , before IDE')
                     self.palavra = ''
@@ -856,7 +893,8 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_const2()
+                    self.semanticItem['init'] = True
+                    return self.declaracao_const2(escopo)
                 else:
                     self.errorSintatico(' IDE before =')
                     self.palavra = ''
@@ -869,7 +907,9 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == '=':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_const2()
+                    self.semanticItem['categoria'] = 'constante'
+                    self.semanticItem['dimensao'] = None
+                    return self.declaracao_const2(escopo)
                 else:
                     self.errorSintatico('= before value')
                     self.palavra = ''
@@ -883,7 +923,17 @@ class AnalisadorSintatico:
                         or self.isvalue(self.getPrevToken())):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_const1()
+                    
+                    semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem['categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    self.semanticItem = {}
+                    
+                    if isInTable == False:
+                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                    else:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + ' ja declarado (a)!')
+                        
+                    return self.declaracao_const1(escopo)
                 else:
                     self.errorSintatico(' value before ; ')
                     self.palavra = ''
@@ -898,7 +948,7 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     # <declaration_var>  ::= variaveis '{' <declaration_var1>
-    def declaracao_var(self):
+    def declaracao_var(self,escopo):
         print('ok')
         if self.getToken().getType() == 'EOF':
             return
@@ -906,12 +956,13 @@ class AnalisadorSintatico:
         elif len(self.tokens) > 1:
             print('VARIAVEIS_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
+            self.semanticItem['escopo'] = escopo
 
             ############## 'variaveis' ##############
             if self.getToken().getWord() == 'variaveis':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.declaracao_var()
+                return self.declaracao_var(escopo)
             ############## fim 'variaveis' ##############
 
             ############## '{' ##############
@@ -919,7 +970,7 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == 'variaveis':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_var1()
+                    return self.declaracao_var1(escopo)
                 else:
                     self.errorSintatico('variaveis before { ')
                     self.palavra = ''
@@ -934,7 +985,7 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     # <declaration_var1> ::= <type> id <declaration_var2> | '}'
-    def declaracao_var1(self):
+    def declaracao_var1(self,escopo):
         print('ok')
         if self.getToken().getType() == 'EOF':
             return
@@ -942,14 +993,16 @@ class AnalisadorSintatico:
         elif len(self.tokens) > 1:
             print('VARIAVEIS_1', self.palavra)
             print('TOKEN_1', self.getToken().getWord())
+            self.semanticItem['escopo'] = escopo
 
             # FIRST DERIV.
             ############## <type> ##############
             if ((self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE')
                     and (self.getPrevToken().getWord() == ';' or self.getPrevToken().getWord() == '{')):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
+                self.semanticItem['tipo'] = self.getToken().getWord()
                 self.getNextToken()
-                return self.declaracao_var1()
+                return self.declaracao_var1(escopo)
             ############## fim <type> ##############
 
             ############## id ##############
@@ -960,8 +1013,9 @@ class AnalisadorSintatico:
                     return
                 else:
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['nome'] = self.getToken().getWord()
                     self.getNextToken()
-                    return self.declaracao_var2()
+                    return self.declaracao_var2(escopo)
             ############## fim id ##############
 
             ############## '}' ##############
@@ -994,7 +1048,7 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     # <declaration_var2> ::= '=' <value> <declaration_var3> | <vector_matrix> | <declaration_var3>
-    def declaracao_var2(self):
+    def declaracao_var2(self,escopo):
         print('ok')
         if self.getToken().getType() == 'EOF':
             return
@@ -1002,14 +1056,17 @@ class AnalisadorSintatico:
         elif len(self.tokens) > 1:
             print('VARIAVEIS_2', self.palavra)
             print('TOKEN_2', self.getToken().getWord())
-
+            self.semanticItem['escopo'] = escopo
+            self.semanticItem['init'] = False
+            
             # FIRST DERIV.
             ############## '=' ##############
             if self.getToken().getWord() == '=':
                 if self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_var2()
+                    self.semanticItem['init'] = True
+                    return self.declaracao_var2(escopo)
                 else:
                     self.errorSintatico(' IDE before = ')
                     self.palavra = ''
@@ -1021,8 +1078,9 @@ class AnalisadorSintatico:
                   or self.isvalue(self.getPrevToken())):
                 if self.getPrevToken().getWord() == '=':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['categoria'] = 'variavel'
                     self.getNextToken()
-                    return self.declaracao_var3()
+                    return self.declaracao_var3(escopo)
                 else:
                     self.errorSintatico(' = before value ')
                     self.palavra = ''
@@ -1044,7 +1102,7 @@ class AnalisadorSintatico:
             ############## <declaracao_var3>  ##############
             elif self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
                 if self.getPrevToken().getType() == 'IDE':
-                    return self.declaracao_var3()
+                    return self.declaracao_var3(escopo)
                 else:
                     self.errorSintatico(' IDE before , ')
                     self.palavra = ''
@@ -1059,7 +1117,7 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     # <declaration_var3> ::= ',' id <declaration_var2>  | ';' <declaration_var1>
-    def declaracao_var3(self):
+    def declaracao_var3(self,escopo):
         print('ok')
         if self.getToken().getType() == 'EOF':
             return
@@ -1067,6 +1125,8 @@ class AnalisadorSintatico:
         elif len(self.tokens) > 1:
             print('VARIAVEIS_3', self.palavra)
             print('TOKEN_3', self.getToken().getWord())
+            self.semanticItem['escopo'] = escopo
+            self.semanticItem['init'] = False
 
             # FIRST DERIV.
             ############## <declaracao_var3> ##############
@@ -1076,7 +1136,19 @@ class AnalisadorSintatico:
                         or self.getPrevToken().getWord() == ']'):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_var3()
+                    
+                    semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem['categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    tipo = self.semanticItem['tipo']
+                    self.semanticItem = {}
+                    self.semanticItem['tipo'] = tipo
+                    
+                    if isInTable == False:
+                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                    else:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + semanticSymbol.getCategoria() + ' ja declarado(a)!')
+                        
+                    return self.declaracao_var3(escopo)
                 else:
                     self.errorSintatico(' IDE or value or ] before , ')
                     self.palavra = ''
@@ -1087,8 +1159,9 @@ class AnalisadorSintatico:
             if self.getToken().getType() == 'IDE':
                 if self.getPrevToken().getWord() == ',':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['nome'] = self.getToken().getWord()
                     self.getNextToken()
-                    return self.declaracao_var2()
+                    return self.declaracao_var2(escopo)
                 else:
                     self.errorSintatico(' , before IDE ')
                     self.palavra = ''
@@ -1103,7 +1176,17 @@ class AnalisadorSintatico:
                         or self.getPrevToken().getWord() == ']'):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_var1()
+                    
+                    semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem['categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    self.semanticItem = {}
+                    
+                    if isInTable == False:
+                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                    else:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + ' ja declarado(a)!')
+                    
+                    return self.declaracao_var1(escopo)
                 else:
                     self.errorSintatico(' IDE or value before ; ')
                     self.palavra = ''
@@ -1139,6 +1222,7 @@ class AnalisadorSintatico:
             elif self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType == 'IDE':
                 if self.getPrevToken().getWord() == 'funcao':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['retorno'] = self.getToken().getWord()
                     self.getNextToken()
                     return self.declaracao_funcao1()
                 else:
@@ -1171,6 +1255,7 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == 'algoritmo':
                 if self.isPrimitiveType(self.getPrevToken().getWord()) or self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['nome'] = self.getToken().getWord()
                     self.getNextToken()
                     return self.main_function()
                 else:
@@ -1186,6 +1271,7 @@ class AnalisadorSintatico:
             elif self.getToken().getType() == 'IDE':
                 if (self.isPrimitiveType(self.getPrevToken().getWord()) or self.getPrevToken().getType() == 'IDE'
                         and self.forward().getWord() == '('):
+                    self.semanticItem['nome'] = self.getToken().getWord()
                     return self.declaracao_funcao2()
                 else:
                     self.errorSintatico(
@@ -1209,6 +1295,8 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('funcao_2', self.palavra)
             print('TOKEN_2', self.getToken().getWord())
+            self.semanticItem['qtdParam'] = 0
+            self.semanticItem['params'] = []
 
             # FIRST DERIV.
             ############# id #############
@@ -1266,6 +1354,8 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('main_function_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
+            self.semanticItem['qtdParam'] = 0
+            self.semanticItem['params'] = []
 
             # FIRST DERIV.
             ############# '(' #############
@@ -1369,6 +1459,18 @@ class AnalisadorSintatico:
                       and (self.forward().getWord() == '[' or self.forward().getWord() == ','
                       or self.forward().getWord() == ')')):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    
+                    self.semanticItem['qtdParam'] = self.semanticItem['qtdParam'] + 1
+                    self.semanticItem['params'].append(self.getPrevToken().getWord())
+                    
+                    semanticSymbol = SimboloVarConst(self.getToken().getWord(), self.getPrevToken().getWord(), 'variavel', None, 'local', False)
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    
+                    if isInTable == False:
+                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                    else:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + ' ja declarado(a)!')
+                    
                     self.getNextToken()
                     return self.parametros_funcao2()
                 else:
@@ -1555,6 +1657,15 @@ class AnalisadorSintatico:
                     print('fim_parametros_funcao_4', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
+
+                    semanticSymbol = SimboloFuncao(self.semanticItem['nome'], self.semanticItem['retorno'], self.semanticItem['qtdParam'], self.semanticItem['params'])
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaFuncao(semanticSymbol.getHash())
+                    self.semanticItem = {}
+                    
+                    if isInTable == False:
+                        self.analisadorSemantico.addSimboloFuncao(semanticSymbol)
+                    else:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'função ' +  semanticSymbol.getNome() + ' ja declarada!')
 
                     if self.origin[-1] == 'declaracao_funcao2':
                         self.origin.pop()
@@ -1911,6 +2022,7 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == '[':
                 if self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['categoria'] = 'vetor'
                     self.getNextToken()
                     self.origin.append('vector_matrix')
                     return self.expr_number()
@@ -1950,6 +2062,7 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == '[':
                 if self.getPrevToken().getWord() == ']':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['categoria'] = 'matrix'
                     self.getNextToken()
                     self.origin.append('vector_matrix1')
                     return self.expr_number()
@@ -1972,6 +2085,7 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == ']':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
+                    self.semanticItem['init'] = True
                     return self.init_vector()
                 else:
                     self.errorSintatico('] before =')
@@ -2013,6 +2127,7 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == '=':
                 if self.getPrevToken().getWord() == ']':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['init'] = True
                     self.getNextToken()
                     return self.init_matrix()
                 else:
@@ -3817,7 +3932,7 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == 'constantes':
                 if self.getPrevToken().getWord() == '{':
                     self.origin.append('corpo_funcao1')
-                    return self.declaracao_const()
+                    return self.declaracao_const('local')
                 else:
                     self.errorSintatico(' { antes de constantes')
                     self.palavra = ''
@@ -3871,7 +3986,7 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == 'variaveis':
                 if self.getPrevToken().getWord() == '{' or self.getPrevToken().getWord() == '}':
                     self.origin.append('corpo_funcao2')
-                    return self.declaracao_var()
+                    return self.declaracao_var('local')
                 else:
                     self.errorSintatico(
                         ' } or { before ' + self.getToken().getWord())

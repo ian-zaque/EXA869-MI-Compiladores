@@ -3,11 +3,11 @@
 
 class SimboloFuncao:
     
-    def __init__(self, nome, retorno, qtdParam, param):
+    def __init__(self, nome, retorno, qtdParam, params):
         self.nome = nome
         self.retorno = retorno
         self.qtdParam = qtdParam
-        self.param = param
+        self.params = params
         self.uniqueName = self.setHashFuncao()
         self.hash = hash(self.uniqueName)
 
@@ -20,8 +20,8 @@ class SimboloFuncao:
     def getQtdParam(self):
         return self.qtdParam
     
-    def getParam(self):
-        return self.param
+    def getParams(self):
+        return self.params
     
     def getHash(self):
         return self.hash
@@ -30,6 +30,17 @@ class SimboloFuncao:
         return self.uniqueName
     
     def setHashFuncao(self):
-        toHash = self.nome + str(self.qtdParam) + ''.join(self.param)
+        toHash = self.nome + str(self.qtdParam) + ''.join(self.params)
         return toHash
     
+    def toString(self):
+        print('\n')
+        print('-------------')
+        print('| Nome -',self.getNome())
+        print('| Retorno -',self.getRetorno())
+        print('| QtdParam -',self.getQtdParam())
+        print('| Param -',self.getParams())
+        print('| Hash -',self.getHash())
+        print('| Unique Name -',self.getUniqueName())
+        print('-------------')
+        
