@@ -462,6 +462,9 @@ class AnalisadorSintatico:
                 elif self.origin[-1] == 'var_atr':
                     self.origin.pop()
                     return self.var_atr()
+                elif self.origin[-1] == 'expr_multi_pos':
+                    self.origin.pop()
+                    return self.expr_multi_pos()
                 else:
                     print('erro_v_m_access1')
                     return
@@ -498,6 +501,9 @@ class AnalisadorSintatico:
                     elif self.origin[-1] == 'var_atr':
                         self.origin.pop()
                         return self.var_atr()
+                    elif self.origin[-1] == 'expr_multi_pos':
+                        self.origin.pop()
+                        return self.expr_multi_pos()
                     else:
                         self.errorSintatico('erro_v_m_access1')
                         self.palavra = ''
@@ -627,6 +633,14 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.var_atr()
 
+                    elif self.origin[-1] == 'expr_multi_pos':
+                        self.origin.pop()
+                        return self.expr_multi_pos()
+
+                    elif self.origin[-1] == 'operator_auto':
+                        self.origin.pop()
+                        return self.operator_auto()
+
                     else:
                         self.errorSintatico('error_nested_elem_registro')
                         self.palavra = ''
@@ -680,6 +694,14 @@ class AnalisadorSintatico:
                     elif self.origin[-1] == 'var_atr':
                         self.origin.pop()
                         return self.var_atr()
+
+                    elif self.origin[-1] == 'expr_multi_pos':
+                        self.origin.pop()
+                        return self.expr_multi_pos()
+
+                    elif self.origin[-1] == 'operator_auto':
+                        self.origin.pop()
+                        return self.operator_auto()
 
                     else:
                         self.errorSintatico('error_nested_elem_registro1')
@@ -1690,6 +1712,10 @@ class AnalisadorSintatico:
                     self.origin.pop()
                     return self.var_atr()
 
+                elif self.origin[-1] == 'operator_auto':
+                    self.origin.pop()
+                    return self.operator_auto()
+
                 else:
                     self.errorSintatico('other token on read_value0')
                     self.palavra = ''
@@ -2585,6 +2611,7 @@ class AnalisadorSintatico:
                 # <expr_valor_mod> ::=  number | <operator_auto0> <read_value> | <read_value> <operator_auto>
 
     def expr_valor_mod(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2599,7 +2626,7 @@ class AnalisadorSintatico:
                 print('fim_expr_valor_mod_0', self.palavra, '\n')
                 self.palavra = ''
                 self.getNextToken()
-                return
+                return self.expr_multi_pos()
             ############## fim number ##############
 
             # SECOND DERIV.
@@ -2608,43 +2635,57 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == '++' or self.getToken().getWord() == '--':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expr_valor_mod()
+                self.origin.append('expr_multi_pos')
+                return self.read_value()
             ############## fim <operator_auto0> ##############
 
             ############## <read_value> ##############
             elif self.getToken().getType() == 'IDE' and (self.getPrevToken().getWord() == '++' or self.getPrevToken().getWord() == '--'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('expr_multi_pos')
                 return self.read_value()
             ############## fim <read_value> ##############
 
             # THIRD DERIV.
             ############## <read_value> ##############
             elif self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('operator_auto')
                 return self.read_value()
             ############## fim <read_value> ##############
 
-            # <operator_auto> ::= '++' | '--' | <>
-            ############## <operator_auto> ##############
-            elif self.getToken().getWord() == '++' or self.getToken().getWord() == '--' and (self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_expr_valor_mod_1', self.palavra, '\n')
-                self.palavra = ''
-                self.getNextToken()
-                return
-            ############## fim <operator_auto> ##############
-
             ############# erro ##############
             else:
-                print('erro_expr_valor_mod_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on expr_valor_mod')
+                self.palavra = ''
+                return
             ############## fim erro ##############
+
+    # <operator_auto> ::= '++' | '--' | <>
+
+    def operator_auto(self):
+        print('ok')
+        if self.getToken().getType() == 'EOF':
+            return
+
+        elif self.counter < len(self.tokens):
+            print('expr_multi_0', self.palavra)
+            print('TOKEN_0', self.getToken().getWord())
+
+            ############## <operator_auto> ##############
+            if (self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    and (self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']')):
+                self.palavra = self.palavra + self.getToken().getWord() + ' '
+                print('fim_operator_auto', self.palavra, '\n')
+                self.palavra = ''
+                self.getNextToken()
+                return self.expr_multi_pos()
+            ############## fim <operator_auto> ##############
+            else:
+                return self.expr_multi_pos()
 
     # <expr_multi> ::= <operator_soma> <expr_valor_mod> <expr_multi_pos> | <expr_valor_mod> <expr_multi_pos>
 
     def expr_multi(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2658,43 +2699,28 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == '+' or self.getToken().getWord() == '-':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expr_multi()
+                self.origin.append('expr_art1')
+                return self.expr_valor_mod()
             ############## fim <operator_soma> ##############
 
             ############## <expr_valor_mod> ##############
-            elif (self.getToken().getType() == 'NRO' or self.getToken().getWord() == '++' or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE') and (self.getPrevToken().getWord() == '+' or self.getPrevToken().getWord() == '-'):
+            elif (self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'):
+                self.origin.append('expr_art1')
                 return self.expr_valor_mod()
             ############## fim <expr_valor_mod> ##############
-
-            ############## <expr_multi_pos> ##############
-            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/') and (self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getWord() == '++' or self.getPrevToken().getWord() == '--' or self.getPrevToken().getType() == 'IDE'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_multi_pos()
-            ############## fim <expr_multi_pos> ##############
-
-            # SECOND DERIV.
-            ############## <expr_valor_mod> ##############
-            elif self.getToken().getType() == 'NRO' or self.getToken().getWord() == '++' or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE':
-                return self.expr_valor_mod()
-            ############## fim <expr_valor_mod> ##############
-
-            ############## <expr_multi_pos> ##############
-            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/') and (self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getWord() == '++' or self.getPrevToken().getWord() == '--' or self.getPrevToken().getType() == 'IDE'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_multi_pos()
-            ############## fim <expr_multi_pos> ##############
 
             ############# erro ##############
             else:
-                print('erro_expr_multi_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on expr_multi')
+                self.palavra = ''
+                return
             ############## fim erro ##############
 
     # <expr_multi_pos> ::= <operator_multi> <expr_multi> | <>
 
     def expr_multi_pos(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2707,25 +2733,26 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == '*' or self.getToken().getWord() == '/':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expr_multi_pos()
+                return self.expr_multi()
             ############## fim <operator_multi> ##############
 
-            ############## <expr_multi> ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO' or self.getToken().getWord() == '++'
-                    or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE'):
-                return self.expr_multi_pos()
-            ############## fim <expr_multi> ##############
-
-            ############# erro ##############
+            ############## <> ##############
             else:
-                print('erro_multi_pos_0', self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
+
+                if self.origin[-1] == 'expr_number1':
+                    self.origin.pop()
+                    return self.expr_number1()
+
+                elif self.origin[-1] == 'expr_art1':
+                    self.origin.pop()
+                    return self.expr_art1()
+
+            ############## fim <> ##############
 
     # <expr_art> ::= number <expr_multi> <expr_art1>
 
     def expr_art(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2734,34 +2761,29 @@ class AnalisadorSintatico:
             print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
-            if self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_art()
 
             ############## <expr_multi> ##############
-            if (self.getToken().getWord() == '*' or self.getToken().getWord() == '/') and (self.getPrevToken().getType() == 'NRO' or self.getPrevToken().getType() == 'IDE'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_art()
-            ############## fim <expr_multi> ##############
+            if self.getToken().getWord() == '+' or self.getToken().getWord() == '-':
+                self.origin.append('expr_art1')
+                return self.expr_multi()
 
-            ############## <expr_art1> ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-') and (self.getPrevToken().getWord() == '*' or self.getPrevToken().getWord() == '/'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_art1()
-            ############## fim <expr_art1> ##############
+            elif (self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'):
+                self.origin.append('expr_art1')
+                return self.expr_multi()
+            ############## fim <expr_multi> ##############
 
             ############# erro ##############
             else:
-                print('erro_expr_art_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on expr_art')
+                self.palavra = ''
+                return
             ############## fim erro ##############
 
     # <expr_art1> ::= <operator_soma> <expr_number> | <>
 
     def expr_art1(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2774,20 +2796,38 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == '+' or self.getToken().getWord() == '-':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expr_art1()
+                return self.expr_number()
             ############## fim <operator_soma> ##############
 
             ############## <expr_number> ##############
-            elif self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == '(':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_number()
+            else:
+                if self.origin[-1] == 'expr_rel1':
+                    self.origin.pop()
+                    return self.expr_rel1()
+
+                elif self.origin[-1] == 'expr_number':
+                    self.origin.pop()
+                    return self.expr_number()
+
+                elif self.origin[-1] == 'vector_matrix':
+                    self.origin.pop()
+                    return self.vector_matrix()
+
+                elif self.origin[-1] == 'vector_matrix1':
+                    self.origin.pop()
+                    return self.vector_matrix1()
+
+                elif self.origin[-1] == 'v_m_access':
+                    self.origin.pop()
+                    return self.v_m_access()
+
+                elif self.origin[-1] == 'v_m_access1':
+                    self.origin.pop()
+                    return self.v_m_access1()
             ############## fim <expr_number> ##############
 
             ############# erro ##############
-            else:
-                print('erro_expr_art1_0', self.palavra)
-                # self.getNextToken()
+
             ############## fim erro ##############
 
     # <expr_number> ::= <expr_art> | '(' <expr_number> ')' <expr_multi_pos> <expr_number1>
@@ -2844,7 +2884,8 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == ')':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expr_number()
+                self.origin.append('expr_number1')
+                return self.expr_multi_pos()
             ############## fim ')' ##############
 
             ############## <expr_multi_pos> ##############
