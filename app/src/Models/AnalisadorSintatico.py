@@ -201,7 +201,8 @@ class AnalisadorSintatico:
             print('TOKEN_1', self.getToken().getWord())
 
             ############## <type> ##############
-            if (self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE') and (self.getPrevToken().getWord() == '{' or self.getPrevToken().getWord() == ';'):
+            if ((self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE')
+                    and (self.getPrevToken().getWord() == '{' or self.getPrevToken().getWord() == ';')):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.declaracao_reg1()
@@ -276,7 +277,7 @@ class AnalisadorSintatico:
             # SECOND DERIV.
             ############## ';' ##############
             elif self.getToken().getWord() == ';':
-                if self.getPrevToken().getType() == 'IDE' or self.getToken().getWord() == ']':
+                if self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
                     return self.declaracao_reg3()
@@ -466,7 +467,9 @@ class AnalisadorSintatico:
                     self.origin.pop()
                     return self.expr_multi_pos()
                 else:
-                    print('erro_v_m_access1')
+                    self.errorSintatico(
+                        ' an origin before v_m_access1 return')
+                    self.palavra = ''
                     return
             ############## fim ] ##############
 
@@ -505,7 +508,8 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.expr_multi_pos()
                     else:
-                        self.errorSintatico('erro_v_m_access1')
+                        self.errorSintatico(
+                            ' an origin before v_m_access1 return')
                         self.palavra = ''
                         return
 
@@ -642,7 +646,8 @@ class AnalisadorSintatico:
                         return self.operator_auto()
 
                     else:
-                        self.errorSintatico('error_nested_elem_registro')
+                        self.errorSintatico(
+                            ' an origin before nested_elem_registro return')
                         self.palavra = ''
                         return
 
@@ -704,7 +709,8 @@ class AnalisadorSintatico:
                         return self.operator_auto()
 
                     else:
-                        self.errorSintatico('error_nested_elem_registro1')
+                        self.errorSintatico(
+                            ' an origin before nested_elem_registro1 return')
                         self.palavra = ''
                         return
 
@@ -820,12 +826,17 @@ class AnalisadorSintatico:
                     self.palavra = ''
                     self.getNextToken()
 
-                    if self.origin[-1] == 'corpo_funcao1':
-                        self.origin.pop()
-                        return self.corpo_funcao1()
+                    if len(self.origin) > 0:
+
+                        if self.origin[-1] == 'corpo_funcao1':
+                            self.origin.pop()
+                            return self.corpo_funcao1()
+                        else:
+                            self.errorSintatico(
+                                ' an origin before declaracao_const1 return')
+                            self.palavra = ''
+                            return
                     else:
-                        self.errorSintatico('erro_declaracao_const1')
-                        self.palavra = ''
                         return
                 else:
                     self.errorSintatico(' ; or { before }')
@@ -999,7 +1010,8 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.corpo_funcao2()
                     else:
-                        self.errorSintatico('erro_declaracao_var1')
+                        self.errorSintatico(
+                            ' an origin before declaracao_var1 return')
                         self.palavra = ''
                         return
                 else:
@@ -1415,7 +1427,8 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.main_function()
                     else:
-                        self.errorSintatico('erro_parametros_funcao1')
+                        self.errorSintatico(
+                            ' an origin before parametros_funcao1 return')
                         self.palavra = ''
                         return
                 else:
@@ -1586,7 +1599,8 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.main_function()
                     else:
-                        self.errorSintatico('erro_parametros_funcao4')
+                        self.errorSintatico(
+                            ' an origin before parametros_funcao4 return')
                         self.palavra = ''
                         return
                 else:
@@ -1717,7 +1731,8 @@ class AnalisadorSintatico:
                     return self.operator_auto()
 
                 else:
-                    self.errorSintatico('other token on read_value0')
+                    self.errorSintatico(
+                        ' an origin before read_value0 return')
                     self.palavra = ''
                     return
             ############## fim erro ##############
@@ -1762,7 +1777,8 @@ class AnalisadorSintatico:
                     return self.para()
 
                 else:
-                    self.errorSintatico('erro_atr_1')
+                    self.errorSintatico(
+                        ' an origin before atr_1 return')
                     self.palavra = ''
                     return
 
@@ -2496,7 +2512,8 @@ class AnalisadorSintatico:
                     return self.write_value_list()
 
                 else:
-                    self.errorSintatico('other token on expr_log1')
+                    self.errorSintatico(
+                        ' an origin before expr_log1 return')
                     self.palavra = ''
                     return
             ############## fim <> ##############
@@ -2603,7 +2620,8 @@ class AnalisadorSintatico:
 
             ############## erro ##############
                 else:
-                    self.errorSintatico('other token on expr_log2')
+                    self.errorSintatico(
+                        ' an origin before expr_log2 return')
                     self.palavra = ''
                     return
             ############## fim erro ##############
@@ -2667,7 +2685,7 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_multi_0', self.palavra)
+            print('operator_auto_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
 
             ############## <operator_auto> ##############
@@ -2746,6 +2764,11 @@ class AnalisadorSintatico:
                 elif self.origin[-1] == 'expr_art1':
                     self.origin.pop()
                     return self.expr_art1()
+                else:
+                    self.errorSintatico(
+                        ' an origin before expr_multi_pos return')
+                    self.palavra = ''
+                    return
 
             ############## fim <> ##############
 
@@ -2764,12 +2787,10 @@ class AnalisadorSintatico:
 
             ############## <expr_multi> ##############
             if self.getToken().getWord() == '+' or self.getToken().getWord() == '-':
-                self.origin.append('expr_art1')
                 return self.expr_multi()
 
             elif (self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE'
                     or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'):
-                self.origin.append('expr_art1')
                 return self.expr_multi()
             ############## fim <expr_multi> ##############
 
@@ -2827,7 +2848,11 @@ class AnalisadorSintatico:
             ############## fim <expr_number> ##############
 
             ############# erro ##############
-
+                else:
+                    self.errorSintatico(
+                        ' an origin before expr_art1 return')
+                    self.palavra = ''
+                    return
             ############## fim erro ##############
 
     # <expr_number> ::= <expr_art> | '(' <expr_number> ')' <expr_multi_pos> <expr_number1>
@@ -2847,38 +2872,29 @@ class AnalisadorSintatico:
                     or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE'):
                 if (self.getPrevToken().getWord() == '[' or self.getPrevToken().getWord() == '('
                         or self.getPrevToken().getWord() == '+' or self.getPrevToken().getWord() == '-'):
-                    self.origin.append('expr_number')
                     return self.expr_art()
                 else:
-                    self.errorSintatico('other token on expr_number')
+                    self.errorSintatico(
+                        ' [ or ( or + or - before ' + self.getToken().getWord())
                     self.palavra = ''
                     return
             ############## fim <expr_art> ##############
 
-            elif self.getToken().getWord() == ']':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                if self.origin[-1] == 'vector_matrix':
-                    self.origin.pop()
-                    return self.vector_matrix2()
-                else:
-                    print('erro_expr_number')
-                    return
-
             # SECOND DERIV.
             ############## '(' ##############
-            if self.getToken().getWord() == '(':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_number()
+            elif self.getToken().getWord() == '(':
+                if (self.getPrevToken().getWord() == '[' or self.getPrevToken().getWord() == '('
+                        or self.getPrevToken().getWord() == '+' or self.getPrevToken().getWord() == '-'):
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    self.origin.append('expr_number')
+                    return self.expr_number()
+                else:
+                    self.errorSintatico(
+                        ' [ or ( or + or - before ' + self.getToken().getWord())
+                    self.palavra = ''
+                    return
             ############## fim '(' ##############
-
-            ############## <expr_number> ##############
-            elif (self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == '(') and (self.getPrevToken().getWord() == '('):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_number()
-            ############## fim <expr_number> ##############
 
             ############## ')' ##############
             elif self.getToken().getWord() == ')':
@@ -2888,24 +2904,11 @@ class AnalisadorSintatico:
                 return self.expr_multi_pos()
             ############## fim ')' ##############
 
-            ############## <expr_multi_pos> ##############
-            elif self.getToken().getWord() == '*' or self.getToken().getWord() == '/':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_multi_pos()
-            ############## fim <expr_multi_pos> ##############
-
-            ############## <expr_number1> ##############
-            elif self.getToken().getWord() == '+' or self.getToken().getWord() == '-':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_number1()
-            ############## fim <expr_number1> ##############
-
             ############# erro ##############
             else:
-                print('erro_expr_number_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on expr_number')
+                self.palavra = ''
+                return
             ############## fim erro ##############
 
     # <expr_number1>  ::= <operator_soma> <expr_number> | <>
@@ -2923,20 +2926,40 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == '+' or self.getToken().getWord() == '-':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expr_number1()
+                return self.expr_number()
             ############## fim <operator_soma> ##############
 
-            ############## <expr_number> ##############
-            elif (self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == '(') and (self.getPrevToken().getWord() == '+' or self.getPrevToken().getWord() == '-'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_number()
-            ############## fim <expr_number> ##############
+            else:
+                if self.origin[-1] == 'vector_matrix':
+                    self.origin.pop()
+                    return self.vector_matrix()
+
+                elif self.origin[-1] == 'vector_matrix1':
+                    self.origin.pop()
+                    return self.vector_matrix1()
+
+                elif self.origin[-1] == 'v_m_access':
+                    self.origin.pop()
+                    return self.v_m_access()
+
+                elif self.origin[-1] == 'v_m_access1':
+                    self.origin.pop()
+                    return self.v_m_access1()
+
+                elif self.origin[-1] == 'expr_rel1':
+                    self.origin.pop()
+                    return self.expr_rel1()
+
+                elif self.origin[-1] == 'expr_number':
+                    self.origin.pop()
+                    return self.expr_number()
 
             ############# erro ##############
-            else:
-                print('erro_expr_number_1', self.palavra)
-                # self.getNextToken()
+                else:
+                    self.errorSintatico(
+                        ' an origin before expr_number1 return')
+                    self.palavra = ''
+                    return
             ############## fim erro ##############
 
     # <expr_rel0>   ::= <expr_rel> | '(' <expressao> ')'
@@ -3129,7 +3152,9 @@ class AnalisadorSintatico:
                     self.origin.pop()
                     return self.corpo_funcao2()
                 else:
-                    print('erro_escreva')
+                    self.errorSintatico(
+                        ' an origin before write_cmd return')
+                    self.palavra = ''
                     return
             ############## fim ';' ##############
 
@@ -3248,7 +3273,9 @@ class AnalisadorSintatico:
                     self.origin.pop()
                     return self.corpo_funcao2()
                 else:
-                    print('erro_leia')
+                    self.errorSintatico(
+                        ' an origin before read_cmd return')
+                    self.palavra = ''
                     return
             ############## fim ';' ##############
 
@@ -3373,7 +3400,9 @@ class AnalisadorSintatico:
                     self.origin.pop()
                     return self.corpo_funcao2()
                 else:
-                    print('erro_enquanto')
+                    self.errorSintatico(
+                        ' an origin before com_enquanto return')
+                    self.palavra = ''
                     return
             ############## fim '}' ##############
 
@@ -3479,7 +3508,9 @@ class AnalisadorSintatico:
                     self.origin.pop()
                     return self.corpo_funcao2()
                 else:
-                    print('erro_para')
+                    self.errorSintatico(
+                        ' an origin before com_para return')
+                    self.palavra = ''
                     return
             ############## fim '}' ##############
 
@@ -3561,7 +3592,9 @@ class AnalisadorSintatico:
                     self.origin.pop()
                     return self.corpo_funcao2()
                 else:
-                    print('erro_se')
+                    self.errorSintatico(
+                        ' an origin before se return')
+                    self.palavra = ''
                     return
             ############## fim '}' ##############
 
@@ -4059,7 +4092,9 @@ class AnalisadorSintatico:
                     self.origin.pop()
                     return self.declaracao_funcao2()
                 else:
-                    print('erro_retornar_funcao')
+                    self.errorSintatico(
+                        ' an origin before retornar return')
+                    self.palavra = ''
                     return
                 # FIM DE CORPO DE FUNCAO
 
