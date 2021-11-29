@@ -2858,6 +2858,7 @@ class AnalisadorSintatico:
     # <expr_number> ::= <expr_art> | '(' <expr_number> ')' <expr_multi_pos> <expr_number1>
 
     def expr_number(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2914,6 +2915,7 @@ class AnalisadorSintatico:
     # <expr_number1>  ::= <operator_soma> <expr_number> | <>
 
     def expr_number1(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
