@@ -7,6 +7,7 @@ from lexemas import Lexemas
 from AnalisadorSemantico import AnalisadorSemantico
 from SimboloVarConst import SimboloVarConst
 from SimboloFuncao import SimboloFuncao
+from SimboloRegistro import SimboloRegistro
 import copy
 
 
@@ -91,6 +92,27 @@ class AnalisadorSintatico:
         print(error)
         self.errors.append(error)
 
+    def isSemanticItemValueOk(self):
+        if self.semanticItem['init'] == True:
+            valor = self.semanticItem['valor']
+            
+            if valor.getType() == 'NRO':
+                if (valor.getWord().find('.') == -1):
+                    return 'inteiro' == self.semanticItem['tipo']
+                else:
+                    return 'real' == self.semanticItem['tipo']
+            
+            elif valor.getType() == 'CAD':
+                return 'cadeia' == self.semanticItem['tipo']
+            
+            elif valor.getType() == 'CAR':
+                return 'char' == self.semanticItem['tipo']
+
+            elif valor.getWord() == 'verdadeiro' or valor.getWord() == 'falso':
+                return 'booleano' == self.semanticItem['tipo']
+        else:
+            return None
+        
     def errorSintatico(self, match):
         if(self.forward().getWord() != 'EOF'):
             error = 'Linha ' + str(self.getToken().getLine()
@@ -168,6 +190,8 @@ class AnalisadorSintatico:
             elif self.getToken().getType() == 'IDE':
                 if self.getPrevToken().getWord() == 'registro':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['nome'] = self.getToken().getWord()
+                    self.semanticItem['atributos'] = []
                     self.getNextToken()
                     return self.declaracao_reg()
                 else:
@@ -228,7 +252,18 @@ class AnalisadorSintatico:
 
                 elif self.isPrimitiveType(self.getPrevToken().getWord()) or self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.getNextToken()
+                    
+                    isInRegistro = self.analisadorSemantico.isAtributoInRegistro(self.getToken().getWord(),self.semanticItem['atributos'])
+                
+                    if isInRegistro== False:
+                        self.semanticItem['atributos'].append([
+                            {'nome': self.getToken().getWord(), 
+                            'tipo': self.getPrevToken().getWord()}
+                        ])
+                    elif isInRegistro == True:
+                        self.checkSemanticItem(self.getToken().getWord(), ' já foi declarado(a) neste Registro' + self.semanticItem['nome'])
+                        self.getNextToken()
+                    
                     return self.declaracao_reg4()
 
                 else:
@@ -281,6 +316,17 @@ class AnalisadorSintatico:
             ############## id ##############
             elif self.getToken().getType() == 'IDE' and self.getPrevToken().getWord() == ',':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
+                
+                isInRegistro = self.analisadorSemantico.isAtributoInRegistro(self.getToken().getWord(),self.semanticItem['atributos'])
+                
+                if isInRegistro== False:
+                    self.semanticItem['atributos'].append([
+                        {'nome': self.getToken().getWord(), 
+                        'tipo': self.getPrevToken().getWord()}
+                    ])
+                elif isInRegistro == True:
+                    self.checkSemanticItem(self.getToken().getWord(), ' já foi declarado(a) neste Registro' + self.semanticItem['nome'])
+                
                 self.getNextToken()
                 return self.declaracao_reg2()
             ############## fim id ##############
@@ -321,6 +367,17 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == ';':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     print('fim_registro_3', self.palavra, '\n')
+                    
+                    semanticSymbol = SimboloRegistro(self.semanticItem['nome'], self.semanticItem['atriubtos'])
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaRegistro(semanticSymbol.getNome())
+                    self.semanticItem = {}
+                    
+                    if isInTable == False:
+                        self.analisadorSemantico.addSimboloRegistro(semanticSymbol)
+                    else:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'registro ' +  semanticSymbol.getNome() + ' ja declarado!')
+                    
+                    
                     self.palavra = ''
                     self.getNextToken()
                     return self.declaracao_reg()
@@ -825,9 +882,10 @@ class AnalisadorSintatico:
                     or self.isvalue(self.getToken())):
                 if self.getPrevToken().getWord() == '=':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.getNextToken()
                     self.semanticItem['categoria'] = 'constante'
                     self.semanticItem['dimensao'] = None
+                    self.semanticItem['valor'] = self.getToken()
+                    self.getNextToken()
                     return self.declaracao_const2(escopo)
                 else:
                     self.errorSintatico('= before value')
@@ -939,9 +997,10 @@ class AnalisadorSintatico:
                     or self.isvalue(self.getToken())):
                 if self.getPrevToken().getWord() == '=':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.getNextToken()
                     self.semanticItem['categoria'] = 'constante'
                     self.semanticItem['dimensao'] = None
+                    self.semanticItem['valor'] = self.getToken()
+                    self.getNextToken()
                     return self.declaracao_const2(escopo)
                 else:
                     self.errorSintatico('= before value')
@@ -1537,6 +1596,15 @@ class AnalisadorSintatico:
                     print('fim_parametros_funcao_1', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
+
+                    semanticSymbol = SimboloFuncao(self.semanticItem['nome'], self.semanticItem['retorno'], self.semanticItem['qtdParam'], self.semanticItem['params'])
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaFuncao(semanticSymbol.getHash())
+                    self.semanticItem = {}
+                    
+                    if isInTable == False:
+                        self.analisadorSemantico.addSimboloFuncao(semanticSymbol)
+                    else:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'função ' +  semanticSymbol.getNome() + ' ja declarada!')
 
                     if self.origin[-1] == 'declaracao_funcao2':
                         self.origin.pop()
@@ -2142,7 +2210,7 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == '[':
                 if self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.semanticItem['categoria'] = 'vetor'
+                    self.semanticItem['categoria'] = 'vector'
                     self.getNextToken()
                     self.origin.append('vector_matrix')
                     return self.expr_number()
