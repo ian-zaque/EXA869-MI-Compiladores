@@ -65,18 +65,16 @@ class AnalisadorSemantico:
 
     def isAtributoInRegistro(self,symbol,atributos):
         isInRegistro = False
-        
         for value in atributos:
             if isInRegistro == True:
                 break
             else:
-                for item in value.values():
-                    if item.getNome() == symbol:
-                        isInRegistro = True
-                        break
-                    
-                    elif item.getNome() != symbol:
-                        isInRegistro = False
+                if value['nome'] == symbol:
+                    isInRegistro = True
+                    break
+                
+                elif value['nome'] != symbol:
+                    isInRegistro = False
                         
         return isInRegistro
 
@@ -91,8 +89,8 @@ class AnalisadorSemantico:
         return symbol
     
     def addSimboloRegistro(self,symbol):
-        self.tabelaSimbolosFuncao.append({symbol.getHash(): symbol})
-        self.printTabelaFuncao()
+        self.tabelaSimbolosRegistro.append({symbol.getNome(): symbol})
+        self.printTabelaRegistro()
         return symbol
     
     def getSimboloFuncao(self,symbol):       
@@ -124,6 +122,11 @@ class AnalisadorSemantico:
     
     def printTabelaFuncao(self):
         for value in self.tabelaSimbolosFuncao:
+            for item in value.values():
+                item.toString()
+                
+    def printTabelaRegistro(self):
+        for value in self.tabelaSimbolosRegistro:
             for item in value.values():
                 item.toString()  
     
