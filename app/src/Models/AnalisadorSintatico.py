@@ -1768,6 +1768,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('read_value0')
                     return
             ############## fim erro ##############
 
@@ -1818,6 +1819,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('atr_1')
                     return
 
             ############# erro ##############
@@ -1935,6 +1937,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('functionCall')
                     return
             ############## fim ';' ##############
             else:
@@ -2561,6 +2564,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('expr_log1<>')
                     return
             ############## fim <> ##############
             ############## erro ##############
@@ -2674,6 +2678,7 @@ class AnalisadorSintatico:
                         return
             ############## fim erro ##############
                 else:
+                    print('expr_log2<>')
                     return
 
     # <expr_valor_mod> ::=  number | <operator_auto0> <read_value> | <read_value> <operator_auto>
@@ -2823,6 +2828,7 @@ class AnalisadorSintatico:
                         return
 
                 else:
+                    print('expr_multi_pos<>')
                     return
             ############## fim <> ##############
 
@@ -2910,6 +2916,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('expr_art1')
                     return
             ############## fim erro ##############
 
@@ -3023,6 +3030,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('expr_number1')
                     return
             ############## fim erro ##############
 
@@ -3069,6 +3077,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('expr_rel0')
                     return
             ############## fim ')' ##############
 
@@ -3145,12 +3154,14 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('expr_rel1')
                     return
             ############## fim erro ##############
 
     # <write_cmd> ::= escreva '(' <value_with_expressao> <write_value_list> ')' ';'
 
     def escreva(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3221,6 +3232,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('write_cmd')
                     return
             ############## fim ';' ##############
 
@@ -3285,6 +3297,7 @@ class AnalisadorSintatico:
     # <read_cmd> ::= leia '(' <read_value> <read_value_list> ')' ';'
 
     def leia(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3346,6 +3359,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('read_cmd')
                     return
             ############## fim ';' ##############
 
@@ -3401,6 +3415,7 @@ class AnalisadorSintatico:
     # <com_enquanto> ::= enquanto '(' <args> ')' '{' <com_body> '}'
 
     def enquanto(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3477,6 +3492,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('com_enquanto')
                     return
             ############## fim '}' ##############
 
@@ -3489,6 +3505,7 @@ class AnalisadorSintatico:
     # <com_para> ::= para '(' <init> <stop> ';' <step> ')' '{' <com_body> '}'
 
     def para(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3589,6 +3606,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('com_para')
                     return
             ############## fim '}' ##############
 
@@ -3601,6 +3619,7 @@ class AnalisadorSintatico:
     # <se> ::= 'se' '(' <expressao> ')' '{' <com_body> '}' <se_body>
 
     def se(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3677,6 +3696,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('se')
                     return
             ############## fim '}' ##############
 
@@ -4181,6 +4201,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
+                    print('retornar')
                     return
                 # FIM DE CORPO DE FUNCAO
 
