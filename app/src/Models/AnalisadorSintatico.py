@@ -1122,14 +1122,18 @@ class AnalisadorSintatico:
                     print('fim_variaveis', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
-
-                    if self.origin[-1] == 'corpo_funcao2':
-                        self.origin.pop()
-                        return self.corpo_funcao2()
+                    
+                    print('---------------------',self.origin)
+                    if len(self.origin) > 0:
+                        if self.origin[-1] == 'corpo_funcao2':
+                            self.origin.pop()
+                            return self.corpo_funcao2()
+                        else:
+                            self.errorSintatico(
+                                ' an origin before declaracao_var1 return')
+                            self.palavra = ''
+                            return
                     else:
-                        self.errorSintatico(
-                            ' an origin before declaracao_var1 return')
-                        self.palavra = ''
                         return
                 else:
                     self.errorSintatico(' { ou ; before } ')
@@ -1155,6 +1159,8 @@ class AnalisadorSintatico:
             print('TOKEN_2', self.getToken().getWord())
             self.semanticItem['escopo'] = escopo
             self.semanticItem['init'] = False
+            self.semanticItem['dimensao'] = None
+            self.semanticItem['categoria'] = 'variavel'
 
             # FIRST DERIV.
             ############## '=' ##############
@@ -1171,11 +1177,10 @@ class AnalisadorSintatico:
             ############## fim '=' ##############
 
             ############## <value> ##############
-            elif (self.isvalue(self.getPrevToken()) == 'real' or self.isvalue(self.getPrevToken()) == 'inteiro'
-                  or self.isvalue(self.getPrevToken())):
+            elif (self.isvalue(self.getToken()) == 'real' or self.isvalue(self.getToken()) == 'inteiro'
+                  or self.isvalue(self.getToken()) or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'):
                 if self.getPrevToken().getWord() == '=':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.semanticItem['categoria'] = 'variavel'
                     self.getNextToken()
                     return self.declaracao_var3(escopo)
                 else:
@@ -1188,6 +1193,7 @@ class AnalisadorSintatico:
             ############# <vector_matrix> ##############
             elif self.getToken().getWord() == '[':
                 if self.getPrevToken().getType() == 'IDE':
+                    self.semanticItem['dimensao'] = ''
                     return self.vector_matrix()
                 else:
                     self.errorSintatico(' IDE before [ ')
@@ -1208,7 +1214,7 @@ class AnalisadorSintatico:
 
             ############## erro ##############
             else:
-                self.errorSintatico('othe token on declaracao_var2')
+                self.errorSintatico('other token on declaracao_var2')
                 self.palavra = ''
                 return
             ############## fim erro ##############
@@ -1223,7 +1229,6 @@ class AnalisadorSintatico:
             print('VARIAVEIS_3', self.palavra)
             print('TOKEN_3', self.getToken().getWord())
             self.semanticItem['escopo'] = escopo
-            self.semanticItem['init'] = False
 
             # FIRST DERIV.
             ############## <declaracao_var3> ##############
@@ -2285,7 +2290,7 @@ class AnalisadorSintatico:
             ############## <declaration_var3> ##############
             elif self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
                 if self.getPrevToken().getWord() == ']':
-                    return self.declaracao_var3()
+                    return self.declaracao_var3(self.semanticItem['escopo'])
                 else:
                     self.errorSintatico('] before , or ;')
                     self.palavra = ''
@@ -2328,7 +2333,7 @@ class AnalisadorSintatico:
             ############## <declaration_var3> ##############
             if self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
                 if self.getPrevToken().getWord() == ']':
-                    return self.declaracao_var3()
+                    return self.declaracao_var3(self.semanticItem['escopo'])
                 else:
                     self.errorSintatico('] before , or ;')
                     self.palavra = ''
@@ -2433,7 +2438,7 @@ class AnalisadorSintatico:
                         or self.isvalue(self.getPrevToken()) or self.getPrevToken().getType() == 'IDE'):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    return self.declaracao_var3()
+                    return self.declaracao_var3(self.semanticItem['escopo'])
                 else:
                     self.errorSintatico(' value or IDE before ] ')
                     self.palavra = ''
@@ -2540,7 +2545,7 @@ class AnalisadorSintatico:
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     print('fim_init_matrix_1', self.palavra, '\n')
                     self.getNextToken()
-                    return self.declaracao_var3()
+                    return self.declaracao_var3(self.semanticItem['escopo'])
                 else:
                     self.errorSintatico(' value or IDE before ]')
                     self.palavra = ''
@@ -2846,7 +2851,7 @@ class AnalisadorSintatico:
             if (self.isvalue(self.getToken()) == 'real' or self.isvalue(self.getToken()) == 'inteiro'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_expr_valor_mod_0', self.palavra, '\n')
-                self.palavra = ''
+                # self.palavra = ''
                 self.getNextToken()
                 return self.expr_multi_pos()
             ############## fim number ##############
@@ -3077,6 +3082,12 @@ class AnalisadorSintatico:
                     or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE'):
                 if (self.getPrevToken().getWord() == '[' or self.getPrevToken().getWord() == '('
                         or self.getPrevToken().getWord() == '+' or self.getPrevToken().getWord() == '-'):
+                    
+                    if len(self.semanticItem['dimensao']) == 0:
+                        self.semanticItem['dimensao'] = self.getToken().getWord()
+                    else:
+                        self.semanticItem['dimensao'] = self.semanticItem['dimensao'] + 'x' + self.getToken().getWord()
+                    
                     return self.expr_art()
                 else:
                     self.errorSintatico(
@@ -3235,6 +3246,7 @@ class AnalisadorSintatico:
                     or self.getToken().getType() == 'NRO' or self.getToken().getWord() == '++'
                     or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE'):
                 self.origin.append('expr_rel1')
+                self.getNextToken()
                 return self.expr_art()
             ############## fim <expr_art> ##############
 

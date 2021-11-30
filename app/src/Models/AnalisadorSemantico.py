@@ -24,7 +24,7 @@ class AnalisadorSemantico:
                         isInTable = True
                         break
                     
-                    elif item.getNome() != symbol:
+                    elif item.getNome() != symbol or (item.getNome() == symbol and item.getEscopo() == 'local'):
                         isInTable = False
                     
         return isInTable
