@@ -1123,7 +1123,6 @@ class AnalisadorSintatico:
                     self.palavra = ''
                     self.getNextToken()
                     
-                    print('---------------------',self.origin)
                     if len(self.origin) > 0:
                         if self.origin[-1] == 'corpo_funcao2':
                             self.origin.pop()
