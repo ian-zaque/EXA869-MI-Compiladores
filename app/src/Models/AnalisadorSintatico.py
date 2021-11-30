@@ -77,6 +77,10 @@ class AnalisadorSintatico:
                 else:
                     return 'real'
             return True
+
+        elif token.getWord() == 'verdadeiro' or token.getWord() == 'falso':
+            return True
+
         else:
             return False
 
@@ -92,31 +96,31 @@ class AnalisadorSintatico:
         print(error)
         self.errors.append(error)
 
-    def isSemanticItemValueOk(self):        
+    def isSemanticItemValueOk(self):
         if self.semanticItem['init'] == True and self.semanticItem['categoria'] != 'vector' and self.semanticItem['categoria'] != 'matrix':
             valor = self.semanticItem['valor']
-            
+
             if valor.getType() == 'NRO':
                 if (valor.getWord().find('.') == -1):
                     return 'inteiro' == self.semanticItem['tipo']
                 else:
                     return 'real' == self.semanticItem['tipo']
-            
+
             elif valor.getType() == 'CAD':
                 return 'cadeia' == self.semanticItem['tipo']
-            
+
             elif valor.getType() == 'CAR':
                 return 'char' == self.semanticItem['tipo']
 
             elif valor.getWord() == 'verdadeiro' or valor.getWord() == 'falso':
                 return 'booleano' == self.semanticItem['tipo']
-            
+
         elif self.semanticItem['init'] == True and (self.semanticItem['categoria'] == 'vector' or self.semanticItem['categoria'] == 'matrix'):
             return True
-        
+
         else:
             return None
-        
+
     def errorSintatico(self, match):
         if(self.forward().getWord() != 'EOF'):
             error = 'Linha ' + str(self.getToken().getLine()
@@ -174,7 +178,6 @@ class AnalisadorSintatico:
 
     # <declaracao_reg> ::= registro id '{' <declaracao_reg1> |
     def declaracao_reg(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -232,7 +235,6 @@ class AnalisadorSintatico:
 
     # <declaracao_reg1> ::= <primitive_type> id <declaracao_reg4> <declaracao_reg2> | id id <declaracao_reg4> <declaracao_reg2>
     def declaracao_reg1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -258,18 +260,20 @@ class AnalisadorSintatico:
 
                 elif self.isPrimitiveType(self.getPrevToken().getWord()) or self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    
-                    isInRegistro = self.analisadorSemantico.isAtributoInRegistro(self.getToken().getWord(),self.semanticItem['atributos'])
-                
+
+                    isInRegistro = self.analisadorSemantico.isAtributoInRegistro(
+                        self.getToken().getWord(), self.semanticItem['atributos'])
+
                     if isInRegistro == False:
                         self.semanticItem['atributos'].append({
-                            'nome': self.getToken().getWord(), 
+                            'nome': self.getToken().getWord(),
                             'tipo': self.semanticItem['tipo'],
                             'dimensao': self.semanticItem['dimensao']
                         })
                         self.semanticItem['dimensao'] = ''
                     elif isInRegistro == True:
-                        self.checkSemanticItem(self.getToken().getWord(), 'ja declarado(a) no Registro ' + self.semanticItem['nome'])
+                        self.checkSemanticItem(self.getToken().getWord(
+                        ), 'ja declarado(a) no Registro ' + self.semanticItem['nome'])
 
                     self.getNextToken()
                     return self.declaracao_reg4()
@@ -300,7 +304,6 @@ class AnalisadorSintatico:
 
     # <declaracao_reg2>  ::= ',' id <declaracao_reg2> | ';' <declaracao_reg5>
     def declaracao_reg2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -324,9 +327,10 @@ class AnalisadorSintatico:
             ############## id ##############
             elif self.getToken().getType() == 'IDE' and self.getPrevToken().getWord() == ',':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-            
-                isInRegistro = self.analisadorSemantico.isAtributoInRegistro(self.getToken().getWord(),self.semanticItem['atributos'])
-                
+
+                isInRegistro = self.analisadorSemantico.isAtributoInRegistro(
+                    self.getToken().getWord(), self.semanticItem['atributos'])
+
                 if isInRegistro == False:
                     self.semanticItem['atributos'].append({
                         'nome': self.getToken().getWord(),
@@ -335,8 +339,9 @@ class AnalisadorSintatico:
                     })
                     self.semanticItem['dimensao'] = ''
                 elif isInRegistro == True:
-                    self.checkSemanticItem(self.getToken().getWord(), 'ja declarado(a) no Registro ' + self.semanticItem['nome'])
-                
+                    self.checkSemanticItem(self.getToken().getWord(
+                    ), 'ja declarado(a) no Registro ' + self.semanticItem['nome'])
+
                 self.getNextToken()
                 return self.declaracao_reg2()
             ############## fim id ##############
@@ -363,7 +368,6 @@ class AnalisadorSintatico:
 
     # <declaracao_reg3>   ::= '}' <declaracao_reg>
     def declaracao_reg3(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -377,17 +381,20 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == ';':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     print('fim_registro_3', self.palavra, '\n')
-                    
-                    semanticSymbol = SimboloRegistro(self.semanticItem['nome'], self.semanticItem['atributos'])
-                    isInTable = self.analisadorSemantico.isSimboloInTabelaRegistro(semanticSymbol.getNome())
+
+                    semanticSymbol = SimboloRegistro(
+                        self.semanticItem['nome'], self.semanticItem['atributos'])
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaRegistro(
+                        semanticSymbol.getNome())
                     self.semanticItem = {}
-                    
+
                     if isInTable == False:
-                        self.analisadorSemantico.addSimboloRegistro(semanticSymbol)
+                        self.analisadorSemantico.addSimboloRegistro(
+                            semanticSymbol)
                     elif isInTable == True:
-                        self.checkSemanticItem(semanticSymbol.getNome(), 'registro ' +  semanticSymbol.getNome() + ' ja declarado!')
-                    
-                    
+                        self.checkSemanticItem(semanticSymbol.getNome(
+                        ), 'registro ' + semanticSymbol.getNome() + ' ja declarado!')
+
                     self.palavra = ''
                     self.getNextToken()
                     return self.declaracao_reg()
@@ -417,7 +424,6 @@ class AnalisadorSintatico:
 
     # <declaracao_reg4>   ::= <v_m_access> |
     def declaracao_reg4(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -453,7 +459,6 @@ class AnalisadorSintatico:
 
     # <v_m_access>  ::= '[' <v_m_access1>
     def v_m_access(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -490,7 +495,6 @@ class AnalisadorSintatico:
 
     # <v_m_access1>  ::= '[' <expr_number> ']' |
     def v_m_access1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -514,53 +518,14 @@ class AnalisadorSintatico:
                 # self.palavra = ''
                 self.getNextToken()
 
-                if self.origin[-1] == 'declaracao_reg2':
-                    self.origin.pop()
-                    return self.declaracao_reg2()
-                elif self.origin[-1] == 'nested_elem_registro1':
-                    self.origin.pop()
-                    return self.nested_elem_registro1()
-                elif self.origin[-1] == 'read_value0':
-                    self.origin.pop()
-                    return self.read_value0()
-                elif self.origin[-1] == 'var_list2':
-                    self.origin.pop()
-                    return self.var_list2()
-                elif self.origin[-1] == 'expr_multi':
-                    self.origin.pop()
-                    return self.expr_multi()
-                elif self.origin[-1] == 'operator_auto':
-                    self.origin.pop()
-                    return self.operator_auto()
-                elif self.origin[-1] == 'leia':
-                    self.origin.pop()
-                    return self.leia()
-                elif self.origin[-1] == 'read_value_list':
-                    self.origin.pop()
-                    return self.read_value_list()
-                elif self.origin[-1] == 'var_atr':
-                    self.origin.pop()
-                    return self.var_atr()
-                elif self.origin[-1] == 'expr_multi_pos':
-                    self.origin.pop()
-                    return self.expr_multi_pos()
-                else:
-                    self.errorSintatico(
-                        ' an origin before v_m_access1 return')
-                    self.palavra = ''
-                    return
-            ############## fim ] ##############
+                if len(self.origin) > 0:
 
-            # SECOND DERIV.
-            ############## vazio #############
-            else:
-                if self.getPrevToken().getWord() == ']':
                     if self.origin[-1] == 'declaracao_reg2':
                         self.origin.pop()
                         return self.declaracao_reg2()
-                    elif self.origin[-1] == 'nested_elem_registro':
+                    elif self.origin[-1] == 'nested_elem_registro1':
                         self.origin.pop()
-                        return self.nested_elem_registro()
+                        return self.nested_elem_registro1()
                     elif self.origin[-1] == 'read_value0':
                         self.origin.pop()
                         return self.read_value0()
@@ -590,6 +555,53 @@ class AnalisadorSintatico:
                             ' an origin before v_m_access1 return')
                         self.palavra = ''
                         return
+                else:
+                    print('v_m_access1]')
+                    return
+            ############## fim ] ##############
+
+            # SECOND DERIV.
+            ############## vazio #############
+            else:
+                if len(self.origin) > 0:
+                    if self.getPrevToken().getWord() == ']':
+                        if self.origin[-1] == 'declaracao_reg2':
+                            self.origin.pop()
+                            return self.declaracao_reg2()
+                        elif self.origin[-1] == 'nested_elem_registro':
+                            self.origin.pop()
+                            return self.nested_elem_registro()
+                        elif self.origin[-1] == 'read_value0':
+                            self.origin.pop()
+                            return self.read_value0()
+                        elif self.origin[-1] == 'var_list2':
+                            self.origin.pop()
+                            return self.var_list2()
+                        elif self.origin[-1] == 'expr_multi':
+                            self.origin.pop()
+                            return self.expr_multi()
+                        elif self.origin[-1] == 'operator_auto':
+                            self.origin.pop()
+                            return self.operator_auto()
+                        elif self.origin[-1] == 'leia':
+                            self.origin.pop()
+                            return self.leia()
+                        elif self.origin[-1] == 'read_value_list':
+                            self.origin.pop()
+                            return self.read_value_list()
+                        elif self.origin[-1] == 'var_atr':
+                            self.origin.pop()
+                            return self.var_atr()
+                        elif self.origin[-1] == 'expr_multi_pos':
+                            self.origin.pop()
+                            return self.expr_multi_pos()
+                        else:
+                            self.errorSintatico(
+                                ' an origin before v_m_access1 return')
+                            self.palavra = ''
+                            return
+                    else:
+                        return
 
                 ############## erro ##############
                 else:
@@ -600,7 +612,6 @@ class AnalisadorSintatico:
 
     # <elem_registro>  ::= '.' id <nested_elem_registro>
     def elem_registro(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -643,7 +654,6 @@ class AnalisadorSintatico:
     # <nested_elem_registro>  ::= '.' id <nested_elem_registro1> | <v_m_access> <nested_elem_registro1> |
 
     def nested_elem_registro(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -691,42 +701,45 @@ class AnalisadorSintatico:
             ############## erro ##############
             else:
                 if self.getPrevToken().getType() == 'IDE':
-                    if self.origin[-1] == 'var_list2':
-                        self.origin.pop()
-                        return self.var_list2()
+                    if len(self.origin) > 0:
+                        if self.origin[-1] == 'var_list2':
+                            self.origin.pop()
+                            return self.var_list2()
 
-                    elif self.origin[-1] == 'expr_multi':
-                        self.origin.pop()
-                        return self.expr_multi()
+                        elif self.origin[-1] == 'expr_multi':
+                            self.origin.pop()
+                            return self.expr_multi()
 
-                    elif self.origin[-1] == 'expr_valor_mod':
-                        self.origin.pop()
-                        return self.expr_valor_mod()
+                        elif self.origin[-1] == 'expr_valor_mod':
+                            self.origin.pop()
+                            return self.expr_valor_mod()
 
-                    elif self.origin[-1] == 'leia':
-                        self.origin.pop()
-                        return self.leia()
+                        elif self.origin[-1] == 'leia':
+                            self.origin.pop()
+                            return self.leia()
 
-                    elif self.origin[-1] == 'read_value_list':
-                        self.origin.pop()
-                        return self.read_value_list()
+                        elif self.origin[-1] == 'read_value_list':
+                            self.origin.pop()
+                            return self.read_value_list()
 
-                    elif self.origin[-1] == 'var_atr':
-                        self.origin.pop()
-                        return self.var_atr()
+                        elif self.origin[-1] == 'var_atr':
+                            self.origin.pop()
+                            return self.var_atr()
 
-                    elif self.origin[-1] == 'expr_multi_pos':
-                        self.origin.pop()
-                        return self.expr_multi_pos()
+                        elif self.origin[-1] == 'expr_multi_pos':
+                            self.origin.pop()
+                            return self.expr_multi_pos()
 
-                    elif self.origin[-1] == 'operator_auto':
-                        self.origin.pop()
-                        return self.operator_auto()
+                        elif self.origin[-1] == 'operator_auto':
+                            self.origin.pop()
+                            return self.operator_auto()
 
+                        else:
+                            self.errorSintatico(
+                                ' an origin before nested_elem_registro return')
+                            self.palavra = ''
+                            return
                     else:
-                        self.errorSintatico(
-                            ' an origin before nested_elem_registro return')
-                        self.palavra = ''
                         return
 
                 ############## erro ##############
@@ -738,7 +751,6 @@ class AnalisadorSintatico:
 
     # <nested_elem_registro1> ::= <elem_registro> |
     def nested_elem_registro1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -754,42 +766,46 @@ class AnalisadorSintatico:
 
             else:
                 if self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']':
-                    if self.origin[-1] == 'var_list2':
-                        self.origin.pop()
-                        return self.var_list2()
+                    if len(self.origin) > 0:
 
-                    elif self.origin[-1] == 'expr_multi':
-                        self.origin.pop()
-                        return self.expr_multi()
+                        if self.origin[-1] == 'var_list2':
+                            self.origin.pop()
+                            return self.var_list2()
 
-                    elif self.origin[-1] == 'expr_valor_mod':
-                        self.origin.pop()
-                        return self.expr_valor_mod()
+                        elif self.origin[-1] == 'expr_multi':
+                            self.origin.pop()
+                            return self.expr_multi()
 
-                    elif self.origin[-1] == 'leia':
-                        self.origin.pop()
-                        return self.leia()
+                        elif self.origin[-1] == 'expr_valor_mod':
+                            self.origin.pop()
+                            return self.expr_valor_mod()
 
-                    elif self.origin[-1] == 'read_value_list':
-                        self.origin.pop()
-                        return self.read_value_list()
+                        elif self.origin[-1] == 'leia':
+                            self.origin.pop()
+                            return self.leia()
 
-                    elif self.origin[-1] == 'var_atr':
-                        self.origin.pop()
-                        return self.var_atr()
+                        elif self.origin[-1] == 'read_value_list':
+                            self.origin.pop()
+                            return self.read_value_list()
 
-                    elif self.origin[-1] == 'expr_multi_pos':
-                        self.origin.pop()
-                        return self.expr_multi_pos()
+                        elif self.origin[-1] == 'var_atr':
+                            self.origin.pop()
+                            return self.var_atr()
 
-                    elif self.origin[-1] == 'operator_auto':
-                        self.origin.pop()
-                        return self.operator_auto()
+                        elif self.origin[-1] == 'expr_multi_pos':
+                            self.origin.pop()
+                            return self.expr_multi_pos()
 
+                        elif self.origin[-1] == 'operator_auto':
+                            self.origin.pop()
+                            return self.operator_auto()
+
+                        else:
+                            self.errorSintatico(
+                                ' an origin before nested_elem_registro1 return')
+                            self.palavra = ''
+                            return
                     else:
-                        self.errorSintatico(
-                            ' an origin before nested_elem_registro1 return')
-                        self.palavra = ''
                         return
 
                 ############## erro ##############
@@ -801,7 +817,6 @@ class AnalisadorSintatico:
 
     # <declaration_const>  ::= constantes '{' <declaration_const1>
     def declaracao_const(self, escopo):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -838,7 +853,6 @@ class AnalisadorSintatico:
 
     # <declaration_const1> ::= <primitive_type> id '=' <value> <declaration_const2> | '}'
     def declaracao_const1(self, escopo):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -939,7 +953,6 @@ class AnalisadorSintatico:
 
     # <declaration_const2> ::= ',' id '=' <value> <declaration_const2> | ';' <declaration_const1>
     def declaracao_const2(self, escopo):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -956,20 +969,22 @@ class AnalisadorSintatico:
 
                     semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem[
                                                      'categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
-                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(
+                        semanticSymbol.getNome())
                     isValueOk = self.isSemanticItemValueOk()
-                    
+
                     tipo = self.semanticItem['tipo']
                     self.semanticItem = {}
                     self.semanticItem['tipo'] = tipo
 
                     if isInTable == False and isValueOk == True:
-                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                        self.analisadorSemantico.addSimboloVarConst(
+                            semanticSymbol)
                     elif isValueOk == False:
-                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
-                                               ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + semanticSymbol.getCategoria() +
+                                               ' tem tipo de valor associado diferente do declarado: ' + semanticSymbol.getTipo())
                     elif isInTable == True:
-                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + 
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +
                                                semanticSymbol.getCategoria() + ' ja declarado (a)!')
 
                     self.getNextToken()
@@ -1030,18 +1045,20 @@ class AnalisadorSintatico:
 
                     semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem[
                                                      'categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
-                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(
+                        semanticSymbol.getNome())
                     isValueOk = self.isSemanticItemValueOk()
-                    
+
                     self.semanticItem = {}
 
                     if isInTable == False and isValueOk == True:
-                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                        self.analisadorSemantico.addSimboloVarConst(
+                            semanticSymbol)
                     elif isValueOk == False:
-                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
-                                               ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + semanticSymbol.getCategoria() +
+                                               ' tem tipo de valor associado diferente do declarado: ' + semanticSymbol.getTipo())
                     elif isInTable == True:
-                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + 
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +
                                                semanticSymbol.getCategoria() + ' ja declarado (a)!')
 
                     self.getNextToken()
@@ -1061,7 +1078,6 @@ class AnalisadorSintatico:
 
     # <declaration_var>  ::= variaveis '{' <declaration_var1>
     def declaracao_var(self, escopo):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1098,7 +1114,6 @@ class AnalisadorSintatico:
 
     # <declaration_var1> ::= <type> id <declaration_var2> | '}'
     def declaracao_var1(self, escopo):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1139,7 +1154,7 @@ class AnalisadorSintatico:
                     print('fim_variaveis', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
-                    
+
                     if len(self.origin) > 0:
                         if self.origin[-1] == 'corpo_funcao2':
                             self.origin.pop()
@@ -1166,7 +1181,6 @@ class AnalisadorSintatico:
 
     # <declaration_var2> ::= '=' <value> <declaration_var3> | <vector_matrix> | <declaration_var3>
     def declaracao_var2(self, escopo):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1194,7 +1208,7 @@ class AnalisadorSintatico:
 
             ############## <value> ##############
             elif (self.isvalue(self.getToken()) == 'real' or self.isvalue(self.getToken()) == 'inteiro'
-                  or self.isvalue(self.getToken()) or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'):
+                  or self.isvalue(self.getToken())):
                 if self.getPrevToken().getWord() == '=':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.semanticItem['valor'] = self.getToken()
@@ -1238,7 +1252,6 @@ class AnalisadorSintatico:
 
     # <declaration_var3> ::= ',' id <declaration_var2>  | ';' <declaration_var1>
     def declaracao_var3(self, escopo):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1257,20 +1270,22 @@ class AnalisadorSintatico:
 
                     semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem[
                                                      'categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
-                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(
+                        semanticSymbol.getNome())
                     isValueOk = self.isSemanticItemValueOk()
-                    
+
                     tipo = self.semanticItem['tipo']
                     self.semanticItem = {}
                     self.semanticItem['tipo'] = tipo
 
                     if isInTable == False and isValueOk == True:
-                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                        self.analisadorSemantico.addSimboloVarConst(
+                            semanticSymbol)
                     elif isValueOk == False:
-                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
-                                               ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + semanticSymbol.getCategoria() +
+                                               ' tem tipo de valor associado diferente do declarado: ' + semanticSymbol.getTipo())
                     elif isInTable == True:
-                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + 
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +
                                                semanticSymbol.getCategoria() + ' ja declarado (a)!')
 
                     self.getNextToken()
@@ -1305,17 +1320,19 @@ class AnalisadorSintatico:
 
                     semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem[
                                                      'categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
-                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(
+                        semanticSymbol.getNome())
                     isValueOk = self.isSemanticItemValueOk()
                     self.semanticItem = {}
 
                     if isInTable == False and isValueOk == True:
-                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                        self.analisadorSemantico.addSimboloVarConst(
+                            semanticSymbol)
                     elif isValueOk == False:
-                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
-                                               ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + semanticSymbol.getCategoria() +
+                                               ' tem tipo de valor associado diferente do declarado: ' + semanticSymbol.getTipo())
                     elif isInTable == True:
-                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + 
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +
                                                semanticSymbol.getCategoria() + ' ja declarado (a)!')
 
                     self.getNextToken()
@@ -1335,7 +1352,6 @@ class AnalisadorSintatico:
 
     # <function_declaration>  ::= funcao <type> <function_declaration1>
     def declaracao_funcao(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1374,7 +1390,6 @@ class AnalisadorSintatico:
 
     # <function_declaration1> ::= algoritmo <main_function> | <function_declaration2>
     def declaracao_funcao1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1421,7 +1436,6 @@ class AnalisadorSintatico:
 
     # <function_declaration2> ::= id <function_parameters> '{' <function_body> '}' <function_declaration>
     def declaracao_funcao2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1480,7 +1494,6 @@ class AnalisadorSintatico:
 
     # <main_function> ::= <function_parameters> '{' <function_body> '}'
     def main_function(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1539,7 +1552,6 @@ class AnalisadorSintatico:
     # <function_parameters>   ::= '(' <function_parameters1>
 
     def parametros_funcao(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1567,7 +1579,6 @@ class AnalisadorSintatico:
 
     # <function_parameters1>  ::= <type> id <function_parameters2> | ')'
     def parametros_funcao1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1624,27 +1635,35 @@ class AnalisadorSintatico:
                     print('fim_parametros_funcao_1', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
-                    
-                    semanticSymbol = SimboloFuncao(self.semanticItem['nome'], self.semanticItem['retorno'], self.semanticItem['qtdParam'], self.semanticItem['params'])
-                    isInTable = self.analisadorSemantico.isSimboloInTabelaFuncao(semanticSymbol.getHash())
+
+                    semanticSymbol = SimboloFuncao(
+                        self.semanticItem['nome'], self.semanticItem['retorno'], self.semanticItem['qtdParam'], self.semanticItem['params'])
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaFuncao(
+                        semanticSymbol.getHash())
                     self.semanticItem = {}
-                    
+
                     if isInTable == False:
-                        self.analisadorSemantico.addSimboloFuncao(semanticSymbol)
+                        self.analisadorSemantico.addSimboloFuncao(
+                            semanticSymbol)
                     else:
-                        self.checkSemanticItem(semanticSymbol.getNome(), 'função ' +  semanticSymbol.getNome() + ' ja declarada!')
+                        self.checkSemanticItem(semanticSymbol.getNome(
+                        ), 'função ' + semanticSymbol.getNome() + ' ja declarada!')
 
-                    if self.origin[-1] == 'declaracao_funcao2':
-                        self.origin.pop()
-                        return self.declaracao_funcao2()
+                    if len(self.origin) > 0:
 
-                    elif self.origin[-1] == 'main_function':
-                        self.origin.pop()
-                        return self.main_function()
+                        if self.origin[-1] == 'declaracao_funcao2':
+                            self.origin.pop()
+                            return self.declaracao_funcao2()
+
+                        elif self.origin[-1] == 'main_function':
+                            self.origin.pop()
+                            return self.main_function()
+                        else:
+                            self.errorSintatico(
+                                ' an origin before parametros_funcao1 return')
+                            self.palavra = ''
+                            return
                     else:
-                        self.errorSintatico(
-                            ' an origin before parametros_funcao1 return')
-                        self.palavra = ''
                         return
                 else:
                     self.errorSintatico('( before )')
@@ -1661,7 +1680,6 @@ class AnalisadorSintatico:
 
     # <function_parameters2>  ::= '[' ']' <function_parameters3>  | <function_parameters4>
     def parametros_funcao2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1725,7 +1743,6 @@ class AnalisadorSintatico:
     # <function_parameters3>  ::= '[' ']' <function_parameters4>  | <function_parameters4>
 
     def parametros_funcao3(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1778,7 +1795,6 @@ class AnalisadorSintatico:
 
     # <function_parameters4>  ::= ','  <function_parameters1>  | ')'
     def parametros_funcao4(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1819,18 +1835,23 @@ class AnalisadorSintatico:
                         self.checkSemanticItem(semanticSymbol.getNome(
                         ), 'função ' + semanticSymbol.getNome() + ' ja declarada!')
 
-                    if self.origin[-1] == 'declaracao_funcao2':
-                        self.origin.pop()
-                        return self.declaracao_funcao2()
+                    if len(self.origin) > 0:
 
-                    elif self.origin[-1] == 'main_function':
-                        self.origin.pop()
-                        return self.main_function()
+                        if self.origin[-1] == 'declaracao_funcao2':
+                            self.origin.pop()
+                            return self.declaracao_funcao2()
+
+                        elif self.origin[-1] == 'main_function':
+                            self.origin.pop()
+                            return self.main_function()
+                        else:
+                            self.errorSintatico(
+                                ' an origin before parametros_funcao4 return')
+                            self.palavra = ''
+                            return
                     else:
-                        self.errorSintatico(
-                            ' an origin before parametros_funcao4 return')
-                        self.palavra = ''
                         return
+
                 else:
                     self.errorSintatico(' ] or IDE before )')
                     self.palavra = ''
@@ -1847,7 +1868,6 @@ class AnalisadorSintatico:
     # <var_atr> ::= <read_value> '=' <atr_value> <atr_1>
 
     def var_atr(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1890,7 +1910,6 @@ class AnalisadorSintatico:
     # <read_value> ::= id <read_value0>
 
     def read_value(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1911,7 +1930,6 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     def read_value0(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1930,45 +1948,48 @@ class AnalisadorSintatico:
 
             ############# erro ##############
             else:
-                if self.origin[-1] == 'var_atr':
-                    self.origin.pop()
-                    return self.var_atr()
+                if len(self.origin) > 0:
+                    if self.origin[-1] == 'var_atr':
+                        self.origin.pop()
+                        return self.var_atr()
 
-                elif self.origin[-1] == 'var_list2':
-                    self.origin.pop()
-                    return self.var_list2()
+                    elif self.origin[-1] == 'var_list2':
+                        self.origin.pop()
+                        return self.var_list2()
 
-                elif self.origin[-1] == 'expr_multi_pos':
-                    self.origin.pop()
-                    return self.expr_multi_pos()
+                    elif self.origin[-1] == 'expr_multi_pos':
+                        self.origin.pop()
+                        return self.expr_multi_pos()
 
-                elif self.origin[-1] == 'expr_valor_mod':
-                    self.origin.pop()
-                    return self.expr_valor_mod()
+                    elif self.origin[-1] == 'expr_valor_mod':
+                        self.origin.pop()
+                        return self.expr_valor_mod()
 
-                elif self.origin[-1] == 'read_value_list':
-                    self.origin.pop()
-                    return self.read_value_list()
+                    elif self.origin[-1] == 'read_value_list':
+                        self.origin.pop()
+                        return self.read_value_list()
 
-                elif self.origin[-1] == 'var_atr':
-                    self.origin.pop()
-                    return self.var_atr()
+                    elif self.origin[-1] == 'var_atr':
+                        self.origin.pop()
+                        return self.var_atr()
 
-                elif self.origin[-1] == 'operator_auto':
-                    self.origin.pop()
-                    return self.operator_auto()
+                    elif self.origin[-1] == 'operator_auto':
+                        self.origin.pop()
+                        return self.operator_auto()
 
+                    else:
+                        self.errorSintatico(
+                            ' an origin before read_value0 return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before read_value0 return')
-                    self.palavra = ''
+                    print('read_value0')
                     return
             ############## fim erro ##############
 
     # <atr_1> ::= ',' <var_atr> | ';'
 
     def atr_1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1992,22 +2013,26 @@ class AnalisadorSintatico:
                 self.palavra = ''
                 self.getNextToken()
 
-                if self.origin[-1] == 'corpo_funcao2':
-                    self.origin.pop()
-                    return self.corpo_funcao2()
+                if len(self.origin) > 0:
+                    if self.origin[-1] == 'corpo_funcao2':
+                        self.origin.pop()
+                        return self.corpo_funcao2()
 
-                elif self.origin[-1] == 'com_body':
-                    self.origin.pop()
-                    return self.com_body()
+                    elif self.origin[-1] == 'com_body':
+                        self.origin.pop()
+                        return self.com_body()
 
-                elif self.origin[-1] == 'para':
-                    self.origin.pop()
-                    return self.para()
+                    elif self.origin[-1] == 'para':
+                        self.origin.pop()
+                        return self.para()
 
+                    else:
+                        self.errorSintatico(
+                            ' an origin before atr_1 return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before atr_1 return')
-                    self.palavra = ''
+                    print('atr_1')
                     return
 
             ############# erro ##############
@@ -2020,7 +2045,6 @@ class AnalisadorSintatico:
     # <atr_value> ::= <value_with_expressao> | <functionCall>
 
     def atr_value(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2062,7 +2086,6 @@ class AnalisadorSintatico:
     # <functionCall> ::= id '(' <varList0> ')' ';'
 
     def chamada_funcao(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2099,28 +2122,33 @@ class AnalisadorSintatico:
                 self.palavra = ''
                 self.getNextToken()
 
-                if self.origin[-1] == 'corpo_funcao2':
-                    self.origin.pop()
-                    return self.corpo_funcao2()
+                if len(self.origin) > 0:
 
-                elif self.origin[-1] == 'atr_1':
-                    if self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
+                    if self.origin[-1] == 'corpo_funcao2':
                         self.origin.pop()
-                        return self.atr_1()
+                        return self.corpo_funcao2()
+
+                    elif self.origin[-1] == 'atr_1':
+                        if self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
+                            self.origin.pop()
+                            return self.atr_1()
+                        else:
+                            self.errorSintatico(
+                                ' , or ; before functionCall return to atr_1')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'com_body':
+                        self.origin.pop()
+                        return self.com_body()
+
                     else:
                         self.errorSintatico(
-                            ' , or ; before functionCall return to atr_1')
+                            ' an origin before functionCall return')
                         self.palavra = ''
                         return
-
-                elif self.origin[-1] == 'com_body':
-                    self.origin.pop()
-                    return self.com_body()
-
                 else:
-                    self.errorSintatico(
-                        ' an origin before functionCall return')
-                    self.palavra = ''
+                    print('functionCall')
                     return
             ############## fim ';' ##############
             else:
@@ -2131,7 +2159,6 @@ class AnalisadorSintatico:
     # <varList0> ::= <value> <varList2> | <read_value> <varList2> | <>
 
     def var_list0(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2170,7 +2197,6 @@ class AnalisadorSintatico:
 
     # <varList1> ::= <value> <varList2> | <read_value> <varList2>
     def var_list1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2201,7 +2227,6 @@ class AnalisadorSintatico:
     # <varList2> ::= ',' <varList1> | <>
 
     def var_list2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2226,7 +2251,6 @@ class AnalisadorSintatico:
 
     # <vector_matrix>   ::= '[' <expr_number> ']' <vector_matrix_1>
     def vector_matrix(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2265,7 +2289,6 @@ class AnalisadorSintatico:
     # <vector_matrix_1> ::= '[' <expr_number> ']' <vector_matrix_2> | '=' <init_vector> <declaration_var3> | <declaration_var3>
 
     def vector_matrix1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2330,7 +2353,6 @@ class AnalisadorSintatico:
     # <vector_matrix_2> ::= '=' <init_matrix> <declaration_var3> | <declaration_var3>
 
     def vector_matrix2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2373,7 +2395,6 @@ class AnalisadorSintatico:
     # <init_vector> ::= '[' <init_vector_1>
 
     def init_vector(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2404,7 +2425,6 @@ class AnalisadorSintatico:
     # <init_vector_1>  ::=  <value_with_IDE> <init_vector_2>
 
     def init_vector1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2436,7 +2456,6 @@ class AnalisadorSintatico:
     # <init_vector_2>  ::= ',' <init_vector_1> | ']'
 
     def init_vector2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2477,7 +2496,6 @@ class AnalisadorSintatico:
     # <init_matrix> ::= '[' <init_matrix_1>
 
     def init_matrix(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2508,7 +2526,6 @@ class AnalisadorSintatico:
     # <init_matrix_1> ::= <value_with_IDE> <init_matrix_2>
 
     def init_matrix1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2539,7 +2556,6 @@ class AnalisadorSintatico:
     # <init_matrix_2>   ::= ',' <init_matrix_1> | ';' <init_matrix_1> | ']
 
     def init_matrix2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2585,7 +2601,6 @@ class AnalisadorSintatico:
     # <expressao>   ::= <expr_rel> <expr_log1> | '(' <expressao> ')' <expr_log2> | '!' <expressao>
 
     def expressao(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2637,7 +2652,6 @@ class AnalisadorSintatico:
     # <expr_log1> ::=  <operatorLog> <expressao> | <>
 
     def expr_log1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2672,81 +2686,86 @@ class AnalisadorSintatico:
             ############## <> ##############
             else:
 
-                if self.origin[-1] == 'retornar_funcao':
-                    if self.getToken().getWord() == ';':
+                if len(self.origin) > 0:
+
+                    if self.origin[-1] == 'retornar_funcao':
+                        if self.getToken().getWord() == ';':
+                            self.origin.pop()
+                            return self.retornar_funcao()
+                        else:
+                            self.errorSintatico(' ; after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'com_retornar':
+                        if self.getToken().getWord() == ';':
+                            self.origin.pop()
+                            return self.com_retornar()
+                        else:
+                            self.errorSintatico(' ; after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'enquanto':
+                        if self.getToken().getWord() == ')':
+                            self.origin.pop()
+                            return self.enquanto()
+                        else:
+                            self.errorSintatico(' ) after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'para':
+                        if self.getToken().getWord() == ';' or self.getToken().getWord() == ')':
+                            self.origin.pop()
+                            return self.para()
+                        else:
+                            self.errorSintatico(' ; or ) after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'expr_rel0':
+                        if self.getToken().getWord() == ')':
+                            self.origin.pop()
+                            return self.expr_rel0()
+                        else:
+                            self.errorSintatico(' ) after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'se':
+                        if self.getToken().getWord() == ')':
+                            self.origin.pop()
+                            return self.se()
+                        else:
+                            self.errorSintatico(' ) after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'expressao':
+                        if self.getToken().getWord() == ')':
+                            self.origin.pop()
+                            return self.expressao()
+                        else:
+                            self.errorSintatico(' ) after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'atr_1':
                         self.origin.pop()
-                        return self.retornar_funcao()
+                        return self.atr_1()
+
+                    elif self.origin[-1] == 'write_value_list':
+                        self.origin.pop()
+                        return self.write_value_list()
+
                     else:
-                        self.errorSintatico(' ; after an expressao')
+                        self.errorSintatico(
+                            ' an origin before expr_log1 return')
                         self.palavra = ''
                         return
-
-                elif self.origin[-1] == 'com_retornar':
-                    if self.getToken().getWord() == ';':
-                        self.origin.pop()
-                        return self.com_retornar()
-                    else:
-                        self.errorSintatico(' ; after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'enquanto':
-                    if self.getToken().getWord() == ')':
-                        self.origin.pop()
-                        return self.enquanto()
-                    else:
-                        self.errorSintatico(' ) after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'para':
-                    if self.getToken().getWord() == ';' or self.getToken().getWord() == ')':
-                        self.origin.pop()
-                        return self.para()
-                    else:
-                        self.errorSintatico(' ; or ) after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'expr_rel0':
-                    if self.getToken().getWord() == ')':
-                        self.origin.pop()
-                        return self.expr_rel0()
-                    else:
-                        self.errorSintatico(' ) after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'se':
-                    if self.getToken().getWord() == ')':
-                        self.origin.pop()
-                        return self.se()
-                    else:
-                        self.errorSintatico(' ) after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'expressao':
-                    if self.getToken().getWord() == ')':
-                        self.origin.pop()
-                        return self.expressao()
-                    else:
-                        self.errorSintatico(' ) after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'atr_1':
-                    self.origin.pop()
-                    return self.atr_1()
-
-                elif self.origin[-1] == 'write_value_list':
-                    self.origin.pop()
-                    return self.write_value_list()
-
                 else:
-                    self.errorSintatico(
-                        ' an origin before expr_log1 return')
-                    self.palavra = ''
+                    print('expr_log1<>')
                     return
             ############## fim <> ##############
             ############## erro ##############
@@ -2755,7 +2774,6 @@ class AnalisadorSintatico:
     # <expr_log2> ::= <operatorLog> <expressao> | <operator_multi> <expressao> | <operator_rel> <expressao> | <operator_soma> <expressao> | <>
 
     def expr_log2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2779,89 +2797,93 @@ class AnalisadorSintatico:
             ############## <> ##############
             else:
 
-                if self.origin[-1] == 'retornar_funcao':
-                    if self.getToken().getWord() == ';':
+                if len(self.origin) > 0:
+
+                    if self.origin[-1] == 'retornar_funcao':
+                        if self.getToken().getWord() == ';':
+                            self.origin.pop()
+                            return self.retornar_funcao()
+                        else:
+                            self.errorSintatico(' ; after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'com_retornar':
+                        if self.getToken().getWord() == ';':
+                            self.origin.pop()
+                            return self.com_retornar()
+                        else:
+                            self.errorSintatico(' ; after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'enquanto':
+                        if self.getToken().getWord() == ')':
+                            self.origin.pop()
+                            return self.enquanto()
+                        else:
+                            self.errorSintatico(' ) after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'para':
+                        if self.getToken().getWord() == ';' or self.getToken().getWord() == ')':
+                            self.origin.pop()
+                            return self.para()
+                        else:
+                            self.errorSintatico(' ; or ) after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'expr_rel0':
+                        if self.getToken().getWord() == ')':
+                            self.origin.pop()
+                            return self.expr_rel0()
+                        else:
+                            self.errorSintatico(' ) after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'se':
+                        if self.getToken().getWord() == ')':
+                            self.origin.pop()
+                            return self.se()
+                        else:
+                            self.errorSintatico(' ) after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'expressao':
+                        if self.getToken().getWord() == ')':
+                            self.origin.pop()
+                            return self.expressao()
+                        else:
+                            self.errorSintatico(' ) after an expressao')
+                            self.palavra = ''
+                            return
+
+                    elif self.origin[-1] == 'atr_1':
                         self.origin.pop()
-                        return self.retornar_funcao()
+                        return self.atr_1()
+
+                    elif self.origin[-1] == 'write_value_list':
+                        self.origin.pop()
+                        return self.write_value_list()
+
+                ############## erro ##############
                     else:
-                        self.errorSintatico(' ; after an expressao')
+                        self.errorSintatico(
+                            ' an origin before expr_log2 return')
                         self.palavra = ''
                         return
-
-                elif self.origin[-1] == 'com_retornar':
-                    if self.getToken().getWord() == ';':
-                        self.origin.pop()
-                        return self.com_retornar()
-                    else:
-                        self.errorSintatico(' ; after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'enquanto':
-                    if self.getToken().getWord() == ')':
-                        self.origin.pop()
-                        return self.enquanto()
-                    else:
-                        self.errorSintatico(' ) after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'para':
-                    if self.getToken().getWord() == ';' or self.getToken().getWord() == ')':
-                        self.origin.pop()
-                        return self.para()
-                    else:
-                        self.errorSintatico(' ; or ) after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'expr_rel0':
-                    if self.getToken().getWord() == ')':
-                        self.origin.pop()
-                        return self.expr_rel0()
-                    else:
-                        self.errorSintatico(' ) after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'se':
-                    if self.getToken().getWord() == ')':
-                        self.origin.pop()
-                        return self.se()
-                    else:
-                        self.errorSintatico(' ) after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'expressao':
-                    if self.getToken().getWord() == ')':
-                        self.origin.pop()
-                        return self.expressao()
-                    else:
-                        self.errorSintatico(' ) after an expressao')
-                        self.palavra = ''
-                        return
-
-                elif self.origin[-1] == 'atr_1':
-                    self.origin.pop()
-                    return self.atr_1()
-
-                elif self.origin[-1] == 'write_value_list':
-                    self.origin.pop()
-                    return self.write_value_list()
-
-            ############## erro ##############
-                else:
-                    self.errorSintatico(
-                        ' an origin before expr_log2 return')
-                    self.palavra = ''
-                    return
             ############## fim erro ##############
+                else:
+                    print('expr_log2<>')
+                    return
 
-                # <expr_valor_mod> ::=  number | <operator_auto0> <read_value> | <read_value> <operator_auto>
+    # <expr_valor_mod> ::=  number | <operator_auto0> <read_value> | <read_value> <operator_auto>
 
     def expr_valor_mod(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2912,7 +2934,6 @@ class AnalisadorSintatico:
     # <operator_auto> ::= '++' | '--' | <>
 
     def operator_auto(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2935,7 +2956,6 @@ class AnalisadorSintatico:
     # <expr_multi> ::= <operator_soma> <expr_valor_mod> <expr_multi_pos> | <expr_valor_mod> <expr_multi_pos>
 
     def expr_multi(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2970,7 +2990,6 @@ class AnalisadorSintatico:
     # <expr_multi_pos> ::= <operator_multi> <expr_multi> | <>
 
     def expr_multi_pos(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2989,17 +3008,22 @@ class AnalisadorSintatico:
             ############## <> ##############
             else:
 
-                if self.origin[-1] == 'expr_number1':
-                    self.origin.pop()
-                    return self.expr_number1()
+                if len(self.origin) > 0:
 
-                elif self.origin[-1] == 'expr_art1':
-                    self.origin.pop()
-                    return self.expr_art1()
+                    if self.origin[-1] == 'expr_number1':
+                        self.origin.pop()
+                        return self.expr_number1()
+
+                    elif self.origin[-1] == 'expr_art1':
+                        self.origin.pop()
+                        return self.expr_art1()
+                    else:
+                        self.errorSintatico(
+                            ' an origin before expr_multi_pos return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before expr_multi_pos return')
-                    self.palavra = ''
+                    print('expr_multi_pos<>')
                     return
 
             ############## fim <> ##############
@@ -3007,7 +3031,6 @@ class AnalisadorSintatico:
     # <expr_art> ::= number <expr_multi> <expr_art1>
 
     def expr_art(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3036,7 +3059,6 @@ class AnalisadorSintatico:
     # <expr_art1> ::= <operator_soma> <expr_number> | <>
 
     def expr_art1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3054,43 +3076,46 @@ class AnalisadorSintatico:
 
             ############## <expr_number> ##############
             else:
-                if self.origin[-1] == 'expr_rel1':
-                    self.origin.pop()
-                    return self.expr_rel1()
+                if len(self.origin) > 0:
+                    if self.origin[-1] == 'expr_rel1':
+                        self.origin.pop()
+                        return self.expr_rel1()
 
-                elif self.origin[-1] == 'expr_number':
-                    self.origin.pop()
-                    return self.expr_number()
+                    elif self.origin[-1] == 'expr_number':
+                        self.origin.pop()
+                        return self.expr_number()
 
-                elif self.origin[-1] == 'vector_matrix':
-                    self.origin.pop()
-                    return self.vector_matrix()
+                    elif self.origin[-1] == 'vector_matrix':
+                        self.origin.pop()
+                        return self.vector_matrix()
 
-                elif self.origin[-1] == 'vector_matrix1':
-                    self.origin.pop()
-                    return self.vector_matrix1()
+                    elif self.origin[-1] == 'vector_matrix1':
+                        self.origin.pop()
+                        return self.vector_matrix1()
 
-                elif self.origin[-1] == 'v_m_access':
-                    self.origin.pop()
-                    return self.v_m_access()
+                    elif self.origin[-1] == 'v_m_access':
+                        self.origin.pop()
+                        return self.v_m_access()
 
-                elif self.origin[-1] == 'v_m_access1':
-                    self.origin.pop()
-                    return self.v_m_access1()
-            ############## fim <expr_number> ##############
+                    elif self.origin[-1] == 'v_m_access1':
+                        self.origin.pop()
+                        return self.v_m_access1()
+                ############## fim <expr_number> ##############
 
-            ############# erro ##############
+                ############# erro ##############
+                    else:
+                        self.errorSintatico(
+                            ' an origin before expr_art1 return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before expr_art1 return')
-                    self.palavra = ''
+                    print('expr_art1')
                     return
             ############## fim erro ##############
 
     # <expr_number> ::= <expr_art> | '(' <expr_number> ')' <expr_multi_pos> <expr_number1>
 
     def expr_number(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3105,12 +3130,14 @@ class AnalisadorSintatico:
                     or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE'):
                 if (self.getPrevToken().getWord() == '[' or self.getPrevToken().getWord() == '('
                         or self.getPrevToken().getWord() == '+' or self.getPrevToken().getWord() == '-'):
-                    
+
                     if len(self.semanticItem['dimensao']) == 0:
-                        self.semanticItem['dimensao'] = self.getToken().getWord()
+                        self.semanticItem['dimensao'] = self.getToken(
+                        ).getWord()
                     else:
-                        self.semanticItem['dimensao'] = self.semanticItem['dimensao'] + 'x' + self.getToken().getWord()
-                    
+                        self.semanticItem['dimensao'] = self.semanticItem['dimensao'] + \
+                            'x' + self.getToken().getWord()
+
                     return self.expr_art()
                 else:
                     self.errorSintatico(
@@ -3153,7 +3180,6 @@ class AnalisadorSintatico:
     # <expr_number1>  ::= <operator_soma> <expr_number> | <>
 
     def expr_number1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3170,42 +3196,47 @@ class AnalisadorSintatico:
             ############## fim <operator_soma> ##############
 
             else:
-                if self.origin[-1] == 'vector_matrix':
-                    self.origin.pop()
-                    return self.vector_matrix()
 
-                elif self.origin[-1] == 'vector_matrix1':
-                    self.origin.pop()
-                    return self.vector_matrix1()
+                if len(self.origin) > 0:
 
-                elif self.origin[-1] == 'v_m_access':
-                    self.origin.pop()
-                    return self.v_m_access()
+                    if self.origin[-1] == 'vector_matrix':
+                        self.origin.pop()
+                        return self.vector_matrix()
 
-                elif self.origin[-1] == 'v_m_access1':
-                    self.origin.pop()
-                    return self.v_m_access1()
+                    elif self.origin[-1] == 'vector_matrix1':
+                        self.origin.pop()
+                        return self.vector_matrix1()
 
-                elif self.origin[-1] == 'expr_rel1':
-                    self.origin.pop()
-                    return self.expr_rel1()
+                    elif self.origin[-1] == 'v_m_access':
+                        self.origin.pop()
+                        return self.v_m_access()
 
-                elif self.origin[-1] == 'expr_number':
-                    self.origin.pop()
-                    return self.expr_number()
+                    elif self.origin[-1] == 'v_m_access1':
+                        self.origin.pop()
+                        return self.v_m_access1()
 
-            ############# erro ##############
+                    elif self.origin[-1] == 'expr_rel1':
+                        self.origin.pop()
+                        return self.expr_rel1()
+
+                    elif self.origin[-1] == 'expr_number':
+                        self.origin.pop()
+                        return self.expr_number()
+
+                ############# erro ##############
+                    else:
+                        self.errorSintatico(
+                            ' an origin before expr_number1 return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before expr_number1 return')
-                    self.palavra = ''
+                    print('expr_number1')
                     return
             ############## fim erro ##############
 
     # <expr_rel0>   ::= <expr_rel> | '(' <expressao> ')'
 
     def expr_rel0(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3235,13 +3266,17 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == ')':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                if self.origin[-1] == 'expr_log1':
-                    self.origin.pop()
-                    return self.expr_log1()
+                if len(self.origin) > 0:
+                    if self.origin[-1] == 'expr_log1':
+                        self.origin.pop()
+                        return self.expr_log1()
+                    else:
+                        self.errorSintatico(
+                            ' an origin before expr_rel0 return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before expr_rel0 return')
-                    self.palavra = ''
+                    print('expr_rel0')
                     return
             ############## fim ')' ##############
 
@@ -3255,7 +3290,6 @@ class AnalisadorSintatico:
     # <expr_rel> ::= <expr_art> <expr_rel1> | boolean <expr_rel1>
 
     def expr_rel(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3291,7 +3325,6 @@ class AnalisadorSintatico:
     # <expr_rel1> ::= <operator_rel> <expr_rel0> | <>
 
     def expr_rel1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3306,21 +3339,26 @@ class AnalisadorSintatico:
                 return self.expr_rel0()
 
             else:
-                if self.origin[-1] == 'expr_log1':
-                    self.origin.pop()
-                    return self.expr_log1()
+                if len(self.origin) > 0:
+                    if self.origin[-1] == 'expr_log1':
+                        self.origin.pop()
+                        return self.expr_log1()
 
-                ############# erro ##############
+                    ############# erro ##############
+                    else:
+                        self.errorSintatico(
+                            ' an origin before expr_rel1 return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before expr_rel1 return')
-                    self.palavra = ''
+                    print('expr_rel1')
                     return
                 ############## fim erro ##############
 
     # <write_cmd> ::= escreva '(' <value_with_expressao> <write_value_list> ')' ';'
 
     def escreva(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3380,13 +3418,18 @@ class AnalisadorSintatico:
                 self.palavra = ''
                 self.getNextToken()
 
-                if self.origin[-1] == 'corpo_funcao2':
-                    self.origin.pop()
-                    return self.corpo_funcao2()
+                if len(self.origin) > 0:
+
+                    if self.origin[-1] == 'corpo_funcao2':
+                        self.origin.pop()
+                        return self.corpo_funcao2()
+                    else:
+                        self.errorSintatico(
+                            ' an origin before write_cmd return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before write_cmd return')
-                    self.palavra = ''
+                    print('write_cmd;')
                     return
             ############## fim ';' ##############
 
@@ -3399,6 +3442,7 @@ class AnalisadorSintatico:
     # <write_value_list> ::= ',' <value_with_expressao> <write_value_list> | <>
 
     def write_value_list(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3451,6 +3495,7 @@ class AnalisadorSintatico:
     # <read_cmd> ::= leia '(' <read_value> <read_value_list> ')' ';'
 
     def leia(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3501,13 +3546,18 @@ class AnalisadorSintatico:
                 self.palavra = ''
                 self.getNextToken()
 
-                if self.origin[-1] == 'corpo_funcao2':
-                    self.origin.pop()
-                    return self.corpo_funcao2()
+                if len(self.origin) > 0:
+
+                    if self.origin[-1] == 'corpo_funcao2':
+                        self.origin.pop()
+                        return self.corpo_funcao2()
+                    else:
+                        self.errorSintatico(
+                            ' an origin before read_cmd return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before read_cmd return')
-                    self.palavra = ''
+                    print('read_cmd;')
                     return
             ############## fim ';' ##############
 
@@ -3520,6 +3570,7 @@ class AnalisadorSintatico:
     # <read_value_list> ::= ',' <read_value> <read_value_list> |
 
     def read_value_list(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3563,6 +3614,7 @@ class AnalisadorSintatico:
     # <com_enquanto> ::= enquanto '(' <args> ')' '{' <com_body> '}'
 
     def enquanto(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3628,13 +3680,18 @@ class AnalisadorSintatico:
                 self.palavra = ''
                 self.getNextToken()
 
-                if self.origin[-1] == 'corpo_funcao2':
-                    self.origin.pop()
-                    return self.corpo_funcao2()
+                if len(self.origin) > 0:
+
+                    if self.origin[-1] == 'corpo_funcao2':
+                        self.origin.pop()
+                        return self.corpo_funcao2()
+                    else:
+                        self.errorSintatico(
+                            ' an origin before com_enquanto return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before com_enquanto return')
-                    self.palavra = ''
+                    print('com_enquanto}')
                     return
             ############## fim '}' ##############
 
@@ -3647,6 +3704,7 @@ class AnalisadorSintatico:
     # <com_para> ::= para '(' <init> <stop> ';' <step> ')' '{' <com_body> '}'
 
     def para(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3736,13 +3794,18 @@ class AnalisadorSintatico:
                 self.palavra = ''
                 self.getNextToken()
 
-                if self.origin[-1] == 'corpo_funcao2':
-                    self.origin.pop()
-                    return self.corpo_funcao2()
+                if len(self.origin) > 0:
+
+                    if self.origin[-1] == 'corpo_funcao2':
+                        self.origin.pop()
+                        return self.corpo_funcao2()
+                    else:
+                        self.errorSintatico(
+                            ' an origin before com_para return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before com_para return')
-                    self.palavra = ''
+                    print('com_para}')
                     return
             ############## fim '}' ##############
 
@@ -3755,6 +3818,7 @@ class AnalisadorSintatico:
     # <se> ::= 'se' '(' <expressao> ')' '{' <com_body> '}' <se_body>
 
     def se(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3820,13 +3884,18 @@ class AnalisadorSintatico:
                 self.palavra = ''
                 self.getNextToken()
 
-                if self.origin[-1] == 'corpo_funcao2':
-                    self.origin.pop()
-                    return self.corpo_funcao2()
+                if len(self.origin) > 0:
+
+                    if self.origin[-1] == 'corpo_funcao2':
+                        self.origin.pop()
+                        return self.corpo_funcao2()
+                    else:
+                        self.errorSintatico(
+                            ' an origin before se return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before se return')
-                    self.palavra = ''
+                    print('se}')
                     return
             ############## fim '}' ##############
 
@@ -3853,6 +3922,7 @@ class AnalisadorSintatico:
     # <senao>  ::= 'senao' <se_senao>
 
     def senao(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3884,6 +3954,7 @@ class AnalisadorSintatico:
     # <se_senao>  ::= <se> | '{' <com_body> '}'
 
     def se_senao(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3927,6 +3998,7 @@ class AnalisadorSintatico:
                 # <functionCall> <com_body> | <var_atr> <com_body> | <com_retornar>
 
     def com_body(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -4015,6 +4087,7 @@ class AnalisadorSintatico:
     # <com_retornar> ::= retorno <com_retornar1> ';' | <>
 
     def com_retornar(self):
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -4316,17 +4389,22 @@ class AnalisadorSintatico:
                 self.palavra = ''
                 self.getNextToken()
 
-                if self.origin[-1] == 'main_function':
-                    self.origin.pop()
-                    return self.main_function()
+                if len(self.origin) > 0:
 
-                elif self.origin[-1] == 'declaracao_funcao2':
-                    self.origin.pop()
-                    return self.declaracao_funcao2()
+                    if self.origin[-1] == 'main_function':
+                        self.origin.pop()
+                        return self.main_function()
+
+                    elif self.origin[-1] == 'declaracao_funcao2':
+                        self.origin.pop()
+                        return self.declaracao_funcao2()
+                    else:
+                        self.errorSintatico(
+                            ' an origin before retornar return')
+                        self.palavra = ''
+                        return
                 else:
-                    self.errorSintatico(
-                        ' an origin before retornar return')
-                    self.palavra = ''
+                    print('retornar;')
                     return
                 # FIM DE CORPO DE FUNCAO
 
@@ -4340,7 +4418,7 @@ class AnalisadorSintatico:
     # <retornar1> ::= cad | char | <expressao> | <>
 
     def retornar_funcao1(self):
-        print('ok')
+        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
