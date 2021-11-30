@@ -92,8 +92,8 @@ class AnalisadorSintatico:
         print(error)
         self.errors.append(error)
 
-    def isSemanticItemValueOk(self):
-        if self.semanticItem['init'] == True:
+    def isSemanticItemValueOk(self):        
+        if self.semanticItem['init'] == True and self.semanticItem['categoria'] != 'vector' and self.semanticItem['categoria'] != 'matrix':
             valor = self.semanticItem['valor']
             
             if valor.getType() == 'NRO':
@@ -110,6 +110,10 @@ class AnalisadorSintatico:
 
             elif valor.getWord() == 'verdadeiro' or valor.getWord() == 'falso':
                 return 'booleano' == self.semanticItem['tipo']
+            
+        elif self.semanticItem['init'] == True and (self.semanticItem['categoria'] == 'vector' or self.semanticItem['categoria'] == 'matrix'):
+            return True
+        
         else:
             return None
         
@@ -943,23 +947,26 @@ class AnalisadorSintatico:
                 if (self.isvalue(self.getPrevToken()) == 'real' or self.isvalue(self.getPrevToken()) == 'inteiro'
                         or self.isvalue(self.getPrevToken())):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.getNextToken()
 
                     semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem[
                                                      'categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
-                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(
-                        semanticSymbol.getNome())
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    isValueOk = self.isSemanticItemValueOk()
+                    
                     tipo = self.semanticItem['tipo']
                     self.semanticItem = {}
                     self.semanticItem['tipo'] = tipo
 
-                    if isInTable == False:
-                        self.analisadorSemantico.addSimboloVarConst(
-                            semanticSymbol)
-                    else:
-                        self.checkSemanticItem(semanticSymbol.getNome(
-                        ), 'de categoria ' + semanticSymbol.getCategoria() + ' ja declarado (a)!')
+                    if isInTable == False and isValueOk == True:
+                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                    elif isValueOk == False:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
+                                               ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                    elif isInTable == True:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + 
+                                               semanticSymbol.getCategoria() + ' ja declarado (a)!')
 
+                    self.getNextToken()
                     return self.declaracao_const2(escopo)
                 else:
                     self.errorSintatico('value before , ')
@@ -1014,21 +1021,24 @@ class AnalisadorSintatico:
                 if (self.isvalue(self.getPrevToken()) == 'real' or self.isvalue(self.getPrevToken()) == 'inteiro'
                         or self.isvalue(self.getPrevToken())):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.getNextToken()
 
                     semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem[
                                                      'categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
-                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(
-                        semanticSymbol.getNome())
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    isValueOk = self.isSemanticItemValueOk()
+                    
                     self.semanticItem = {}
 
-                    if isInTable == False:
-                        self.analisadorSemantico.addSimboloVarConst(
-                            semanticSymbol)
-                    else:
-                        self.checkSemanticItem(semanticSymbol.getNome(
-                        ), 'de categoria ' + semanticSymbol.getCategoria() + ' ja declarado (a)!')
+                    if isInTable == False and isValueOk == True:
+                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                    elif isValueOk == False:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
+                                               ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                    elif isInTable == True:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + 
+                                               semanticSymbol.getCategoria() + ' ja declarado (a)!')
 
+                    self.getNextToken()
                     return self.declaracao_const1(escopo)
                 else:
                     self.errorSintatico(' value before ; ')
@@ -1110,6 +1120,7 @@ class AnalisadorSintatico:
                 else:
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.semanticItem['nome'] = self.getToken().getWord()
+                    self.semanticItem['init'] = False
                     self.getNextToken()
                     return self.declaracao_var2(escopo)
             ############## fim id ##############
@@ -1157,17 +1168,17 @@ class AnalisadorSintatico:
             print('VARIAVEIS_2', self.palavra)
             print('TOKEN_2', self.getToken().getWord())
             self.semanticItem['escopo'] = escopo
-            self.semanticItem['init'] = False
             self.semanticItem['dimensao'] = None
             self.semanticItem['categoria'] = 'variavel'
+            self.semanticItem['valor'] = ''
 
             # FIRST DERIV.
             ############## '=' ##############
             if self.getToken().getWord() == '=':
                 if self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.getNextToken()
                     self.semanticItem['init'] = True
+                    self.getNextToken()
                     return self.declaracao_var2(escopo)
                 else:
                     self.errorSintatico(' IDE before = ')
@@ -1180,6 +1191,7 @@ class AnalisadorSintatico:
                   or self.isvalue(self.getToken()) or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'):
                 if self.getPrevToken().getWord() == '=':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['valor'] = self.getToken()
                     self.getNextToken()
                     return self.declaracao_var3(escopo)
                 else:
@@ -1236,23 +1248,26 @@ class AnalisadorSintatico:
                         or self.isvalue(self.getPrevToken()) == 'inteiro' or self.isvalue(self.getPrevToken())
                         or self.getPrevToken().getWord() == ']'):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.getNextToken()
 
                     semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem[
                                                      'categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
-                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(
-                        semanticSymbol.getNome())
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    isValueOk = self.isSemanticItemValueOk()
+                    
                     tipo = self.semanticItem['tipo']
                     self.semanticItem = {}
                     self.semanticItem['tipo'] = tipo
 
-                    if isInTable == False:
-                        self.analisadorSemantico.addSimboloVarConst(
-                            semanticSymbol)
-                    else:
-                        self.checkSemanticItem(semanticSymbol.getNome(
-                        ), 'de categoria ' + semanticSymbol.getCategoria() + ' ja declarado(a)!')
+                    if isInTable == False and isValueOk == True:
+                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                    elif isValueOk == False:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
+                                               ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                    elif isInTable == True:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + 
+                                               semanticSymbol.getCategoria() + ' ja declarado (a)!')
 
+                    self.getNextToken()
                     return self.declaracao_var3(escopo)
                 else:
                     self.errorSintatico(' IDE or value or ] before , ')
@@ -1265,6 +1280,7 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == ',':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.semanticItem['nome'] = self.getToken().getWord()
+                    self.semanticItem['init'] = False
                     self.getNextToken()
                     return self.declaracao_var2(escopo)
                 else:
@@ -1280,21 +1296,23 @@ class AnalisadorSintatico:
                         or self.isvalue(self.getPrevToken()) == 'inteiro' or self.isvalue(self.getPrevToken())
                         or self.getPrevToken().getWord() == ']'):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    self.getNextToken()
 
                     semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem[
                                                      'categoria'], self.semanticItem['dimensao'], self.semanticItem['escopo'], self.semanticItem['init'])
-                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(
-                        semanticSymbol.getNome())
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                    isValueOk = self.isSemanticItemValueOk()
                     self.semanticItem = {}
 
-                    if isInTable == False:
-                        self.analisadorSemantico.addSimboloVarConst(
-                            semanticSymbol)
-                    else:
-                        self.checkSemanticItem(semanticSymbol.getNome(
-                        ), 'de categoria ' + semanticSymbol.getCategoria() + ' ja declarado(a)!')
+                    if isInTable == False and isValueOk == True:
+                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                    elif isValueOk == False:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +  semanticSymbol.getCategoria() + 
+                                               ' tem tipo de valor associado diferente do declarado: '+ semanticSymbol.getTipo())
+                    elif isInTable == True:
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + 
+                                               semanticSymbol.getCategoria() + ' ja declarado (a)!')
 
+                    self.getNextToken()
                     return self.declaracao_var1(escopo)
                 else:
                     self.errorSintatico(' IDE or value before ; ')
