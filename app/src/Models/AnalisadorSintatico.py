@@ -83,7 +83,7 @@ class AnalisadorSintatico:
         return word in Lexemas().getReservedWords()
 
     def isRelOperator(self, word):
-        return word in ['<', '>', '==', '<=', '>=', '!=']
+        return word in ['==', '>=', '<=', '!=', '<', '>']
 
     def checkSemanticItem(self, name, match):
         error = 'Linha ' + str(self.getToken().getLine()
@@ -3103,6 +3103,7 @@ class AnalisadorSintatico:
     # <expr_rel0>   ::= <expr_rel> | '(' <expressao> ')'
 
     def expr_rel0(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3112,9 +3113,10 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             ############## <expr_rel> ##############
-            if self.getToken().getWord() == '*' or self.getToken().getWord() == '/' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+            if (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO' or self.getToken().getWord() == '++'
+                    or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'):
                 return self.expr_rel()
             ############## fim <expr_rel> ##############
 
@@ -3123,37 +3125,35 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == '(':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expr_rel0()
-            ############## fim '(' ##############
-
-            ############## <expressao> ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO'
-                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getType() == 'IDE'
-                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '(') and (self.getPrevToken().getWord() == '('):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('expr_rel0')
                 return self.expressao()
-            ############## fim <expressao> ##############
+            ############## fim '(' ##############
 
             ############## ')' ##############
             elif self.getToken().getWord() == ')':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expr_rel0()
+                if self.origin[-1] == 'expr_log1':
+                    self.origin.pop()
+                    return self.expr_log1()
+                else:
+                    self.errorSintatico(
+                        ' an origin before expr_rel0 return')
+                    self.palavra = ''
+                    return
             ############## fim ')' ##############
 
             ############# erro ##############
             else:
-                print('erro_expr_rel_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on expr_rel0')
+                self.palavra = ''
+                return
             ############## fim erro ##############
 
     # <expr_rel> ::= <expr_art> <expr_rel1> | boolean <expr_rel1>
 
     def expr_rel(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3163,43 +3163,32 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             ############## <expr_art> ##############
-            if self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+            if (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO' or self.getToken().getWord() == '++'
+                    or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE'):
+                self.origin.append('expr_rel1')
                 return self.expr_art()
             ############## fim <expr_art> ##############
 
-            ############## <expr_rel1> ##############
-            elif self.isRelOperator(self.getToken().getWord()) and (self.getPrevToken().getWord() == '*' or self.getPrevToken().getWord() == '/'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_rel1()
-            ############## fim <expr_rel1> ##############
-
             # SECOND DERIV.
             ############## boolean ##############
-            if self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expr_rel()
-            ############## fim boolean ##############
-
-            ############## <expr_rel1> ##############
-            elif self.isRelOperator(self.getToken().getWord()) and (self.getPrevToken().getWord() == 'verdadeiro' or self.getPrevToken().getWord() == 'falso'):
+            elif self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.expr_rel1()
-            ############## fim <expr_rel1> ##############
+            ############## fim boolean ##############
 
             ############# erro ##############
             else:
-                print('erro_expr_rel_1', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on expr_rel')
+                self.palavra = ''
+                return
             ############## fim erro ##############
 
     # <expr_rel1> ::= <operator_rel> <expr_rel0> | <>
 
     def expr_rel1(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3211,18 +3200,20 @@ class AnalisadorSintatico:
             if self.isRelOperator(self.getToken().getWord()):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expr_rel1()
-
-            elif self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
                 return self.expr_rel0()
 
-            ############# erro ##############
             else:
-                print('erro_expr_rel_2', self.palavra)
-                # self.getNextToken()
-            ############## fim erro ##############
+                if self.origin[-1] == 'expr_log1':
+                    self.origin.pop()
+                    return self.expr_log1()
+
+                ############# erro ##############
+                else:
+                    self.errorSintatico(
+                        ' an origin before expr_rel1 return')
+                    self.palavra = ''
+                    return
+                ############## fim erro ##############
 
     # <write_cmd> ::= escreva '(' <value_with_expressao> <write_value_list> ')' ';'
 
