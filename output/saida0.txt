@@ -1,2 +1,16 @@
 
-Sucesso!
+Linha 7: Erro semantico encontrado: "b" ja declarado(a) no Registro teste_registro
+Linha 9: Erro semantico encontrado: "b" ja declarado(a) no Registro teste_registro
+Linha 11: Erro semantico encontrado: "b" ja declarado(a) no Registro teste_registro
+Linha 19: Erro semantico encontrado: "teste_registro" registro teste_registro ja declarado!
+Linha 31: Erro semantico encontrado: "c" de categoria variavel ja declarado (a)!
+Linha 32: Erro semantico encontrado: "c" de categoria variavel ja declarado (a)!
+Linha 34: Erro semantico encontrado: "a" de categoria vector ja declarado (a)!
+Linha 35: Erro semantico encontrado: "b" de categoria vector ja declarado (a)!
+Linha 36: Erro semantico encontrado: "c" de categoria matrix ja declarado (a)!
+Linha 37: Erro semantico encontrado: "d" de categoria matrix ja declarado (a)!
+Linha 44: Erro semantico encontrado: "a" de categoria variavel ja declarado(a)!
+Linha 44: Erro semantico encontrado: "b" de categoria variavel ja declarado(a)!
+Linha 47: Erro semantico encontrado: "c" de categoria constante ja declarado (a)!
+Linha 52: Erro semantico encontrado: "c" de categoria variavel ja declarado (a)!
+Linha 57: Erro sintatico encontrado (se ( a 

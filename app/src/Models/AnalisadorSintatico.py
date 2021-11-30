@@ -269,7 +269,7 @@ class AnalisadorSintatico:
                         })
                         self.semanticItem['dimensao'] = ''
                     elif isInRegistro == True:
-                        self.checkSemanticItem(self.getToken().getWord(), 'ja declarado(a) neste Registro' + self.semanticItem['nome'])
+                        self.checkSemanticItem(self.getToken().getWord(), 'ja declarado(a) no Registro ' + self.semanticItem['nome'])
 
                     self.getNextToken()
                     return self.declaracao_reg4()
@@ -335,7 +335,7 @@ class AnalisadorSintatico:
                     })
                     self.semanticItem['dimensao'] = ''
                 elif isInRegistro == True:
-                    self.checkSemanticItem(self.getToken().getWord(), 'ja declarado(a) neste Registro' + self.semanticItem['nome'])
+                    self.checkSemanticItem(self.getToken().getWord(), 'ja declarado(a) no Registro ' + self.semanticItem['nome'])
                 
                 self.getNextToken()
                 return self.declaracao_reg2()
