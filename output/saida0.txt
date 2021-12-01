@@ -1,2 +1,2 @@
 
-Sucesso!
+Linha 12: Erro sintatico encontrado (,),/,2,<=,a,[,1,],[,0,],),&&,Pessoa,.,hasCar,!=,falso,),{,},senao,{,se,(,Pessoa,.,a,[,1,],[,1,],==,verdadeiro,),{,b,=,2,;,b,=,Pessoa,.,idade,;,b,[,2,],=,"aaaa",;,b,[,2,],[,2,],=,"Cadeia_de_cadeia",;,funcao_teste_1,(,),;,para,(,i,=,2,;,i,<,(,(,teste,+,2,),/,3,),;,i,++,),{,se,(,(,a,+,2,),!=,3,),{,},},},senao,{,se,(,(,teste,&&,teste,),||,(,teste,||,teste,),),{,retorno,(,a,+,b,),;,},},},retorno,;). Pois era esperado:  an origin before expr_art1 return

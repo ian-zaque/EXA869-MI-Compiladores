@@ -632,10 +632,6 @@ class AnalisadorSintatico:
                             self.origin.pop()
                             return self.expr_multi()
 
-                        elif self.origin[-1] == 'expr_valor_mod':
-                            self.origin.pop()
-                            return self.expr_valor_mod()
-
                         elif self.origin[-1] == 'leia':
                             self.origin.pop()
                             return self.leia()
@@ -697,10 +693,6 @@ class AnalisadorSintatico:
                         elif self.origin[-1] == 'expr_multi':
                             self.origin.pop()
                             return self.expr_multi()
-
-                        elif self.origin[-1] == 'expr_valor_mod':
-                            self.origin.pop()
-                            return self.expr_valor_mod()
 
                         elif self.origin[-1] == 'leia':
                             self.origin.pop()
@@ -1734,11 +1726,7 @@ class AnalisadorSintatico:
             ############# erro ##############
             else:
                 if len(self.origin) > 0:
-                    if self.origin[-1] == 'var_atr':
-                        self.origin.pop()
-                        return self.var_atr()
-
-                    elif self.origin[-1] == 'var_list2':
+                    if self.origin[-1] == 'var_list2':
                         self.origin.pop()
                         return self.var_list2()
 
@@ -1746,9 +1734,9 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.expr_multi_pos()
 
-                    elif self.origin[-1] == 'expr_valor_mod':
+                    elif self.origin[-1] == 'operator_auto':
                         self.origin.pop()
-                        return self.expr_valor_mod()
+                        return self.operator_auto()
 
                     elif self.origin[-1] == 'read_value_list':
                         self.origin.pop()
@@ -1758,17 +1746,13 @@ class AnalisadorSintatico:
                         self.origin.pop()
                         return self.var_atr()
 
-                    elif self.origin[-1] == 'operator_auto':
-                        self.origin.pop()
-                        return self.operator_auto()
-
                     else:
                         self.errorSintatico(
                             ' an origin before read_value0 return')
                         self.palavra = ''
                         return
                 else:
-                    print('read_value0')
+                    print('read_value0<>')
                     return
             ############## fim erro ##############
 
@@ -1819,7 +1803,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('atr_1')
+                    print('atr_1;')
                     return
 
             ############# erro ##############
@@ -1937,7 +1921,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('functionCall')
+                    print('functionCall;')
                     return
             ############## fim ';' ##############
             else:
@@ -2380,6 +2364,7 @@ class AnalisadorSintatico:
                         or self.isvalue(self.getPrevToken()) or self.getPrevToken().getType() == 'IDE'):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     print('fim_init_matrix_1', self.palavra, '\n')
+                    self.palavra = ''
                     self.getNextToken()
                     return self.declaracao_var3()
                 else:
@@ -2460,26 +2445,12 @@ class AnalisadorSintatico:
 
             # FIRST DERIV.
             ############## <operatorLog> ##############
+            ############## <expressao> ##############
             if self.getToken().getWord() == '&&' or self.getToken().getWord() == '||':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.expr_log1()
+                return self.expressao()
             ############## fim <operatorLog> ##############
-
-            ############## <expressao> ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO' or self.getToken().getType() == 'IDE'
-                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '(' or self.getToken().getWord() == '!'):
-
-                if self.getPrevToken().getWord() == '&&' or self.getPrevToken().getWord() == '||':
-                    return self.expressao()
-                else:
-                    self.errorSintatico(
-                        ' && or  || before ' + self.getToken().getWord())
-                    self.palavra = ''
-                    return
             ############## fim <expressao> ##############
 
             ############## <> ##############
@@ -2712,12 +2683,6 @@ class AnalisadorSintatico:
                 return self.read_value()
             ############## fim <operator_auto0> ##############
 
-            ############## <read_value> ##############
-            elif self.getToken().getType() == 'IDE' and (self.getPrevToken().getWord() == '++' or self.getPrevToken().getWord() == '--'):
-                self.origin.append('expr_multi_pos')
-                return self.read_value()
-            ############## fim <read_value> ##############
-
             # THIRD DERIV.
             ############## <read_value> ##############
             elif self.getToken().getType() == 'IDE':
@@ -2911,12 +2876,13 @@ class AnalisadorSintatico:
 
                 ############# erro ##############
                     else:
+                        print(self.origin[-1])
                         self.errorSintatico(
                             ' an origin before expr_art1 return')
                         self.palavra = ''
                         return
                 else:
-                    print('expr_art1')
+                    print('expr_art1<>')
                     return
             ############## fim erro ##############
 
@@ -3030,7 +2996,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('expr_number1')
+                    print('expr_number1<>')
                     return
             ############## fim erro ##############
 
@@ -3077,7 +3043,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('expr_rel0')
+                    print('expr_rel0)')
                     return
             ############## fim ')' ##############
 
@@ -3154,14 +3120,14 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('expr_rel1')
+                    print('expr_rel1<>')
                     return
             ############## fim erro ##############
 
     # <write_cmd> ::= escreva '(' <value_with_expressao> <write_value_list> ')' ';'
 
     def escreva(self):
-        print('test')
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3178,10 +3144,16 @@ class AnalisadorSintatico:
             ############## fim 'escreva' ##############
 
             ############## '(' ##############
-            elif self.getToken().getWord() == '(' and self.getPrevToken().getWord() == 'escreva':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.escreva()
+            elif self.getToken().getWord() == '(':
+                if self.getPrevToken().getWord() == 'escreva':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    return self.escreva()
+
+                else:
+                    self.errorSintatico('escreva before (')
+                    self.palavra = ''
+                    return
             ############## fim '(' ##############
 
             ############## <value_with_expressao> ##############
@@ -3200,13 +3172,6 @@ class AnalisadorSintatico:
                 return self.expressao()
             ############## fim <value_with_expressao> ##############
 
-            ############## ',' ##############
-            elif self.getToken().getWord() == ',':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.write_value_list()
-            ############## fim ',' ##############
-
             ############## ')' ##############
             elif self.getToken().getWord() == ')':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
@@ -3215,36 +3180,49 @@ class AnalisadorSintatico:
             ############## fim ')' ##############
 
             ############## ';' ##############
-            elif self.getToken().getWord() == ';' and self.getPrevToken().getWord() == ')':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_escreva_0', self.palavra, '\n')
-                self.palavra = ''
-                self.getNextToken()
+            elif self.getToken().getWord() == ';':
+                if self.getPrevToken().getWord() == ')':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    print('fim_escreva_0', self.palavra, '\n')
+                    self.palavra = ''
+                    self.getNextToken()
 
-                if len(self.origin) > 0:
+                    if len(self.origin) > 0:
 
-                    if self.origin[-1] == 'corpo_funcao2':
-                        self.origin.pop()
-                        return self.corpo_funcao2()
+                        if self.origin[-1] == 'corpo_funcao2':
+                            self.origin.pop()
+                            return self.corpo_funcao2()
+
+                        elif self.origin[-1] == 'com_body':
+                            self.origin.pop()
+                            return self.com_body()
+
+                        else:
+                            self.errorSintatico(
+                                ' an origin before write_cmd return')
+                            self.palavra = ''
+                            return
                     else:
-                        self.errorSintatico(
-                            ' an origin before write_cmd return')
-                        self.palavra = ''
+                        print('write_cmd;')
                         return
+
                 else:
-                    print('write_cmd')
+                    self.errorSintatico(') before ;')
+                    self.palavra = ''
                     return
             ############## fim ';' ##############
 
             ############# erro ##############
             else:
-                print('erro_escreva_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on write_value_list')
+                self.palavra = ''
+                return
             ############## fim erro ##############
 
     # <write_value_list> ::= ',' <value_with_expressao> <write_value_list> | <>
 
     def write_value_list(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3260,11 +3238,18 @@ class AnalisadorSintatico:
                 return self.write_value_list()
             ############## fim ',' ##############
 
-             ############## <value_with_expressao> ##############
+            ############## <value_with_expressao> ##############
             elif self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.write_value_list()
+                if self.getPrevToken().getWord() == ',':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    return self.write_value_list()
+
+                else:
+                    self.errorSintatico(
+                        ', before ' + self.getToken().getWord())
+                    self.palavra = ''
+                    return
 
             elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
                     or self.getToken().getType() == 'NRO'
@@ -3272,32 +3257,32 @@ class AnalisadorSintatico:
                     or self.getToken().getType() == 'IDE'
                     or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
                     or self.getToken().getWord() == '(' or self.getToken().getWord() == '!'):
-                self.origin.append('write_value_list')
-                return self.expressao()
+
+                if self.getPrevToken().getWord() == ',':
+                    self.origin.append('write_value_list')
+                    return self.expressao()
+
+                else:
+                    self.errorSintatico(
+                        ', before ' + self.getToken().getWord())
+                    self.palavra = ''
+                    return
             ############## fim <value_with_expressao> ##############
 
-            ############## ',' ##############
-            elif self.getToken().getWord() == ',':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.write_value_list()
-            ############## fim ',' ##############
-
             elif self.getToken().getWord() == ')':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
                 return self.escreva()
 
             ############# erro ##############
             else:
-                print('erro_write_value_list_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on write_value_list')
+                self.palavra = ''
+                return
             ############## fim erro ##############
 
     # <read_cmd> ::= leia '(' <read_value> <read_value_list> ')' ';'
 
     def leia(self):
-        print('test')
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3314,64 +3299,74 @@ class AnalisadorSintatico:
             ############## fim 'leia' ##############
 
             ############## '(' ##############
-            elif self.getToken().getWord() == '(' and self.getPrevToken().getWord() == 'leia':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.leia()
+            elif self.getToken().getWord() == '(':
+                if self.getPrevToken().getWord() == 'leia':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    self.origin.append('read_value_list')
+                    return self.read_value()
+                else:
+                    self.errorSintatico('leia before (')
+                    self.palavra = ''
+                    return
             ############## fim '(' ##############
 
-            ############## <read_value> ##############
-            elif self.getToken().getType() == 'IDE' and self.getPrevToken().getWord() == '(':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.read_value()
-            ############## fim <read_value> ##############
-
-            ############## ',' ##############
-            elif self.getToken().getWord() == ',':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.read_value_list()
-            ############## fim ',' ##############
-
             ############## ')' ##############
-            elif self.getToken().getWord() == ')' and self.getPrevToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.leia()
+            elif self.getToken().getWord() == ')':
+                if self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    return self.leia()
+
+                else:
+                    self.errorSintatico('IDE or ] before )')
+                    self.palavra = ''
+                    return
             ############## fim ')' ##############
 
             ############## ';' ##############
-            elif self.getToken().getWord() == ';' and self.getPrevToken().getWord() == ')':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_leia_0', self.palavra, '\n')
-                self.palavra = ''
-                self.getNextToken()
+            elif self.getToken().getWord() == ';':
+                if self.getPrevToken().getWord() == ')':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    print('fim_leia_0', self.palavra, '\n')
+                    self.palavra = ''
+                    self.getNextToken()
 
-                if len(self.origin) > 0:
+                    if len(self.origin) > 0:
 
-                    if self.origin[-1] == 'corpo_funcao2':
-                        self.origin.pop()
-                        return self.corpo_funcao2()
+                        if self.origin[-1] == 'corpo_funcao2':
+                            self.origin.pop()
+                            return self.corpo_funcao2()
+
+                        elif self.origin[-1] == 'com_body':
+                            self.origin.pop()
+                            return self.com_body()
+
+                        else:
+                            self.errorSintatico(
+                                ' an origin before read_cmd return')
+                            self.palavra = ''
+                            return
                     else:
-                        self.errorSintatico(
-                            ' an origin before read_cmd return')
-                        self.palavra = ''
+                        print('read_cmd;')
                         return
                 else:
-                    print('read_cmd')
+                    self.errorSintatico(' ) before ;')
+                    self.palavra = ''
                     return
             ############## fim ';' ##############
 
             ############# erro ##############
             else:
-                print('erro_leia_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on read_cmd')
+                self.palavra = ''
+                return
             ############## fim erro ##############
 
     # <read_value_list> ::= ',' <read_value> <read_value_list> |
 
     def read_value_list(self):
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3382,40 +3377,36 @@ class AnalisadorSintatico:
             # FIRST DERIV.
             ############## ',' ##############
             if self.getToken().getWord() == ',':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.read_value_list()
+                if self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.origin.append('read_value_list')
+                    self.getNextToken()
+                    return self.read_value()
+                else:
+                    self.errorSintatico('IDE or ] before ,')
+                    self.palavra = ''
+                    return
             # fim ',' ##############:
 
-            ############## <read_value> ##############
-            elif self.getToken().getType() == 'IDE' and (self.getPrevToken().getWord() == '(' or self.getPrevToken().getWord() == ','):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.read_value()
-            ############## fim <read_value> ##############
-
-            ############## ',' ##############
-            elif self.getToken().getWord() == ',':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.read_value_list()
-            ############## fim ',' ##############
-
             elif self.getToken().getWord() == ')':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.leia()
+                if self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']':
+                    return self.leia()
+                else:
+                    self.errorSintatico('IDE or ] before )')
+                    self.palavra = ''
+                    return
 
             ############# erro ##############
             else:
-                print('erro_read_value_list_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on read_value_list')
+                self.palavra = ''
+                return
             ############## fim erro ##############
 
     # <com_enquanto> ::= enquanto '(' <args> ')' '{' <com_body> '}'
 
     def enquanto(self):
-        print('test')
+        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3435,21 +3426,8 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == '(' and self.getPrevToken().getWord() == 'enquanto':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.enquanto()
+                return self.args()
             ############## fim '(' ##############
-
-            ############## <args> ##############
-            # <args> ::= <expressao> |
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO'
-                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getType() == 'IDE'
-                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '(' or self.getToken().getWord() == '!'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expressao()
-            ############## <args> ##############
 
             ############## ')' ##############
             # ADD TESTE DE ULTIMO CARACTER DE EXPRESSAO
@@ -3460,19 +3438,17 @@ class AnalisadorSintatico:
             ############## fim ')' ##############
 
             ############## '{' ##############
-            elif self.getToken().getWord() == '{' and self.getPrevToken().getWord() == ')':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.enquanto()
+            elif self.getToken().getWord() == '{':
+                if self.getPrevToken().getWord() == ')':
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    self.origin.append('enquanto')
+                    return self.com_body()
+                else:
+                    self.errorSintatico(') before {')
+                    self.palavra = ''
+                    return
             ############## fim '{' ##############
-
-            ############## <com_body> ##############
-            elif (self.getToken().getWord() == 'enquanto' or self.getToken().getWord() == 'para' or self.getToken().getWord() == 'se' or self.getToken().getWord() == 'escreva' or self.getToken().getWord() == 'leia' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'retorno') and (self.getPrevToken().getWord() == '{'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                self.origin = 'com_body'
-                return self.com_body()
-            ############## fim <com_body> ##############
 
             ############## '}' ##############
             elif self.getToken().getWord() == '}':
@@ -3486,26 +3462,72 @@ class AnalisadorSintatico:
                     if self.origin[-1] == 'corpo_funcao2':
                         self.origin.pop()
                         return self.corpo_funcao2()
+
+                    elif self.origin[-1] == 'com_body':
+                        self.origin.pop()
+                        return self.com_body()
+
                     else:
                         self.errorSintatico(
                             ' an origin before com_enquanto return')
                         self.palavra = ''
                         return
                 else:
-                    print('com_enquanto')
+                    print('com_enquanto}')
                     return
             ############## fim '}' ##############
 
             ############# erro ##############
             else:
-                print('erro_enquanto_0', self.palavra)
-                # self.getNextToken()
+                self.errorSintatico('other token on com_enquanto')
+                self.palavra = ''
+                return
             ############## fim erro ##############
+
+    # <args> ::= <expressao> |
+    def args(self):
+        print('ok')
+        if self.getToken().getType() == 'EOF':
+            return
+
+        elif self.counter < len(self.tokens):
+            print('args_0', self.palavra)
+            print('TOKEN_0', self.getToken().getWord())
+
+            # FIRST DERIV.
+            ############## <args> ##############
+            if (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
+                    or self.getToken().getType() == 'NRO'
+                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
+                    or self.getToken().getType() == 'IDE'
+                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
+                    or self.getToken().getWord() == '(' or self.getToken().getWord() == '!'):
+                self.origin.append('enquanto')
+                return self.expressao()
+            ############## fim <args> ##############
+
+            ############## <> ##############
+            elif self.getToken().getWord() == ')':
+                if self.getPrevToken().getWord() == '(':
+                    return self.enquanto()
+
+                else:
+                    self.errorSintatico(' ( before )')
+                    self.palavra = ''
+                    return
+            ############## fim <> ##############
+
+            ############# erro ##############
+            else:
+                self.errorSintatico('other token on args')
+                self.palavra = ''
+                return
+            ############# fim erro ##############
 
     # <com_para> ::= para '(' <init> <stop> ';' <step> ')' '{' <com_body> '}'
 
     def para(self):
-        print('test')
+        print('testing')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3549,6 +3571,7 @@ class AnalisadorSintatico:
                     or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == ';'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
+                self.origin.append('para')
                 return self.expressao()
             ############## fim <stop> ##############
 
@@ -3569,6 +3592,7 @@ class AnalisadorSintatico:
                     or self.getToken().getWord() == '(' or self.getToken().getWord() == '!') and (self.getPrevToken().getWord() == ';'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
+                self.origin.append('para')
                 return self.expressao()
             ############## fim <step> ##############
 
@@ -3606,7 +3630,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('com_para')
+                    print('com_para}')
                     return
             ############## fim '}' ##############
 
@@ -3636,22 +3660,13 @@ class AnalisadorSintatico:
             ############## fim 'se' ##############
 
             ############## '(' ##############
+            ############## <expressao> ##############
             elif self.getToken().getWord() == '(' and self.getPrevToken().getWord() == 'se':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
-                return self.se()
-            ############## fim '(' ##############
-
-            ############## <expressao> ##############
-            elif (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
-                    or self.getToken().getType() == 'NRO'
-                    or self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
-                    or self.getToken().getType() == 'IDE'
-                    or self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso'
-                    or self.getToken().getWord() == '(' or self.getToken().getWord() == '!'):
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('se')
                 return self.expressao()
+            ############## fim '(' ##############
             ############## fim <expressao> ##############
 
             ############## ')' ##############
@@ -3696,7 +3711,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('se')
+                    print('se}')
                     return
             ############## fim '}' ##############
 
@@ -3807,40 +3822,35 @@ class AnalisadorSintatico:
             # FIRST DERIV.
             ############## <com_enquanto> ##############
             if self.getToken().getWord() == 'enquanto':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('com_body')
                 return self.enquanto()
             ############## fim <com_enquanto> ##############
 
             # SECOND DERIV.
             ############## <com_para> ##############
             if self.getToken().getWord() == 'para':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('com_body')
                 return self.para()
             ############## fim <com_para> ##############
 
             # THIRD DERIV.
             ############## <se> ##############
             if self.getToken().getWord() == 'se':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('com_body')
                 return self.se()
             ############## fim <se> ##############
 
             # FOURTH DERIV.
             ############## <escreva> ##############
             if self.getToken().getWord() == 'escreva':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('com_body')
                 return self.escreva()
             ############## fim <escreva> ##############
 
             # FIFTH DERIV.
             ############## <leia> ##############
             if self.getToken().getWord() == 'leia':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('com_body')
                 return self.leia()
             ############## fim <leia> ##############
 
@@ -3856,23 +3866,20 @@ class AnalisadorSintatico:
             # ADD TESTE DO QUE VEM DEPOIS
             ############## <var_atr> ##############
             if self.getToken().getType() == 'IDE':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('com_body')
                 return self.var_atr()
             ############## fim <var_atr> ##############
 
             # EIGTH DERIV.
             ############## <com_retornar>##############
             if self.getToken().getWord() == 'retorno':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('com_body')
                 return self.com_retornar()
             ############## fim <com_retornar> ##############
 
             ############## <com_body> ##############
             elif self.getToken().getWord() == 'enquanto' or self.getToken().getWord() == 'para' or self.getToken().getWord() == 'se' or self.getToken().getWord() == 'escreva' or self.getToken().getWord() == 'leia' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'retorno':
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
+                self.origin.append('com_body')
                 return self.com_body()
             ############## fim <com_body> ##############
 
@@ -4182,6 +4189,7 @@ class AnalisadorSintatico:
             ############## fim retorno ##############
 
             elif self.getToken().getWord() == ';':
+                self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_retornar_funcao_0', self.palavra, '\n')
                 self.palavra = ''
                 self.getNextToken()
@@ -4201,7 +4209,7 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('retornar')
+                    print('retornar;')
                     return
                 # FIM DE CORPO DE FUNCAO
 
