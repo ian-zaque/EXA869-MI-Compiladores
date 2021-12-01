@@ -29,6 +29,9 @@ class SimboloVarConst:
     def getInit(self):
         return self.init
     
+    def setInit(self,value):
+        self.init = value
+    
     def toString(self):
         print('\n')
         print('-------------')
