@@ -22,6 +22,18 @@ class SimboloRegistro:
                 atrs = atrs + ', ' + value['nome']
         return atrs
     
+    def getTipoDeAtributo(self,field):
+        tipo = None
+        
+        for value in self.atributos:
+            if value['nome'] == field:
+                tipo = value['tipo']
+                break
+            else:
+                tipo = None
+                
+        return tipo
+        
     def toString(self):
         print('\n')
         print('-------------')

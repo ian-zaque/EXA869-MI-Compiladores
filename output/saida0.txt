@@ -13,4 +13,5 @@ Linha 44: Erro semantico encontrado: "a" de categoria variavel ja declarado(a)!
 Linha 44: Erro semantico encontrado: "b" de categoria variavel ja declarado(a)!
 Linha 47: Erro semantico encontrado: "c" de categoria constante ja declarado (a)!
 Linha 52: Erro semantico encontrado: "c" de categoria variavel ja declarado (a)!
-Linha 59: Erro sintatico encontrado (ttt . a = 12 
+Linha 59: Erro semantico encontrado: "a" nao e de tipo Registro!
+Linha 60: Erro sintatico encontrado (ttt . a = 12 

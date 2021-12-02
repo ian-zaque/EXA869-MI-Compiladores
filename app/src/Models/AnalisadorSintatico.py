@@ -640,13 +640,13 @@ class AnalisadorSintatico:
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     
                     # DOES THIS VARIABLE IS IN VarConst Table??
-                    isVarInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(self.semanticItem['initialName'])
+                    isVarInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(self.semanticItem['initialName'].getWord())
                     
                     if isVarInTabelaVarConst == True:
                         field = self.getToken().getWord()
                         
                         # GETTING TIPO Registro
-                        varItem = self.analisadorSemantico.getSimboloVarConst(self.semanticItem['initialName'])
+                        varItem = self.analisadorSemantico.getSimboloVarConst(self.semanticItem['initialName'].getWord())
                         registroItem = self.analisadorSemantico.getSimboloRegistro(varItem.getTipo())
                         
                         if registroItem != None:
@@ -655,6 +655,31 @@ class AnalisadorSintatico:
                             
                             if isFieldInRegistro == True:
                                 self.semanticItem['nome'] = self.semanticItem['nome'] + field
+                                self.semanticItem['init'] = False
+                                self.semanticItem['tipo'] = registroItem.getTipoDeAtributo(field)
+                                self.semanticItem['categoria'] = 'variavel'
+                                semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem['categoria'], 
+                                                                self.semanticItem['dimensao'], varItem.getEscopo(), self.semanticItem['init'])
+                                
+                                isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                                isValueOk = self.isSemanticItemValueOk()
+
+                                tipo = self.semanticItem['tipo']
+                                nome = self.semanticItem['nome']
+                                initialName = self.semanticItem['initialName']
+                                self.semanticItem = {}
+                                self.semanticItem['nome'] = nome
+                                self.semanticItem['var'] = initialName
+                                self.semanticItem['tipo'] = tipo
+
+                                if isInTable == False and isValueOk == True:
+                                    self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                                elif isValueOk == False:
+                                    self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + semanticSymbol.getCategoria() +
+                                                        ' tem tipo de valor associado diferente do declarado: ' + semanticSymbol.getTipo())
+                                # elif isInTable == True:
+                                #     self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +
+                                #                semanticSymbol.getCategoria() + ' ja declarado (a)!')
                                 
                             elif isFieldInRegistro == False:
                                 self.checkSemanticItem(field, 'nao existe no Registro '+ registroItem.getNome() + 
@@ -664,7 +689,7 @@ class AnalisadorSintatico:
                             self.checkSemanticItem(varItem.getNome(), 'nao e de tipo Registro!')
                             
                     elif isVarInTabelaVarConst == False:
-                        self.checkSemanticItem(self.semanticItem['initialName'], 'nao foi declarada!')
+                        self.checkSemanticItem(self.semanticItem['initialName'].getWord(), 'nao foi declarada!')
                     
                     self.getNextToken()
                     return self.nested_elem_registro()
@@ -697,7 +722,8 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.semanticItem['nome'] = self.semanticItem['nome'] + self.getToken().getWord()
-                    self.semanticItem['initialName'] = self.getPrevToken().getWord()
+                    self.semanticItem['initialName'] = self.getPrevToken()
+                    self.semanticItem['dimensao'] = ''
                     self.getNextToken()
                     return self.nested_elem_registro()
                 else:
@@ -712,15 +738,14 @@ class AnalisadorSintatico:
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     
                     # DOES THIS VARIABLE IS IN VarConst Table??
-                    isVarInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(self.semanticItem['initialName'])
+                    isVarInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(self.semanticItem['initialName'].getWord())
                     
                     if isVarInTabelaVarConst == True:
                         field = self.getToken().getWord()
                         
                         # GETTING TIPO Registro
-                        varItem = self.analisadorSemantico.getSimboloVarConst(self.semanticItem['initialName'])
+                        varItem = self.analisadorSemantico.getSimboloVarConst(self.semanticItem['initialName'].getWord())
                         registroItem = self.analisadorSemantico.getSimboloRegistro(varItem.getTipo())
-                        print('aaaaaaaaaaaa',registroItem)
                         
                         if registroItem != None:
                             # DOES THIS FIELD FROM THIS REGISTRO EXISTES
@@ -728,6 +753,31 @@ class AnalisadorSintatico:
                             
                             if isFieldInRegistro == True:
                                 self.semanticItem['nome'] = self.semanticItem['nome'] + field
+                                self.semanticItem['init'] = False
+                                self.semanticItem['tipo'] = registroItem.getTipoDeAtributo(field)
+                                self.semanticItem['categoria'] = 'variavel'
+                                semanticSymbol = SimboloVarConst(self.semanticItem['nome'], self.semanticItem['tipo'], self.semanticItem['categoria'], 
+                                                                self.semanticItem['dimensao'], varItem.getEscopo(), self.semanticItem['init'])
+                                
+                                isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
+                                isValueOk = self.isSemanticItemValueOk()
+
+                                tipo = self.semanticItem['tipo']
+                                nome = self.semanticItem['nome']
+                                initialName = self.semanticItem['initialName']
+                                self.semanticItem = {}
+                                self.semanticItem['nome'] = nome
+                                self.semanticItem['var'] = initialName
+                                self.semanticItem['tipo'] = tipo
+
+                                if isInTable == False and isValueOk == True:
+                                    self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
+                                elif isValueOk == False:
+                                    self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + semanticSymbol.getCategoria() +
+                                                        ' tem tipo de valor associado diferente do declarado: ' + semanticSymbol.getTipo())
+                                elif isInTable == True:
+                                    self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' +
+                                               semanticSymbol.getCategoria() + ' ja declarado (a)!')
                                 
                             elif isFieldInRegistro == False:
                                 self.checkSemanticItem(field, 'nao existe no Registro '+ registroItem.getNome() + 
@@ -737,7 +787,7 @@ class AnalisadorSintatico:
                             self.checkSemanticItem(varItem.getNome(), 'nao e de tipo Registro!')
                             
                     elif isVarInTabelaVarConst == False:
-                        self.checkSemanticItem(self.semanticItem['initialName'], 'nao foi declarada!')
+                        self.checkSemanticItem(self.semanticItem['initialName'].getWord(), 'nao foi declarada!')
                     
                     self.getNextToken()
                     return self.nested_elem_registro1()
@@ -1978,6 +2028,7 @@ class AnalisadorSintatico:
                     self.checkSemanticItem(self.getToken().getWord(), ' nao foi declarada!')
                 elif isVarConstInTable == True:
                     self.semanticItem['var'] = self.getToken()
+                    self.semanticItem['nome'] = ''
                 
                 self.getNextToken()
                 return self.read_value0()
@@ -2006,7 +2057,8 @@ class AnalisadorSintatico:
             # <elem_registro>
             elif self.getToken().getWord() == '.' and self.getPrevToken().getType() == 'IDE':
                 self.semanticItem['nome'] = self.getPrevToken().getWord()                
-                self.semanticItem['initialName'] = self.getPrevToken().getWord()                
+                self.semanticItem['initialName'] = self.getPrevToken()
+                self.semanticItem['dimensao'] = ''              
                 return self.elem_registro()
 
             ############# erro ##############
@@ -3364,7 +3416,7 @@ class AnalisadorSintatico:
                     or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE') and (self.getToken().getWord() != 'verdadeiro' or self.getToken().getWord() == 'falso'):
                 self.origin.append('expr_rel1')
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                
+
                 var = self.semanticItem['var']
                 self.semanticItem = self.analisadorSemantico.getSimboloVarConst(var.getWord())
                 

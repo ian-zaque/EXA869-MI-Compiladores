@@ -80,6 +80,7 @@ class AnalisadorSemantico:
 
     def addSimboloVarConst(self,symbol):
         self.tabelaSimbolosVarConst.append({symbol.getNome(): symbol})
+        self.printTabelaVarConst()
         return symbol
         
     def addSimboloFuncao(self,symbol):
@@ -127,7 +128,6 @@ class AnalisadorSemantico:
                 break
             else:
                 for item in value.values():
-                    item.toString()
                     if item.getNome() == symbol:
                         isInTable = True
                         simbolo = item

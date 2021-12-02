@@ -57,6 +57,7 @@ funcao inteiro funcao_teste_2 (Pessoa nova_pessoa, inteiro local_1, real local_2
         teste_registro ttt;
     }
     
+    ttt.a.outro = "oxoxox";
     ttt.a = 12;
     
 
