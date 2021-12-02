@@ -139,7 +139,6 @@ class AnalisadorSintatico:
 
     # <declaracao_reg> ::= registro id '{' <declaracao_reg1> |
     def declaracao_reg(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -194,7 +193,6 @@ class AnalisadorSintatico:
 
     # <declaracao_reg1> ::= <primitive_type> id <declaracao_reg4> <declaracao_reg2> | id id <declaracao_reg4> <declaracao_reg2>
     def declaracao_reg1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -248,7 +246,6 @@ class AnalisadorSintatico:
 
     # <declaracao_reg2>  ::= ',' id <declaracao_reg2> | ';' <declaracao_reg5>
     def declaracao_reg2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -298,7 +295,6 @@ class AnalisadorSintatico:
 
     # <declaracao_reg3>   ::= '}' <declaracao_reg>
     def declaracao_reg3(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -341,7 +337,6 @@ class AnalisadorSintatico:
 
     # <declaracao_reg4>   ::= <v_m_access> |
     def declaracao_reg4(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -377,7 +372,6 @@ class AnalisadorSintatico:
 
     # <v_m_access>  ::= '[' <v_m_access1>
     def v_m_access(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -414,7 +408,6 @@ class AnalisadorSintatico:
 
     # <v_m_access1>  ::= '[' <expr_number> ']' |
     def v_m_access1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -532,7 +525,6 @@ class AnalisadorSintatico:
 
     # <elem_registro>  ::= '.' id <nested_elem_registro>
     def elem_registro(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -575,7 +567,6 @@ class AnalisadorSintatico:
     # <nested_elem_registro>  ::= '.' id <nested_elem_registro1> | <v_m_access> <nested_elem_registro1> |
 
     def nested_elem_registro(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -669,7 +660,6 @@ class AnalisadorSintatico:
 
     # <nested_elem_registro1> ::= <elem_registro> |
     def nested_elem_registro1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -731,7 +721,6 @@ class AnalisadorSintatico:
 
     # <declaration_const>  ::= constantes '{' <declaration_const1>
     def declaracao_const(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -767,7 +756,6 @@ class AnalisadorSintatico:
 
     # <declaration_const1> ::= <primitive_type> id '=' <value> <declaration_const2> | '}'
     def declaracao_const1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -861,7 +849,6 @@ class AnalisadorSintatico:
 
     # <declaration_const2> ::= ',' id '=' <value> <declaration_const2> | ';' <declaration_const1>
     def declaracao_const2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -940,7 +927,6 @@ class AnalisadorSintatico:
 
     # <declaration_var>  ::= variaveis '{' <declaration_var1>
     def declaracao_var(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -976,7 +962,6 @@ class AnalisadorSintatico:
 
     # <declaration_var1> ::= <type> id <declaration_var2> | '}'
     def declaracao_var1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1041,7 +1026,6 @@ class AnalisadorSintatico:
 
     # <declaration_var2> ::= '=' <value> <declaration_var3> | <vector_matrix> | <declaration_var3>
     def declaracao_var2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1055,7 +1039,6 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
-                    print(self.isvalue(self.getToken()))
                     return self.declaracao_var2()
                 else:
                     self.errorSintatico(' IDE before = ')
@@ -1107,7 +1090,6 @@ class AnalisadorSintatico:
 
     # <declaration_var3> ::= ',' id <declaration_var2>  | ';' <declaration_var1>
     def declaracao_var3(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1166,7 +1148,6 @@ class AnalisadorSintatico:
 
     # <function_declaration>  ::= funcao <type> <function_declaration1>
     def declaracao_funcao(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1204,7 +1185,6 @@ class AnalisadorSintatico:
 
     # <function_declaration1> ::= algoritmo <main_function> | <function_declaration2>
     def declaracao_funcao1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1249,7 +1229,6 @@ class AnalisadorSintatico:
 
     # <function_declaration2> ::= id <function_parameters> '{' <function_body> '}' <function_declaration>
     def declaracao_funcao2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1306,7 +1285,6 @@ class AnalisadorSintatico:
 
     # <main_function> ::= <function_parameters> '{' <function_body> '}'
     def main_function(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1363,7 +1341,6 @@ class AnalisadorSintatico:
     # <function_parameters>   ::= '(' <function_parameters1>
 
     def parametros_funcao(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1391,7 +1368,6 @@ class AnalisadorSintatico:
 
     # <function_parameters1>  ::= <type> id <function_parameters2> | ')'
     def parametros_funcao1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1464,7 +1440,6 @@ class AnalisadorSintatico:
 
     # <function_parameters2>  ::= '[' ']' <function_parameters3>  | <function_parameters4>
     def parametros_funcao2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1528,7 +1503,6 @@ class AnalisadorSintatico:
     # <function_parameters3>  ::= '[' ']' <function_parameters4>  | <function_parameters4>
 
     def parametros_funcao3(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1581,7 +1555,6 @@ class AnalisadorSintatico:
 
     # <function_parameters4>  ::= ','  <function_parameters1>  | ')'
     def parametros_funcao4(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1642,7 +1615,6 @@ class AnalisadorSintatico:
     # <var_atr> ::= <read_value> '=' <atr_value> <atr_1>
 
     def var_atr(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1685,13 +1657,12 @@ class AnalisadorSintatico:
     # <read_value> ::= id <read_value0>
 
     def read_value(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
         elif self.counter < len(self.tokens):
-            print('read_value_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
+            print('read_value_', self.palavra)
+            print('TOKEN_', self.getToken().getWord())
 
             if self.getToken().getType() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
@@ -1706,7 +1677,6 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     def read_value0(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1759,7 +1729,6 @@ class AnalisadorSintatico:
     # <atr_1> ::= ',' <var_atr> | ';'
 
     def atr_1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1820,7 +1789,6 @@ class AnalisadorSintatico:
     # <atr_value> ::= <value_with_expressao> | <functionCall>
 
     def atr_value(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1862,7 +1830,6 @@ class AnalisadorSintatico:
     # <functionCall> ::= id '(' <varList0> ')' ';'
 
     def chamada_funcao(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1885,8 +1852,7 @@ class AnalisadorSintatico:
             ############## fim '(' ##############
 
             ############## ')' ##############
-            # ADD TESTE DE ULTIMO CARACTER DE <var_list0>
-            elif self.getToken().getWord() == ')' and self.getPrevToken().getWord() == ';':
+            elif self.getToken().getWord() == ')' and self.forward().getWord() == ';':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.chamada_funcao()
@@ -1936,7 +1902,6 @@ class AnalisadorSintatico:
     # <varList0> ::= <value> <varList2> | <read_value> <varList2> | <>
 
     def var_list0(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1946,8 +1911,8 @@ class AnalisadorSintatico:
 
             # FIRST DERIV. OR SECOND DERIV.
             ############## <varList2> ##############
-            if (self.isvalue(self.getToken().getWord()) or self.isvalue(self.getToken().getWord()) == 'inteiro'
-                    or self.isvalue(self.getToken().getWord()) == 'inteiro'):
+            if (self.isvalue(self.getToken()) or self.isvalue(self.getToken()) == 'inteiro'
+                    or self.isvalue(self.getToken()) == 'inteiro'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.var_list2()
@@ -1975,7 +1940,6 @@ class AnalisadorSintatico:
 
     # <varList1> ::= <value> <varList2> | <read_value> <varList2>
     def var_list1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -1985,8 +1949,8 @@ class AnalisadorSintatico:
 
             # FIRST DERIV. OR SECOND DERIV.
             ############## <varList2> ##############
-            if (self.isvalue(self.getToken().getWord()) or self.isvalue(self.getToken().getWord()) == 'inteiro'
-                    or self.isvalue(self.getToken().getWord()) == 'inteiro'):
+            if (self.isvalue(self.getToken()) or self.isvalue(self.getToken()) == 'inteiro'
+                    or self.isvalue(self.getToken()) == 'inteiro'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.var_list2()
@@ -2006,7 +1970,6 @@ class AnalisadorSintatico:
     # <varList2> ::= ',' <varList1> | <>
 
     def var_list2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2031,7 +1994,6 @@ class AnalisadorSintatico:
 
     # <vector_matrix>   ::= '[' <expr_number> ']' <vector_matrix_1>
     def vector_matrix(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2069,7 +2031,6 @@ class AnalisadorSintatico:
     # <vector_matrix_1> ::= '[' <expr_number> ']' <vector_matrix_2> | '=' <init_vector> <declaration_var3> | <declaration_var3>
 
     def vector_matrix1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2132,7 +2093,6 @@ class AnalisadorSintatico:
     # <vector_matrix_2> ::= '=' <init_matrix> <declaration_var3> | <declaration_var3>
 
     def vector_matrix2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2174,7 +2134,6 @@ class AnalisadorSintatico:
     # <init_vector> ::= '[' <init_vector_1>
 
     def init_vector(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2205,7 +2164,6 @@ class AnalisadorSintatico:
     # <init_vector_1>  ::=  <value_with_IDE> <init_vector_2>
 
     def init_vector1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2237,7 +2195,6 @@ class AnalisadorSintatico:
     # <init_vector_2>  ::= ',' <init_vector_1> | ']'
 
     def init_vector2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2278,7 +2235,6 @@ class AnalisadorSintatico:
     # <init_matrix> ::= '[' <init_matrix_1>
 
     def init_matrix(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2309,7 +2265,6 @@ class AnalisadorSintatico:
     # <init_matrix_1> ::= <value_with_IDE> <init_matrix_2>
 
     def init_matrix1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2340,7 +2295,6 @@ class AnalisadorSintatico:
     # <init_matrix_2>   ::= ',' <init_matrix_1> | ';' <init_matrix_1> | ']
 
     def init_matrix2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2387,7 +2341,6 @@ class AnalisadorSintatico:
     # <expressao>   ::= <expr_rel> <expr_log1> | '(' <expressao> ')' <expr_log2> | '!' <expressao>
 
     def expressao(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2439,7 +2392,6 @@ class AnalisadorSintatico:
     # <expr_log1> ::=  <operatorLog> <expressao> | <>
 
     def expr_log1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2548,7 +2500,6 @@ class AnalisadorSintatico:
     # <expr_log2> ::= <operatorLog> <expressao> | <operator_multi> <expressao> | <operator_rel> <expressao> | <operator_soma> <expressao> | <>
 
     def expr_log2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2659,7 +2610,6 @@ class AnalisadorSintatico:
     # <expr_valor_mod> ::=  number | <operator_auto0> <read_value> | <read_value> <operator_auto>
 
     def expr_valor_mod(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2704,7 +2654,6 @@ class AnalisadorSintatico:
     # <operator_auto> ::= '++' | '--' | <>
 
     def operator_auto(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2727,7 +2676,6 @@ class AnalisadorSintatico:
     # <expr_multi> ::= <operator_soma> <expr_valor_mod> <expr_multi_pos> | <expr_valor_mod> <expr_multi_pos>
 
     def expr_multi(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2762,7 +2710,6 @@ class AnalisadorSintatico:
     # <expr_multi_pos> ::= <operator_multi> <expr_multi> | <>
 
     def expr_multi_pos(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2804,7 +2751,6 @@ class AnalisadorSintatico:
     # <expr_art> ::= number <expr_multi> <expr_art1>
 
     def expr_art(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2833,7 +2779,6 @@ class AnalisadorSintatico:
     # <expr_art1> ::= <operator_soma> <expr_number> | <>
 
     def expr_art1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2892,7 +2837,6 @@ class AnalisadorSintatico:
     # <expr_number> ::= <expr_art> | '(' <expr_number> ')' <expr_multi_pos> <expr_number1>
 
     def expr_number(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -2949,7 +2893,6 @@ class AnalisadorSintatico:
     # <expr_number1>  ::= <operator_soma> <expr_number> | <>
 
     def expr_number1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3006,7 +2949,6 @@ class AnalisadorSintatico:
     # <expr_rel0>   ::= <expr_rel> | '(' <expressao> ')'
 
     def expr_rel0(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3060,13 +3002,12 @@ class AnalisadorSintatico:
     # <expr_rel> ::= <expr_art> <expr_rel1> | boolean <expr_rel1>
 
     def expr_rel(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_rel_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
+            print('expr_rel_', self.palavra)
+            print('TOKEN_', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <expr_art> ##############
@@ -3095,13 +3036,12 @@ class AnalisadorSintatico:
     # <expr_rel1> ::= <operator_rel> <expr_rel0> | <>
 
     def expr_rel1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_rel_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
+            print('expr_rel_1', self.palavra)
+            print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
             if self.isRelOperator(self.getToken().getWord()):
@@ -3130,7 +3070,6 @@ class AnalisadorSintatico:
     # <write_cmd> ::= escreva '(' <value_with_expressao> <write_value_list> ')' ';'
 
     def escreva(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3225,7 +3164,6 @@ class AnalisadorSintatico:
     # <write_value_list> ::= ',' <value_with_expressao> <write_value_list> | <>
 
     def write_value_list(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3285,7 +3223,6 @@ class AnalisadorSintatico:
     # <read_cmd> ::= leia '(' <read_value> <read_value_list> ')' ';'
 
     def leia(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3369,7 +3306,6 @@ class AnalisadorSintatico:
     # <read_value_list> ::= ',' <read_value> <read_value_list> |
 
     def read_value_list(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3409,7 +3345,6 @@ class AnalisadorSintatico:
     # <com_enquanto> ::= enquanto '(' <args> ')' '{' <com_body> '}'
 
     def enquanto(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3488,7 +3423,6 @@ class AnalisadorSintatico:
 
     # <args> ::= <expressao> |
     def args(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3529,7 +3463,6 @@ class AnalisadorSintatico:
     # <com_para> ::= para '(' <init> <stop> ';' <step> ')' '{' <com_body> '}'
 
     def para(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3612,7 +3545,6 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     def init(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3645,7 +3577,6 @@ class AnalisadorSintatico:
                 return
 
     def stop(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3686,7 +3617,6 @@ class AnalisadorSintatico:
                 return
 
     def step(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3726,7 +3656,6 @@ class AnalisadorSintatico:
     # <se> ::= 'se' '(' <expressao> ')' '{' <com_body> '}' <se_body>
 
     def se(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3790,7 +3719,6 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     def se_body(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3834,7 +3762,6 @@ class AnalisadorSintatico:
     # <senao>  ::= 'senao' <se_senao>
 
     def senao(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3865,7 +3792,6 @@ class AnalisadorSintatico:
     # <se_senao>  ::= <se> | '{' <com_body> '}'
 
     def se_senao(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3936,7 +3862,6 @@ class AnalisadorSintatico:
                 # <functionCall> <com_body> | <var_atr> <com_body> | <com_retornar>
 
     def com_body(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3999,6 +3924,35 @@ class AnalisadorSintatico:
                 return self.com_retornar()
             ############## fim <com_retornar> ##############
 
+            elif self.getToken().getWord() == '}':
+
+                if len(self.origin) > 0:
+
+                    if self.origin[-1] == 'enquanto':
+                        self.origin.pop()
+                        return self.enquanto()
+
+                    elif self.origin[-1] == 'para':
+                        self.origin.pop()
+                        return self.para()
+
+                    elif self.origin[-1] == 'se':
+                        self.origin.pop()
+                        return self.se()
+
+                    elif self.origin[-1] == 'se_senao':
+                        self.origin.pop()
+                        return self.se_senao()
+
+                    else:
+                        self.errorSintatico(
+                            ' an origin before } return')
+                        self.palavra = ''
+                        return
+                else:
+                    print('com_body}')
+                    return
+
             ############# erro ##############
             else:
                 self.errorSintatico('other token on com_body')
@@ -4009,7 +3963,6 @@ class AnalisadorSintatico:
     # <com_retornar> ::= retorno <com_retornar1> ';' | <>
 
     def com_retornar(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -4100,7 +4053,6 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     def com_retornar1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -4144,8 +4096,6 @@ class AnalisadorSintatico:
 
     # <function_body> ::= <declaration_const> <function_body1> | <function_body1>
     def corpo_funcao(self):
-        print('ok')
-        print('function_body1')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -4199,7 +4149,6 @@ class AnalisadorSintatico:
     # <function_body1>  ::= <declaration_var> <function_body2> | <function_body2>
 
     def corpo_funcao1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -4243,7 +4192,6 @@ class AnalisadorSintatico:
             ############## fim erro ##############
 
     def corpo_funcao2(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -4336,7 +4284,6 @@ class AnalisadorSintatico:
             ############## fim <functionCall> ##############
 
             # SEVENTH DERIV.
-            # ADD TESTE DO QUE VEM DEPOIS
             ############## <var_atr> ##############
             if self.getToken().getType() == 'IDE':
                 if (self.getPrevToken().getWord() == '{' or self.getPrevToken().getWord() == '}'
@@ -4373,7 +4320,6 @@ class AnalisadorSintatico:
     # <retornar> ::= retorno <retornar1> ';'
 
     def retornar_funcao(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -4424,7 +4370,6 @@ class AnalisadorSintatico:
     # <retornar1> ::= cad | char | <expressao> | <>
 
     def retornar_funcao1(self):
-        print('ok')
         if self.getToken().getType() == 'EOF':
             return
 

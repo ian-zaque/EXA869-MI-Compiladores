@@ -80,7 +80,7 @@ funcao vazio algoritmo () {
     a[2] = "Cadeia_de_cadeia";
     b[2][2] = "Cadeia_de_cadeia";
     
-    se( (a[1] >= 2) || ((2 + 3 * 4) / 2 <= a[1][0]) && Pessoa.hasCar != falso ) {
+    se( (a[1] >= 2) && Pessoa.hasCar != falso ) {
            
     }
     senao {
