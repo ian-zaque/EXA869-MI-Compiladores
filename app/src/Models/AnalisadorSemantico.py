@@ -118,6 +118,27 @@ class AnalisadorSemantico:
                     
         return simbolo
     
+    def getSimboloRegistro(self,symbol):
+        isInTable = False
+        simbolo = None
+        
+        for value in self.tabelaSimbolosRegistro:
+            if isInTable == True:
+                break
+            else:
+                for item in value.values():
+                    item.toString()
+                    if item.getNome() == symbol:
+                        isInTable = True
+                        simbolo = item
+                        break
+                    
+                    elif item.getNome() != symbol:
+                        isInTable = False
+                        simbolo = None
+                    
+        return simbolo
+    
     def updateTabelaVarConst(self,symbol,valor):
         for (key,values) in enumerate(self.tabelaSimbolosVarConst):
             for value in values.values():

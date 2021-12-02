@@ -13,6 +13,15 @@ class SimboloRegistro:
     def getAtributos(self):
         return self.atributos
     
+    def printAtributos(self):
+        atrs = ''
+        for value in self.atributos:
+            if len(atrs) == 0:
+                atrs = value['nome']
+            else:
+                atrs = atrs + ', ' + value['nome']
+        return atrs
+    
     def toString(self):
         print('\n')
         print('-------------')

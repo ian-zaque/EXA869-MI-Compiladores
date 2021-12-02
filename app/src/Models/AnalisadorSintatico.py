@@ -625,19 +625,47 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == '.':
                 if self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['nome'] = self.semanticItem['nome'] + self.getToken().getWord()
                     self.getNextToken()
                     return self.elem_registro()
                 else:
                     self.errorSintatico(' IDE or ] before .')
                     self.palavra = ''
                     return
-
             ############## fim '.' ##############
 
             ############## id ##############
             elif self.getToken().getType() == 'IDE':
                 if self.getPrevToken().getWord() == '.':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    
+                    # DOES THIS VARIABLE IS IN VarConst Table??
+                    isVarInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(self.semanticItem['initialName'])
+                    
+                    if isVarInTabelaVarConst == True:
+                        field = self.getToken().getWord()
+                        
+                        # GETTING TIPO Registro
+                        varItem = self.analisadorSemantico.getSimboloVarConst(self.semanticItem['initialName'])
+                        registroItem = self.analisadorSemantico.getSimboloRegistro(varItem.getTipo())
+                        
+                        if registroItem != None:
+                            # DOES THIS FIELD FROM THIS REGISTRO EXISTES
+                            isFieldInRegistro = self.analisadorSemantico.isAtributoInRegistro(field,registroItem.getAtributos())
+                            
+                            if isFieldInRegistro == True:
+                                self.semanticItem['nome'] = self.semanticItem['nome'] + field
+                                
+                            elif isFieldInRegistro == False:
+                                self.checkSemanticItem(field, 'nao existe no Registro '+ registroItem.getNome() + 
+                                                    '. Os atributos existentes sao: ' + registroItem.printAtributos() + '!')
+
+                        elif registroItem == None:
+                            self.checkSemanticItem(varItem.getNome(), 'nao e de tipo Registro!')
+                            
+                    elif isVarInTabelaVarConst == False:
+                        self.checkSemanticItem(self.semanticItem['initialName'], 'nao foi declarada!')
+                    
                     self.getNextToken()
                     return self.nested_elem_registro()
                 else:
@@ -668,6 +696,8 @@ class AnalisadorSintatico:
             if self.getToken().getWord() == '.':
                 if self.getPrevToken().getType() == 'IDE':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.semanticItem['nome'] = self.semanticItem['nome'] + self.getToken().getWord()
+                    self.semanticItem['initialName'] = self.getPrevToken().getWord()
                     self.getNextToken()
                     return self.nested_elem_registro()
                 else:
@@ -680,6 +710,35 @@ class AnalisadorSintatico:
             elif self.getToken().getType() == 'IDE':
                 if self.getPrevToken().getWord() == '.':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    
+                    # DOES THIS VARIABLE IS IN VarConst Table??
+                    isVarInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(self.semanticItem['initialName'])
+                    
+                    if isVarInTabelaVarConst == True:
+                        field = self.getToken().getWord()
+                        
+                        # GETTING TIPO Registro
+                        varItem = self.analisadorSemantico.getSimboloVarConst(self.semanticItem['initialName'])
+                        registroItem = self.analisadorSemantico.getSimboloRegistro(varItem.getTipo())
+                        print('aaaaaaaaaaaa',registroItem)
+                        
+                        if registroItem != None:
+                            # DOES THIS FIELD FROM THIS REGISTRO EXISTES
+                            isFieldInRegistro = self.analisadorSemantico.isAtributoInRegistro(field,registroItem.getAtributos())
+                            
+                            if isFieldInRegistro == True:
+                                self.semanticItem['nome'] = self.semanticItem['nome'] + field
+                                
+                            elif isFieldInRegistro == False:
+                                self.checkSemanticItem(field, 'nao existe no Registro '+ registroItem.getNome() + 
+                                                    '. Os atributos existentes sao: ' + registroItem.printAtributos() + '!')
+
+                        elif registroItem == None:
+                            self.checkSemanticItem(varItem.getNome(), 'nao e de tipo Registro!')
+                            
+                    elif isVarInTabelaVarConst == False:
+                        self.checkSemanticItem(self.semanticItem['initialName'], 'nao foi declarada!')
+                    
                     self.getNextToken()
                     return self.nested_elem_registro1()
                 else:
@@ -1914,7 +1973,6 @@ class AnalisadorSintatico:
             if self.getToken().getType() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 
-                self.analisadorSemantico.printTabelaVarConst()
                 isVarConstInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(self.getToken().getWord())
                 if isVarConstInTable == False:
                     self.checkSemanticItem(self.getToken().getWord(), ' nao foi declarada!')
@@ -1938,6 +1996,7 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('read_value_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
+            self.semanticItem['nome'] = ''
 
             # <read_value0> ::= <v_m_access> | <elem_registro> | <>
             # <v_m_access>
@@ -1946,6 +2005,8 @@ class AnalisadorSintatico:
 
             # <elem_registro>
             elif self.getToken().getWord() == '.' and self.getPrevToken().getType() == 'IDE':
+                self.semanticItem['nome'] = self.getPrevToken().getWord()                
+                self.semanticItem['initialName'] = self.getPrevToken().getWord()                
                 return self.elem_registro()
 
             ############# erro ##############
@@ -2188,8 +2249,8 @@ class AnalisadorSintatico:
 
             # FIRST DERIV. OR SECOND DERIV.
             ############## <varList2> ##############
-            if (self.isvalue(self.getToken().getWord()) or self.isvalue(self.getToken().getWord()) == 'inteiro'
-                    or self.isvalue(self.getToken().getWord()) == 'inteiro'):
+            if (self.isvalue(self.getToken()) or self.isvalue(self.getToken()) == 'inteiro'
+                    or self.isvalue(self.getToken()) == 'inteiro'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.var_list2()

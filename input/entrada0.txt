@@ -2,7 +2,7 @@
 
 registro teste_registro {
     inteiro a;
-    inteiro d[a];
+    inteiro d[2];
     real    b;
     inteiro vec[2][2];
     real    b;
@@ -13,7 +13,7 @@ registro teste_registro {
     cadeia  c;
 }
 
-registro teste_registro {
+registro teste_registro1 {
     inteiro a, z, y, w;
     real    b;
     cadeia  c;
@@ -52,22 +52,15 @@ funcao inteiro funcao_teste_2 (Pessoa nova_pessoa, inteiro local_1, real local_2
         inteiro  local_teste   = 2;
         real     locao_teste_2 = 2.23,c = 23.40;
         cadeia   local_c;
-        booleano local_d      = verdadeiro; 
+        teste_registro1 tttteste; 
+        booleano local_d      = verdadeiro;
+        teste_registro ttt;
     }
     
-    se ( a == b ) {
-        escreva( local_c, 45, local_a );
-    }
-    senao se ( verdadeiro ) {
-        leia( local_d, local_teste );
-    }
-    senao {
-        escreva( local_c, 45, local_a );
-    }
+    ttt.a = 12;
     
-    escreva( local_c, 45, local_a );
-    leia( local_d, local_teste );
-    retorno ;
+
+   retornar local_a;
 }
 
 funcao vazio algoritmo () {
@@ -80,28 +73,6 @@ funcao vazio algoritmo () {
     a[2] = "Cadeia_de_cadeia";
     b[2][2] = "Cadeia_de_cadeia";
     
-    se( (a[1] >= 2) || ((2 + 3 * 4) / 2 <= a[1][0]) && Pessoa.hasCar != falso ) {
-           
-    }
-    senao {
-        se( Pessoa.a[1][1] == verdadeiro ) {
-           b = 2;
-           b = Pessoa.idade;
-           b[2] = "aaaa";
-           b[2][2] = "Cadeia_de_cadeia";
-          
-           funcao_teste_1();
-           
-           para( i = 2 ; i < ((teste + 2) / 3)  ; i ++ ){
-                se( (a + 2) != 3 ){
-                }
-           }
-        }
-        senao {
-            se((teste && teste) || (teste || teste) ){
-               retorno (a + b);
-            }
-        }    
-    }
+    
     retorno ;
 }
