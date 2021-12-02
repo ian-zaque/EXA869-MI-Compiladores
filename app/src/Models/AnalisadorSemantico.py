@@ -80,7 +80,6 @@ class AnalisadorSemantico:
 
     def addSimboloVarConst(self,symbol):
         self.tabelaSimbolosVarConst.append({symbol.getNome(): symbol})
-        self.printTabelaVarConst()
         return symbol
         
     def addSimboloFuncao(self,symbol):
