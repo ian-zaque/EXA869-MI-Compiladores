@@ -7,32 +7,34 @@ from FileReader import FileReader
 from FileWriter import FileWriter
 from automato import Automato
 
-
-def readFileInputs(path, pathOutput, filename, index):
-    #tokens = Automato(path + '\\' + filename).getTokens()
-    tokens = Automato(path + '/' + filename).getTokens()
-
-    sintatico = AnalisadorSintatico(tokens).parse(index)
-    sintatico = list(dict.fromkeys(sintatico))
+class AnalisadorLexico:
     
-    FileWriter.write(path, pathOutput, filename, index, sintatico)
-    #FileWriter.write(path, pathOutput, filename, index, tokens)
+    def __init__(self) -> None:
+        pass
+    
+    def readFileInputs(self,path, pathOutput, filename, index):
+        #tokens = Automato(path + '\\' + filename).getTokens()
+        tokens = Automato(path + '/' + filename).getTokens()
+
+        sintatico = AnalisadorSintatico(tokens).parse(index)
+        sintatico = list(dict.fromkeys(sintatico))
+        
+        FileWriter.write(path, pathOutput, filename, index, sintatico)
+        #FileWriter.write(path, pathOutput, filename, index, tokens)
 
 
-def main():
-    path = dirname(dirname(dirname(dirname(abspath(__file__)))))
-    pathOutput = path + '\\output'
-    pathInput = path + '\\input'
-    pathOutput = path + '/output'
-    pathInput = path + '/input'
+    def main(self):
+        path = dirname(dirname(dirname(dirname(abspath(__file__)))))
+        pathOutput = path + '\\output'
+        pathInput = path + '\\input'
+        pathOutput = path + '/output'
+        pathInput = path + '/input'
 
-    try:
-        inputFiles = FileReader.getInputFiles(pathInput)
-        for idx, file in enumerate(inputFiles):
-            readFileInputs(pathInput, pathOutput, file[0], file[1])
+        try:
+            inputFiles = FileReader.getInputFiles(pathInput)
+            for idx, file in enumerate(inputFiles):
+                self.readFileInputs(pathInput, pathOutput, file[0], file[1])
 
-    except OSError:
-        print("Erro ao escanear e analisar um dos arquivos")
+        except OSError:
+            print("Erro ao escanear e analisar um dos arquivos")
 
-
-main()
