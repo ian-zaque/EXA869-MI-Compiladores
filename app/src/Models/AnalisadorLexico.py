@@ -13,7 +13,8 @@ def readFileInputs(path, pathOutput, filename, index):
     tokens = Automato(path + '/' + filename).getTokens()
 
     sintatico = AnalisadorSintatico(tokens).parse(index)
-
+    sintatico = list(dict.fromkeys(sintatico))
+    
     FileWriter.write(path, pathOutput, filename, index, sintatico)
     #FileWriter.write(path, pathOutput, filename, index, tokens)
 

@@ -80,34 +80,71 @@ class AnalisadorSemantico:
 
     def addSimboloVarConst(self,symbol):
         self.tabelaSimbolosVarConst.append({symbol.getNome(): symbol})
-        self.printTabelaVarConst()
         return symbol
         
     def addSimboloFuncao(self,symbol):
         self.tabelaSimbolosFuncao.append({symbol.getHash(): symbol})
-        self.printTabelaFuncao()
         return symbol
     
     def addSimboloRegistro(self,symbol):
         self.tabelaSimbolosRegistro.append({symbol.getNome(): symbol})
-        self.printTabelaRegistro()
         return symbol
     
     def getSimboloFuncao(self,symbol):       
         for value in self.tabelaSimbolosFuncao:
             for item in value.values():
                 if item.getHash() == symbol:
-                    return value
+                    return item
     
         return False
     
-    def getSimboloVarConst(self,symbol):        
+    def getSimboloVarConst(self,symbol):
+        isInTable = False
+        simbolo = None
+        
         for value in self.tabelaSimbolosVarConst:
-            for item in value.values():
-                if item.getNome() == symbol:
-                    return value
+            if isInTable == True:
+                break
+            else:
+                for item in value.values():
+                    if item.getNome() == symbol:
+                        isInTable = True
+                        simbolo = item
+                        break
+                    
+                    elif item.getNome() != symbol:
+                        isInTable = False
+                        simbolo = None
+                    
+        return simbolo
     
-        return False
+    def getSimboloRegistro(self,symbol):
+        isInTable = False
+        simbolo = None
+        
+        for value in self.tabelaSimbolosRegistro:
+            if isInTable == True:
+                break
+            else:
+                for item in value.values():
+                    item.toString()
+                    if item.getNome() == symbol:
+                        isInTable = True
+                        simbolo = item
+                        break
+                    
+                    elif item.getNome() != symbol:
+                        isInTable = False
+                        simbolo = None
+                    
+        return simbolo
+    
+    def updateTabelaVarConst(self,symbol,valor):
+        for (key,values) in enumerate(self.tabelaSimbolosVarConst):
+            for value in values.values():
+                if value.getNome() == symbol:
+                    value.setInit(valor)
+                    break
     
     def getTabelaSimbolosVarConst(self):
         return self.tabelaSimbolosVarConst
