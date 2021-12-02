@@ -3717,7 +3717,6 @@ class AnalisadorSintatico:
     # <com_para> ::= para '(' <init> <stop> ';' <step> ')' '{' <com_body> '}'
 
     def para(self):
-        print('test')
         if self.getToken().getType() == 'EOF':
             return
 
@@ -3850,18 +3849,13 @@ class AnalisadorSintatico:
             ############## fim 'se' ##############
 
             ############## '(' ##############
+            ############## <expressao> ##############
             elif self.getToken().getWord() == '(' and self.getPrevToken().getWord() == 'se':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 self.origin.append('se')
                 return self.expressao()
             ############## fim '(' ##############
-
-            ############## <expressao> ##############
-
-                self.palavra = self.palavra + self.getToken().getWord() + ' '
-                self.getNextToken()
-                return self.expressao()
             ############## fim <expressao> ##############
 
             ############## ')' ##############
@@ -4071,8 +4065,15 @@ class AnalisadorSintatico:
             # EIGTH DERIV.
             ############## <com_retornar>##############
             if self.getToken().getWord() == 'retorno':
+                self.origin.append('com_body')
                 return self.com_retornar()
             ############## fim <com_retornar> ##############
+
+             ############## <com_body> ##############
+            elif self.getToken().getWord() == 'enquanto' or self.getToken().getWord() == 'para' or self.getToken().getWord() == 'se' or self.getToken().getWord() == 'escreva' or self.getToken().getWord() == 'leia' or self.getToken().getType() == 'IDE' or self.getToken().getWord() == 'retorno':
+                self.origin.append('com_body')
+                return self.com_body()
+            ############## fim <com_body> ##############
 
             ############# erro ##############
             else:
