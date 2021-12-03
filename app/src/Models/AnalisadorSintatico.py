@@ -2019,6 +2019,8 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('read_value_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
+            self.semanticItem = {}
+            self.semanticItem['nome'] = ''
 
             if self.getToken().getType() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
@@ -2028,7 +2030,8 @@ class AnalisadorSintatico:
                     self.checkSemanticItem(self.getToken().getWord(), ' nao foi declarada!')
                 elif isVarConstInTable == True:
                     self.semanticItem['var'] = self.getToken()
-                    self.semanticItem['nome'] = ''
+                    self.semanticItem['nome'] = self.getToken().getWord()
+                    self.semanticItem['dimensao'] = ''
                 
                 self.getNextToken()
                 return self.read_value0()
@@ -2047,18 +2050,37 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('read_value_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
-            self.semanticItem['nome'] = ''
 
             # <read_value0> ::= <v_m_access> | <elem_registro> | <>
             # <v_m_access>
             if self.getToken().getWord() == '[' and self.getPrevToken().getType() == 'IDE':
+                self.semanticItem['nome'] = self.getPrevToken().getWord()
+                self.semanticItem['dimensao'] = ''
+                
+                # checar se variavel é de tipo array
+                isVarInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(self.semanticItem['nome'])
+                
+                if isVarInTabelaVarConst == True:
+                    varItem = self.analisadorSemantico.getSimboloVarConst(self.semanticItem['nome'])
+                    tipo = varItem.getCategoria()
+                    
+                    if tipo != 'vector' and tipo != 'matrix':
+                        self.checkSemanticItem(varItem.getNome(), 'e do tipo ' + tipo + ' e foi utilizada como vetor/matriz!')
+                        
+                    # else :
+                    #     self.checkSemanticItem(varItem.getNome(), 'é do tipo ' + tipo + ' e foi utilizada como vetor/matriz!')
+                    
+                elif isVarInTabelaVarConst == False:
+                    self.checkSemanticItem(self.semanticItem['initialName'].getWord(), 'nao foi declarada!')
+                
+                # self.semanticItem = {}
                 return self.v_m_access()
 
             # <elem_registro>
             elif self.getToken().getWord() == '.' and self.getPrevToken().getType() == 'IDE':
                 self.semanticItem['nome'] = self.getPrevToken().getWord()                
                 self.semanticItem['initialName'] = self.getPrevToken()
-                self.semanticItem['dimensao'] = ''              
+                self.semanticItem['dimensao'] = ''
                 return self.elem_registro()
 
             ############# erro ##############
@@ -3242,7 +3264,8 @@ class AnalisadorSintatico:
                     or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE'):
                 if (self.getPrevToken().getWord() == '[' or self.getPrevToken().getWord() == '('
                         or self.getPrevToken().getWord() == '+' or self.getPrevToken().getWord() == '-'):
-
+                    
+                    print('adsasdasdasdasd',self.semanticItem)
                     if len(self.semanticItem['dimensao']) == 0:
                         self.semanticItem['dimensao'] = self.getToken(
                         ).getWord()
