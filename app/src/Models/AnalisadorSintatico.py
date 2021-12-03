@@ -2039,8 +2039,6 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('read_value_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
-            self.semanticItem = {}
-            self.semanticItem['nome'] = ''
 
             if self.getToken().getType() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
@@ -2280,7 +2278,7 @@ class AnalisadorSintatico:
             if self.getToken().getType() == 'IDE' and self.forward().getWord() == '(':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.semanticItem['nome'] = self.getToken().getWord()
-                self.semanticItem['qtdParam'] =0
+                self.semanticItem['qtdParam'] = 0
                 self.semanticItem['params'] = []
                 self.getNextToken()
                 return self.chamada_funcao()
@@ -2320,12 +2318,8 @@ class AnalisadorSintatico:
                 
                 semanticSymbol = SimboloFuncao(self.semanticItem['nome'], None, self.semanticItem['qtdParam'], self.semanticItem['params'])
                 isFuncInTabelaFuncao = self.analisadorSemantico.isSimboloInTabelaFuncao(semanticSymbol.getHash())
-                
-                # if isFuncInTabelaFuncao == True:
-                #     print(semanticSymbol.getParams())
                     
                 if isFuncInTabelaFuncao == False:
-                    
                     functionsWithSameName = self.analisadorSemantico.getFunctionsWithSameName(semanticSymbol.getNome())
                     
                     if len(functionsWithSameName) == 0:        
@@ -2333,7 +2327,7 @@ class AnalisadorSintatico:
                     elif len(functionsWithSameName) > 0:
                         signatures = self.analisadorSemantico.getFunctionSignatures(functionsWithSameName)
                         
-                        self.checkSemanticItem(semanticSymbol.getFunctionSignature(), 'nao existe. foram encontradas outra(s) funcao(os) com este nome: '+ signatures)
+                        self.checkSemanticItem(semanticSymbol.getFunctionSignature(), 'nao foi declarada. Foram encontrada(s) outra(s) funcao(os) com este nome: '+ signatures)
                 
                 self.palavra = ''
                 self.getNextToken()
