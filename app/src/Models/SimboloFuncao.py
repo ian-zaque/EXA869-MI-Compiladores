@@ -33,6 +33,12 @@ class SimboloFuncao:
         toHash = self.nome + str(self.qtdParam) + ''.join(self.params)
         return toHash
     
+    def getFunctionSignature(self):
+        if self.qtdParam == 0:
+            return self.nome + '()'
+        else:
+            return self.nome + '(' + ','.join(self.params) + ')'
+    
     def toString(self):
         print('\n')
         print('-------------')

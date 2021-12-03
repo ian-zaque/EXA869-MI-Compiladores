@@ -9,9 +9,9 @@ Linha 34: Erro semantico encontrado: "teste" de categoria vector ja declarado (a
 Linha 35: Erro semantico encontrado: "b" de categoria vector ja declarado (a)!
 Linha 36: Erro semantico encontrado: "c" de categoria matrix ja declarado (a)!
 Linha 37: Erro semantico encontrado: "d" de categoria matrix ja declarado (a)!
-Linha 44: Erro semantico encontrado: "a" de categoria variavel ja declarado(a)!
-Linha 44: Erro semantico encontrado: "b" de categoria variavel ja declarado(a)!
-Linha 47: Erro semantico encontrado: "c" de categoria constante ja declarado (a)!
-Linha 52: Erro semantico encontrado: "c" de categoria variavel ja declarado (a)!
-Linha 59: Erro semantico encontrado: "a" nao e de tipo Registro!
-Linha 60: Erro sintatico encontrado (ttt . a = 12 
+Linha 48: Erro semantico encontrado: "a" de categoria variavel ja declarado(a)!
+Linha 48: Erro semantico encontrado: "b" de categoria variavel ja declarado(a)!
+Linha 51: Erro semantico encontrado: "c" de categoria constante ja declarado (a)!
+Linha 56: Erro semantico encontrado: "c" de categoria variavel ja declarado (a)!
+Linha 63: Erro semantico encontrado: "a" nao e de tipo Registro!
+Linha 67: Erro sintatico encontrado (

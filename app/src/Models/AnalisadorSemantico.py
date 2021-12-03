@@ -46,6 +46,27 @@ class AnalisadorSemantico:
                         
         return isInTable
     
+    def getFunctionsWithSameName(self,symbol):
+        funcs = []
+        
+        for value in self.tabelaSimbolosFuncao:
+            for item in value.values():
+                if item.getNome() == symbol:
+                    funcs.append(item)
+                        
+        return funcs    
+    
+    def getFunctionSignatures(self,functions):
+        signatures = ''
+        
+        for value in functions:
+            # for item in value.values():
+            if len(signatures) == 0:
+                signatures = value.getFunctionSignature()
+            else:
+                signatures = signatures + ', ' + value.getFunctionSignature()
+        return signatures
+    
     def isSimboloInTabelaRegistro(self,symbol):
         isInTable = False
         

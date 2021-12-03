@@ -2030,8 +2030,9 @@ class AnalisadorSintatico:
                     self.checkSemanticItem(self.getToken().getWord(), ' nao foi declarada!')
                 elif isVarConstInTable == True:
                     self.semanticItem['var'] = self.getToken()
-                    self.semanticItem['nome'] = self.getToken().getWord()
-                    self.semanticItem['dimensao'] = ''
+                    if self.origin[-1] == 'var_list2':
+                        self.semanticItem['qtdParam'] = self.semanticItem['qtdParam'] + 1
+                        self.semanticItem['params'].append(self.getToken().getWord())
                 
                 self.getNextToken()
                 return self.read_value0()
@@ -2050,6 +2051,7 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('read_value_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
+            # self.semanticItem['nome'] = ''
 
             # <read_value0> ::= <v_m_access> | <elem_registro> | <>
             # <v_m_access>
@@ -2139,6 +2141,7 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == ';':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_atr_1', self.palavra, '\n')
+                self.semanticItem = {}
                 self.palavra = ''
                 self.getNextToken()
 
@@ -2252,6 +2255,9 @@ class AnalisadorSintatico:
             ############## id ##############
             if self.getToken().getType() == 'IDE' and self.forward().getWord() == '(':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
+                self.semanticItem['nome'] = self.getToken().getWord()
+                self.semanticItem['qtdParam'] =0
+                self.semanticItem['params'] = []
                 self.getNextToken()
                 return self.chamada_funcao()
             ############## fim id ##############
@@ -2264,7 +2270,7 @@ class AnalisadorSintatico:
             ############## fim '(' ##############
 
             ############## ')' ##############
-            elif self.getToken().getWord() == ')' and self.getPrevToken().getWord() == ';':
+            elif self.getToken().getWord() == ')' and self.forward().getWord() == ';':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.getNextToken()
                 return self.chamada_funcao()
@@ -2274,8 +2280,40 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == ';' and self.getPrevToken().getWord() == ')':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_chamada_funcao_0', self.palavra, '\n')
+                
+                params = self.semanticItem['params']
+                self.semanticItem['params'] = []
+                for param in params:
+                    isVarInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(param)
+                    
+                    if isVarInTabelaVarConst == True:
+                        varItem = self.analisadorSemantico.getSimboloVarConst(param)
+                        tipo = varItem.getTipo()
+                        self.semanticItem['params'].append(tipo)
+                        
+                    elif isVarInTabelaVarConst == False:
+                        self.checkSemanticItem(param, 'parametro nao declarado!')
+                
+                semanticSymbol = SimboloFuncao(self.semanticItem['nome'], None, self.semanticItem['qtdParam'], self.semanticItem['params'])
+                isFuncInTabelaFuncao = self.analisadorSemantico.isSimboloInTabelaFuncao(semanticSymbol.getHash())
+                
+                # if isFuncInTabelaFuncao == True:
+                #     print(semanticSymbol.getParams())
+                    
+                if isFuncInTabelaFuncao == False:
+                    
+                    functionsWithSameName = self.analisadorSemantico.getFunctionsWithSameName(semanticSymbol.getNome())
+                    
+                    if len(functionsWithSameName) == 0:        
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'funcao nao declarada!')
+                    elif len(functionsWithSameName) > 0:
+                        signatures = self.analisadorSemantico.getFunctionSignatures(functionsWithSameName)
+                        
+                        self.checkSemanticItem(semanticSymbol.getFunctionSignature(), 'nao existe. foram encontradas outra(s) funcao(os) com este nome: '+ signatures)
+                
                 self.palavra = ''
                 self.getNextToken()
+                self.semanticItem = {}
 
                 if len(self.origin) > 0:
 
@@ -2326,6 +2364,8 @@ class AnalisadorSintatico:
             if (self.isvalue(self.getToken()) or self.isvalue(self.getToken()) == 'inteiro'
                     or self.isvalue(self.getToken()) == 'inteiro'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
+                self.semanticItem['qtdParam'] = self.semanticItem['qtdParam'] + 1
+                self.semanticItem['params'].append(self.getToken().getWord())
                 self.getNextToken()
                 return self.var_list2()
 
@@ -2361,9 +2401,11 @@ class AnalisadorSintatico:
 
             # FIRST DERIV. OR SECOND DERIV.
             ############## <varList2> ##############
-            if (self.isvalue(self.getToken().getWord()) or self.isvalue(self.getToken().getWord()) == 'inteiro'
-                    or self.isvalue(self.getToken().getWord()) == 'inteiro'):
+            if (self.isvalue(self.getToken()) or self.isvalue(self.getToken()) == 'inteiro'
+                    or self.isvalue(self.getToken()) == 'inteiro'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
+                self.semanticItem['qtdParam'] = self.semanticItem['qtdParam'] + 1
+                self.semanticItem['params'].append(self.getToken().getWord())
                 self.getNextToken()
                 return self.var_list2()
 
