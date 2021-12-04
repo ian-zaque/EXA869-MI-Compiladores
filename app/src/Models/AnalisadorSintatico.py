@@ -2073,7 +2073,6 @@ class AnalisadorSintatico:
         elif self.counter < len(self.tokens):
             print('read_value0_0', self.palavra)
             print('TOKEN_0', self.getToken().getWord())
-            # self.semanticItem['nome'] = ''
 
             # <read_value0> ::= <v_m_access> | <elem_registro> | <>
             # <v_m_access>
@@ -2090,14 +2089,10 @@ class AnalisadorSintatico:
                     
                     if tipo != 'vector' and tipo != 'matrix':
                         self.checkSemanticItem(varItem.getNome(), 'e do tipo ' + tipo + ' e foi utilizada como vetor/matriz!')
-                        
-                    # else :
-                    #     self.checkSemanticItem(varItem.getNome(), 'é do tipo ' + tipo + ' e foi utilizada como vetor/matriz!')
                     
                 elif isVarInTabelaVarConst == False:
                     self.checkSemanticItem(self.semanticItem['initialName'].getWord(), 'nao foi declarada!')
                 
-                # self.semanticItem = {}
                 return self.v_m_access()
 
             # <elem_registro>
@@ -2309,7 +2304,7 @@ class AnalisadorSintatico:
                 self.semanticItem['params'] = []
                 
                 for param in params:
-                    if param.getType() == 'IDE' and (param.getWord() != 'verdadeiro' or param.getWord() != 'falso'):
+                    if param.getType() == 'IDE' and (param.getWord() != 'verdadeiro' and param.getWord() != 'falso'):
                         isVarInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(param.getWord())
                         
                         if isVarInTabelaVarConst == True:

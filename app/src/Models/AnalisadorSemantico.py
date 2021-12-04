@@ -60,7 +60,6 @@ class AnalisadorSemantico:
         signatures = ''
         
         for value in functions:
-            # for item in value.values():
             if len(signatures) == 0:
                 signatures = value.getFunctionSignature()
             else:
