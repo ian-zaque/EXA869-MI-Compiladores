@@ -1714,6 +1714,13 @@ class AnalisadorSintatico:
             if (self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE'
                     and (self.getPrevToken().getWord() == '(' or self.getPrevToken().getWord() == ',')):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
+                
+                if self.getToken().getType() == 'IDE' and not self.isPrimitiveType(self.getToken().getWord()):
+                    isTipoInTabelaRegistro = self.analisadorSemantico.isSimboloInTabelaRegistro(self.getToken().getWord())
+                
+                    if isTipoInTabelaRegistro == False and (self.getToken().getWord() != 'verdadeiro' and self.getToken().getWord() != 'falso'):
+                        self.checkSemanticItem(self.getToken().getWord(), 'e um tipo de Registro nao declarado!')
+                    
                 self.getNextToken()
                 return self.parametros_funcao1()
 
@@ -1728,20 +1735,15 @@ class AnalisadorSintatico:
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
 
                     self.semanticItem['qtdParam'] = self.semanticItem['qtdParam'] + 1
-                    self.semanticItem['params'].append(
-                        self.getPrevToken().getWord())
+                    self.semanticItem['params'].append(self.getPrevToken().getWord())
 
-                    semanticSymbol = SimboloVarConst(self.getToken().getWord(
-                    ), self.getPrevToken().getWord(), 'variavel', None, 'local', False)
-                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(
-                        semanticSymbol.getNome())
+                    semanticSymbol = SimboloVarConst(self.getToken().getWord(), self.getPrevToken().getWord(), 'variavel', None, 'local', False)
+                    isInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(semanticSymbol.getNome())
 
                     if isInTable == False:
-                        self.analisadorSemantico.addSimboloVarConst(
-                            semanticSymbol)
+                        self.analisadorSemantico.addSimboloVarConst(semanticSymbol)
                     else:
-                        self.checkSemanticItem(semanticSymbol.getNome(
-                        ), 'de categoria ' + semanticSymbol.getCategoria() + ' ja declarado(a)!')
+                        self.checkSemanticItem(semanticSymbol.getNome(), 'de categoria ' + semanticSymbol.getCategoria() + ' ja declarado(a)!')
 
                     self.getNextToken()
                     return self.parametros_funcao2()
@@ -2305,16 +2307,39 @@ class AnalisadorSintatico:
                 
                 params = self.semanticItem['params']
                 self.semanticItem['params'] = []
+                
                 for param in params:
-                    isVarInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(param)
-                    
-                    if isVarInTabelaVarConst == True:
-                        varItem = self.analisadorSemantico.getSimboloVarConst(param)
-                        tipo = varItem.getTipo()
-                        self.semanticItem['params'].append(tipo)
+                    if param.getType() == 'IDE' and (param.getWord() != 'verdadeiro' or param.getWord() != 'falso'):
+                        isVarInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(param.getWord())
                         
-                    elif isVarInTabelaVarConst == False:
-                        self.checkSemanticItem(param, 'parametro nao declarado!')
+                        if isVarInTabelaVarConst == True:
+                            varItem = self.analisadorSemantico.getSimboloVarConst(param.getWord())
+                            tipo = varItem.getTipo()
+                            self.semanticItem['params'].append(tipo)
+                            
+                        elif isVarInTabelaVarConst == False:
+                            self.semanticItem['params'].append(param.getWord())
+                            self.checkSemanticItem(param.getWord(), 'parametro nao declarado!')
+                        
+                    elif param.getType() == 'NRO':
+                        if (param.getWord().find('.') == -1):
+                            tipo = 'inteiro'
+                            self.semanticItem['params'].append(tipo)
+                        else:
+                            tipo = 'real'
+                            self.semanticItem['params'].append(tipo)
+
+                    elif param.getType() == 'CAD':
+                        tipo = 'cadeia'
+                        self.semanticItem['params'].append(tipo)
+
+                    elif param.getType() == 'CAR':
+                        tipo = 'char'
+                        self.semanticItem['params'].append(tipo)
+
+                    elif param.getWord() == 'verdadeiro' or param.getWord() == 'falso':
+                        tipo = 'booleano'
+                        self.semanticItem['params'].append(tipo)
                 
                 semanticSymbol = SimboloFuncao(self.semanticItem['nome'], None, self.semanticItem['qtdParam'], self.semanticItem['params'])
                 isFuncInTabelaFuncao = self.analisadorSemantico.isSimboloInTabelaFuncao(semanticSymbol.getHash())
@@ -2383,7 +2408,7 @@ class AnalisadorSintatico:
                     or self.isvalue(self.getToken()) == 'inteiro'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.semanticItem['qtdParam'] = self.semanticItem['qtdParam'] + 1
-                self.semanticItem['params'].append(self.getToken().getWord())
+                self.semanticItem['params'].append(self.getToken())
                 self.getNextToken()
                 return self.var_list2()
 
@@ -2423,7 +2448,7 @@ class AnalisadorSintatico:
                     or self.isvalue(self.getToken()) == 'inteiro'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 self.semanticItem['qtdParam'] = self.semanticItem['qtdParam'] + 1
-                self.semanticItem['params'].append(self.getToken().getWord())
+                self.semanticItem['params'].append(self.getToken())
                 self.getNextToken()
                 return self.var_list2()
 
@@ -3324,8 +3349,7 @@ class AnalisadorSintatico:
                     or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE'):
                 if (self.getPrevToken().getWord() == '[' or self.getPrevToken().getWord() == '('
                         or self.getPrevToken().getWord() == '+' or self.getPrevToken().getWord() == '-'):
-                    
-                    print('adsasdasdasdasd',self.semanticItem)
+
                     if len(self.semanticItem['dimensao']) == 0:
                         self.semanticItem['dimensao'] = self.getToken(
                         ).getWord()

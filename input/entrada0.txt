@@ -63,7 +63,7 @@ funcao inteiro funcao_teste_2 (Pessoa nova_pessoa, inteiro local_1, real local_2
     
     ttt.a.outro = "oxoxox";
     
-    funcao_teste_1();
+    funcao_teste_1(112, verdadeiro);
 
    retornar local_a;
 }
