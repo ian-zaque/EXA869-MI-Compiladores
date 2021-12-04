@@ -61,14 +61,11 @@ funcao inteiro funcao_teste_2 (Pessoa nova_pessoa, inteiro local_1, real local_2
         teste_registro ttt;
     }
     
-    se (a > b) {
-        a = b;
-    }
-    se ( verdadeiro == x ) {
-        a = b;
-    }
+    ttt.a.outro = "oxoxox";
+    
+    funcao_teste_1(112, verdadeiro);
 
-   retorno local_a;
+   retornar local_a;
 }
 
 funcao vazio algoritmo () {
