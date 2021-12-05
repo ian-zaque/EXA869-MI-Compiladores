@@ -14,6 +14,10 @@ Linha 48: Erro semantico encontrado: "a" de categoria variavel ja declarado(a)!
 Linha 48: Erro semantico encontrado: "b" de categoria variavel ja declarado(a)!
 Linha 51: Erro semantico encontrado: "c" de categoria constante ja declarado (a)!
 Linha 56: Erro semantico encontrado: "c" de categoria variavel ja declarado (a)!
-Linha 63: Erro semantico encontrado: "a" nao e de tipo Registro!
-Linha 65: Erro semantico encontrado: "funcao_teste_1(inteiro,booleano)" nao foi declarada. Foram encontrada(s) outra(s) funcao(os) com este nome: funcao_teste_1(), funcao_teste_1(inteiro)
-Linha 67: Erro sintatico encontrado (
+Linha 63: Erro semantico encontrado: "local_a.campo" o campo "local_a" nao e de tipo Registro!
+Linha 63: Erro semantico encontrado: "local_a.campo" nao foi declarada
+Linha 64: Erro semantico encontrado: "ttt" de categoria variavel tem tipo de valor associado diferente do declarado: teste_registro
+Linha 66: Erro semantico encontrado: "ttt.a.oytro" o campo "a" nao e de tipo Registro!
+Linha 66: Erro semantico encontrado: "ttt.a.oytro" nao foi declarada
+Linha 68: Erro semantico encontrado: "funcao_teste_1(inteiro,booleano)" nao foi declarada. Foram encontrada(s) outra(s) funcao(os) com este nome: funcao_teste_1(), funcao_teste_1(inteiro)
+Linha 70: Erro sintatico encontrado (se ( a > 

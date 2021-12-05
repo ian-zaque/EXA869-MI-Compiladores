@@ -60,12 +60,22 @@ funcao inteiro funcao_teste_2 (Pessoa nova_pessoa, inteiro local_1, real local_2
         booleano local_d      = verdadeiro;
         teste_registro ttt;
     }
-    
-    ttt.a.outro = "oxoxox";
+
+    local_a.campo = 123;
+    ttt = 14;
+    ttt.a = 13;
+    ttt.a.oytro = "adasdasd";
     
     funcao_teste_1(112, verdadeiro);
 
-   retornar local_a;
+    se ( a > b) {
+        a = b;
+    }
+    se ( (verdadeiro == x) ) 
+        a = b;
+    }
+
+   retorno local_a;
 }
 
 funcao vazio algoritmo () {
