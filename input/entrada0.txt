@@ -61,18 +61,25 @@ funcao inteiro funcao_teste_2 (Pessoa nova_pessoa, inteiro local_1, real local_2
         teste_registro ttt;
     }
 
+    leia(local_teste);
+    escreva(local_a, ttt);
+
     local_a.campo = 123;
+    b[1] = 12;
     ttt = 14;
     ttt.a = 13;
     ttt.a.oytro = "adasdasd";
     
     funcao_teste_1(112, verdadeiro);
 
-    se ( a > b) {
-        a = b;
+    se ( a == b ) {
+        escreva( local_c, 45, local_a );
     }
-    se ( (verdadeiro == x) ) 
-        a = b;
+    se ( verdadeiro ) {
+        leia( local_d, local_teste );
+    }
+    senao {
+        escreva( local_c, 45, local_a );
     }
 
    retorno local_a;

@@ -2042,14 +2042,15 @@ class AnalisadorSintatico:
             if self.getToken().getType() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
 
-                isVarConstInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(
-                    self.getToken().getWord())
+                isVarConstInTable = self.analisadorSemantico.isSimboloInTabelaVarConst(self.getToken().getWord())
+                
                 if isVarConstInTable == False:
-                    self.checkSemanticItem(
-                        self.getToken().getWord(), ' nao foi declarada!')
+                    self.checkSemanticItem(self.getToken().getWord(), 'nao foi declarada!')
+                    
                 elif isVarConstInTable == True:
                     self.semanticItem['var'] = self.getToken()
                     self.semanticItem['nome'] = self.getToken().getWord()
+                    
                     if self.origin[-1] == 'var_list2':
                         self.semanticItem['qtdParam'] = self.semanticItem['qtdParam'] + 1
                         self.semanticItem['params'].append(self.getToken().getWord())
@@ -2219,7 +2220,6 @@ class AnalisadorSintatico:
                 
                 if isSimboloInTabelaVarConst == True:
                     simboloVarConst = self.analisadorSemantico.getSimboloVarConst(self.semanticItem['nome'])
-                    simboloVarConst.toString()
 
                     if simboloVarConst.getCategoria() == 'constante':
                         self.checkSemanticItem(self.semanticItem['nome'], 'atribuicao de constante fora do bloco!')
@@ -3542,7 +3542,8 @@ class AnalisadorSintatico:
             ############## <expr_art> ##############
             if (self.getToken().getWord() == '+' or self.getToken().getWord() == '-'
                     or self.getToken().getType() == 'NRO' or self.getToken().getWord() == '++'
-                    or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE') and (self.getToken().getWord() != 'verdadeiro' or self.getToken().getWord() == 'falso'):
+                    or self.getToken().getWord() == '--' or self.getToken().getType() == 'IDE'
+                    and (self.getToken().getWord() != 'verdadeiro' and self.getToken().getWord() != 'falso')):
                 self.origin.append('expr_rel1')
                 
                 if self.getToken().getType() == 'NRO':
@@ -3577,64 +3578,68 @@ class AnalisadorSintatico:
                         self.checkSemanticItem(self.semanticItem['nome'], 'nao foi declarada')
                     
                 elif self.getToken().getType() == 'IDE' and (self.getToken().getWord() != 'verdadeiro' or self.getToken().getWord() == 'falso'):
-                    isSimboloInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(self.getToken().getWord())
-                    
-                    if isSimboloInTabelaVarConst == True:
-                        self.semanticItem['var'] = self.getToken()
-                        var = self.semanticItem['var'].getWord()
-                        simboloVarConst = self.analisadorSemantico.getSimboloVarConst(var)
-
-                        if simboloVarConst.getCategoria() == 'variavel':
-                            item = simboloVarConst
-                            self.semanticItem = {}
-                            self.semanticItem['categoria'] = item.getCategoria()
-                            self.semanticItem['init'] = item.getInit()
-                            self.semanticItem['tipo'] = item.getTipo()
-                            self.semanticItem['nome'] = item.getNome()
-                            self.semanticItem['escopo'] = item.getEscopo()
-                            self.semanticItem['dimensao'] = item.getDimensao()
-                            self.semanticItem['valor'] = self.getToken()
-
-                            isValueOk = self.isSemanticItemValueOk()
-
-                            if isValueOk == False:
-                                self.checkSemanticItem(self.semanticItem['nome'], 'de categoria ' + self.semanticItem['categoria'] +
-                                                    ' tem tipo de valor associado diferente do declarado: ' + self.semanticItem['tipo'])
-                            elif isValueOk == True:
-                                self.analisadorSemantico.updateTabelaVarConst(self.semanticItem['nome'], True)
-
-                    elif isSimboloInTabelaVarConst == False:
-                        self.checkSemanticItem(self.semanticItem['nome'], 'nao foi declarada')
+                    if self.semanticItem != {}:
+                        isSimboloInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(self.getToken().getWord())
                         
-                # self.getNextToken()
+                        if isSimboloInTabelaVarConst == True:
+                            self.semanticItem['var'] = self.getToken()
+                            var = self.semanticItem['var'].getWord()
+                            simboloVarConst = self.analisadorSemantico.getSimboloVarConst(var)
+
+                            if simboloVarConst.getCategoria() == 'variavel':
+                                item = simboloVarConst
+                                self.semanticItem = {}
+                                self.semanticItem['categoria'] = item.getCategoria()
+                                self.semanticItem['init'] = item.getInit()
+                                self.semanticItem['tipo'] = item.getTipo()
+                                self.semanticItem['nome'] = item.getNome()
+                                self.semanticItem['escopo'] = item.getEscopo()
+                                self.semanticItem['dimensao'] = item.getDimensao()
+                                self.semanticItem['valor'] = self.getToken()
+
+                                isValueOk = self.isSemanticItemValueOk()
+
+                                if isValueOk == False:
+                                    self.checkSemanticItem(self.semanticItem['nome'], 'de categoria ' + self.semanticItem['categoria'] +
+                                                        ' tem tipo de valor associado diferente do declarado: ' + self.semanticItem['tipo'])
+                                elif isValueOk == True:
+                                    self.analisadorSemantico.updateTabelaVarConst(self.semanticItem['nome'], True)
+
+                        elif isSimboloInTabelaVarConst == False:
+                            self.checkSemanticItem(self.semanticItem['nome'], 'nao foi declarada')
+                    else:
+                        self.checkSemanticItem(self.getToken().getWord(), 'nao foi declarada')
+
                 return self.expr_art()
             ############## fim <expr_art> ##############
 
             # SECOND DERIV.
             ############## boolean ##############
             elif self.getToken().getWord() == 'verdadeiro' or self.getToken().getWord() == 'falso':
+                if self.semanticItem != {}:
+                    var = self.semanticItem['var'].getWord()
+                    simboloVarConst = self.analisadorSemantico.getSimboloVarConst(var)
 
-                var = self.semanticItem['var'].getWord()
-                simboloVarConst = self.analisadorSemantico.getSimboloVarConst(var)
+                    if simboloVarConst.getCategoria() == 'variavel':
+                        item = simboloVarConst
+                        self.semanticItem = {}
+                        self.semanticItem['categoria'] = item.getCategoria()
+                        self.semanticItem['init'] = item.getInit()
+                        self.semanticItem['tipo'] = item.getTipo()
+                        self.semanticItem['nome'] = item.getNome()
+                        self.semanticItem['valor'] = self.getToken()
 
-                if simboloVarConst.getCategoria() == 'variavel':
-                    item = simboloVarConst
-                    self.semanticItem = {}
-                    self.semanticItem['categoria'] = item.getCategoria()
-                    self.semanticItem['init'] = item.getInit()
-                    self.semanticItem['tipo'] = item.getTipo()
-                    self.semanticItem['nome'] = item.getNome()
-                    self.semanticItem['valor'] = self.getToken()
+                        isValueOk = self.isSemanticItemValueOk()
 
-                    isValueOk = self.isSemanticItemValueOk()
-
-                    if isValueOk == False:
-                        self.checkSemanticItem(self.semanticItem['nome'], 'de categoria ' + self.semanticItem['categoria'] +
-                                               ' tem tipo de valor associado diferente do declarado: ' + self.semanticItem['tipo'])
-                    elif isValueOk == True:
-                        self.analisadorSemantico.updateTabelaVarConst(self.semanticItem['nome'], True)
-
-                # self.getNextToken()
+                        if isValueOk == False:
+                            self.checkSemanticItem(self.semanticItem['nome'], 'de categoria ' + self.semanticItem['categoria'] +
+                                                ' tem tipo de valor associado diferente do declarado: ' + self.semanticItem['tipo'])
+                        elif isValueOk == True:
+                            self.analisadorSemantico.updateTabelaVarConst(self.semanticItem['nome'], True)
+                else:
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
+                    self.getNextToken()
+                    
                 return self.expr_rel1()
             ############## fim boolean ##############
 
@@ -3659,28 +3664,29 @@ class AnalisadorSintatico:
             if self.isRelOperator(self.getToken().getWord()):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
 
-                var = self.semanticItem['var'].getWord()
-                simboloVarConst = self.analisadorSemantico.getSimboloVarConst(var)
+                if self.semanticItem != {}:
+                    var = self.semanticItem['var'].getWord()
+                    simboloVarConst = self.analisadorSemantico.getSimboloVarConst(var)
 
-                if simboloVarConst.getCategoria() == 'variavel':
-                    item = simboloVarConst
-                    self.semanticItem = {}
-                    self.semanticItem['categoria'] = item.getCategoria()
-                    self.semanticItem['init'] = item.getInit()
-                    self.semanticItem['tipo'] = item.getTipo()
-                    self.semanticItem['nome'] = item.getNome()
-                    self.semanticItem['valor'] = self.getToken()
+                    if simboloVarConst.getCategoria() == 'variavel':
+                        item = simboloVarConst
+                        self.semanticItem = {}
+                        self.semanticItem['categoria'] = item.getCategoria()
+                        self.semanticItem['init'] = item.getInit()
+                        self.semanticItem['tipo'] = item.getTipo()
+                        self.semanticItem['nome'] = item.getNome()
+                        self.semanticItem['valor'] = self.getToken()
 
-                    isValueOk = self.isSemanticItemValueOk()
+                        isValueOk = self.isSemanticItemValueOk()
 
-                    if isValueOk == False:
-                        self.checkSemanticItem(self.semanticItem['nome'], 'de categoria ' + self.semanticItem['categoria'] +
-                                               ' tem tipo de valor associado diferente do declarado: ' + self.semanticItem['tipo'])
-                    elif isValueOk == True:
-                        self.analisadorSemantico.updateTabelaVarConst(
-                            self.semanticItem['nome'], True)
+                        if isValueOk == False:
+                            self.checkSemanticItem(self.semanticItem['nome'], 'de categoria ' + self.semanticItem['categoria'] +
+                                                ' tem tipo de valor associado diferente do declarado: ' + self.semanticItem['tipo'])
+                        elif isValueOk == True:
+                            self.analisadorSemantico.updateTabelaVarConst(
+                                self.semanticItem['nome'], True)
 
-                # self.getNextToken()
+                self.getNextToken()
                 return self.expr_rel0()
 
             else:
@@ -3759,6 +3765,7 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == ')':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     print('fim_escreva_0', self.palavra, '\n')
+                    self.semanticItem = {}
                     self.palavra = ''
                     self.getNextToken()
 
@@ -3903,6 +3910,7 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == ')':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     print('fim_leia_0', self.palavra, '\n')
+                    self.semanticItem = {}
                     self.palavra = ''
                     self.getNextToken()
 
@@ -4148,6 +4156,7 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == '}':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
                 print('fim_para', self.palavra, '\n')
+                self.semanticItem = {}
                 self.palavra = ''
                 self.getNextToken()
 
