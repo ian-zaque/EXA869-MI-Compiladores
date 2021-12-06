@@ -28,6 +28,7 @@ class AnalisadorSintatico:
         self.origin = []
         self.analisadorSemantico = AnalisadorSemantico()
         self.semanticItem = {}
+        self.returnType = None
 
     def getCounter(self):
         return self.counter
@@ -185,9 +186,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('REGISTRO_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
-
             # FIRST DERIV.
             ############## registro ##############
             if self.getToken().getWord() == 'registro':
@@ -242,9 +240,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('REGISTRO_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
-
             ############## <type> ##############
             if ((self.isPrimitiveType(self.getToken().getWord()) or self.getToken().getType() == 'IDE')
                     and (self.getPrevToken().getWord() == '{' or self.getPrevToken().getWord() == ';')):
@@ -311,8 +306,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('REGISTRO_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## ',' ##############
@@ -375,15 +368,12 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('REGISTRO_3', self.palavra)
-            print('TOKEN_3', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## '}' ##############
             if self.getToken().getWord() == '}':
                 if self.getPrevToken().getWord() == ';':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    print('fim_registro_3', self.palavra, '\n')
 
                     semanticSymbol = SimboloRegistro(
                         self.semanticItem['nome'], self.semanticItem['atributos'])
@@ -431,8 +421,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('REGISTRO_4', self.palavra)
-            print('TOKEN_4', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <v_m_access> ##############
@@ -466,8 +454,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('VM_ACCESS_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             ############## '[' ##############
             if self.getToken().getWord() == '[':
@@ -502,8 +488,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('VM_ACCESS_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## [ <expr_number> ##############
@@ -517,7 +501,6 @@ class AnalisadorSintatico:
             ############## ] ##############
             elif self.getToken().getWord() == ']':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_v_m_access1', self.palavra, '\n')
                 self.getNextToken()
 
                 if len(self.origin) > 0:
@@ -558,7 +541,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('v_m_access1]')
                     return
             ############## fim ] ##############
 
@@ -618,8 +600,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('elem_registro_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             ############## '.' ##############
             if self.getToken().getWord() == '.':
@@ -723,8 +703,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('elem_registro_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## '.' ##############
@@ -879,8 +857,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('elem_registro_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <elem_registro> ##############
@@ -941,8 +917,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('CONSTANTES_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
             self.semanticItem['escopo'] = escopo
 
             ############## constantes ##############
@@ -977,8 +951,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('CONSTANTES_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
             self.semanticItem['escopo'] = escopo
             # FIRST DERIV.
             ############## <primitive_type> ##############
@@ -1042,7 +1014,6 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == '}':
                 if self.getPrevToken().getWord() == '{' or self.getPrevToken().getWord() == ';':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    print('fim_constantes', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
 
@@ -1077,8 +1048,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('CONSTANTES_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
             self.semanticItem['escopo'] = escopo
 
             # FIRST DERIV.
@@ -1202,8 +1171,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('VARIAVEIS_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
             self.semanticItem['escopo'] = escopo
 
             ############## 'variaveis' ##############
@@ -1238,8 +1205,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('VARIAVEIS_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
             self.semanticItem['escopo'] = escopo
 
             # FIRST DERIV.
@@ -1271,7 +1236,6 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == '}':
                 if self.getPrevToken().getWord() == ';' or self.getPrevToken().getWord() == '{':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    print('fim_variaveis', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
 
@@ -1305,8 +1269,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('VARIAVEIS_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
             self.semanticItem['escopo'] = escopo
             self.semanticItem['dimensao'] = None
             self.semanticItem['categoria'] = 'variavel'
@@ -1376,8 +1338,6 @@ class AnalisadorSintatico:
             return
 
         elif len(self.tokens) > 1:
-            print('VARIAVEIS_3', self.palavra)
-            print('TOKEN_3', self.getToken().getWord())
             self.semanticItem['escopo'] = escopo
 
             # FIRST DERIV.
@@ -1476,8 +1436,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('funcao_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             ############# funcao ##############
             if self.getToken().getWord() == 'funcao':
@@ -1492,6 +1450,7 @@ class AnalisadorSintatico:
                 if self.getPrevToken().getWord() == 'funcao':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.semanticItem['retorno'] = self.getToken().getWord()
+                    self.returnType = self.getToken().getWord()
                     self.getNextToken()
                     return self.declaracao_funcao1()
                 else:
@@ -1514,8 +1473,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('funcao_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
             ############# algoritmo #############
@@ -1527,8 +1484,7 @@ class AnalisadorSintatico:
                     self.getNextToken()
                     return self.main_function()
                 else:
-                    self.errorSintatico(
-                        ' IDE or PrimitiveType before algoritmo ')
+                    self.errorSintatico(' IDE or PrimitiveType before algoritmo ')
                     self.palavra = ''
                     return
             ############# fim algoritmo #############
@@ -1560,8 +1516,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('funcao_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
             self.semanticItem['qtdParam'] = 0
             self.semanticItem['params'] = []
 
@@ -1595,7 +1549,6 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == '}':
                 if self.getPrevToken().getWord() == ';':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    print('fim_declaracao_funcao_2', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
                     return self.declaracao_funcao()
@@ -1618,8 +1571,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('main_function_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
             self.semanticItem['qtdParam'] = 0
             self.semanticItem['params'] = []
 
@@ -1652,8 +1603,6 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == '}':
                 if self.getPrevToken().getWord() == ';':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    print('fim_main_function', self.palavra, '\n')
-                    self.palavra = ''
                     self.getNextToken()
                     return
                 else:
@@ -1676,8 +1625,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('parametros_funcao_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             ############# '(' #############
             if self.getToken().getWord() == '(':
@@ -1703,8 +1650,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('parametros_funcao_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
             ############# <type> #############
@@ -1754,7 +1699,6 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == ')':
                 if self.getPrevToken().getWord() == '(':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    print('fim_parametros_funcao_1', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
 
@@ -1806,8 +1750,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('parametros_funcao_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
 
             # FIRST DERIV.
             ############# '[' #############
@@ -1869,8 +1811,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('parametros_funcao_3', self.palavra)
-            print('TOKEN_3', self.getToken().getWord())
 
             # FIRST DERIV.
             ############# '[' #############
@@ -1921,8 +1861,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('parametros_funcao_4', self.palavra)
-            print('TOKEN_4', self.getToken().getWord())
 
             # FIRST DERIV.
             if self.getToken().getWord() == ',':
@@ -1940,7 +1878,6 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == ')':
                 if self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    print('fim_parametros_funcao_4', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
 
@@ -1994,8 +1931,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('var_atr_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             ############# <read_value> #############
             if self.getToken().getType() == 'IDE':
@@ -2036,8 +1971,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('read_value_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             if self.getToken().getType() == 'IDE':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
@@ -2070,8 +2003,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('read_value0_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # <read_value0> ::= <v_m_access> | <elem_registro> | <>
             # <v_m_access>
@@ -2130,7 +2061,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('read_value0<>')
                     return
             ############## fim erro ##############
 
@@ -2141,8 +2071,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('atr_1', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <var_atr> ##############
@@ -2156,7 +2084,6 @@ class AnalisadorSintatico:
             ############## ';' ##############
             elif self.getToken().getWord() == ';':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_atr_1', self.palavra, '\n')
                 self.semanticItem = {}
                 self.palavra = ''
                 self.getNextToken()
@@ -2184,7 +2111,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('atr_1;')
                     return
 
             ############# erro ##############
@@ -2201,8 +2127,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('atr_value_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # SECOND DERIV.
             ############## <functionCall> ##############
@@ -2271,8 +2195,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('chamada_funcao_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             ############## id ##############
             if self.getToken().getType() == 'IDE' and self.forward().getWord() == '(':
@@ -2301,7 +2223,6 @@ class AnalisadorSintatico:
             ############## ';' ##############
             elif self.getToken().getWord() == ';' and self.getPrevToken().getWord() == ')':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_chamada_funcao_0', self.palavra, '\n')
                 
                 params = self.semanticItem['params']
                 self.semanticItem['params'] = []
@@ -2381,7 +2302,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('functionCall;')
                     return
             ############## fim ';' ##############
             else:
@@ -2396,8 +2316,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('varList_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV. OR SECOND DERIV.
             ############## <varList2> ##############
@@ -2436,8 +2354,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('varList_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV. OR SECOND DERIV.
             ############## <varList2> ##############
@@ -2468,8 +2384,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('varList_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
 
             if self.getToken().getWord() == ',':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
@@ -2492,8 +2406,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('vector_matrix_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             ############## '[' <expr_number> ##############
             if self.getToken().getWord() == '[':
@@ -2530,8 +2442,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('vector_matrix_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## '[' ##############
@@ -2594,8 +2504,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('vector_matrix_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## '=' ##############
@@ -2636,8 +2544,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('init_vector_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## '[' ##############
@@ -2666,8 +2572,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('init_vector_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
 
             ############## FIRST DERIV OF <value_with_IDE> ##############
             if (self.isvalue(self.getToken()) == 'real' or self.isvalue(self.getToken()) == 'inteiro'
@@ -2697,8 +2601,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('init_vector_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
 
             # FIRST DERIV.
             if self.getToken().getWord() == ',':
@@ -2737,8 +2639,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('init_matrix_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## '[' ##############
@@ -2767,8 +2667,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('init_matrix_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
 
             if (self.isvalue(self.getToken()) == 'real' or self.isvalue(self.getToken()) == 'inteiro'
                     or self.isvalue(self.getToken()) or self.getToken().getType() == 'IDE'):
@@ -2797,8 +2695,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('init_matrix_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
 
             # FIRST DERIV. OR  SECOND DERIV.
             if self.getToken().getWord() == ',' or self.getToken().getWord() == ';':
@@ -2819,7 +2715,6 @@ class AnalisadorSintatico:
                 if (self.isvalue(self.getPrevToken()) == 'real' or self.isvalue(self.getPrevToken()) == 'inteiro'
                         or self.isvalue(self.getPrevToken()) or self.getPrevToken().getType() == 'IDE'):
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    print('fim_init_matrix_1', self.palavra, '\n')
                     self.palavra = ''
                     self.getNextToken()
                     return self.declaracao_var3(self.semanticItem['escopo'])
@@ -2843,8 +2738,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expressao_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <expr_rel> ##############
@@ -2894,8 +2787,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_log_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <operatorLog> ##############
@@ -2987,7 +2878,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('expr_log1<>')
                     return
             ############## fim <> ##############
             ############## erro ##############
@@ -3000,8 +2890,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_log_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <operatorLog> ##############
@@ -3100,7 +2988,6 @@ class AnalisadorSintatico:
                         return
             ############## fim erro ##############
                 else:
-                    print('expr_log2<>')
                     return
 
     # <expr_valor_mod> ::=  number | <operator_auto0> <read_value> | <read_value> <operator_auto>
@@ -3110,14 +2997,11 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_valor_mod_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## number ##############
             if (self.isvalue(self.getToken()) == 'real' or self.isvalue(self.getToken()) == 'inteiro'):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_expr_valor_mod_0', self.palavra, '\n')
                 # self.palavra = ''
                 self.getNextToken()
                 return self.expr_multi_pos()
@@ -3154,14 +3038,11 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('operator_auto_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             ############## <operator_auto> ##############
             if (self.getToken().getWord() == '++' or self.getToken().getWord() == '--'
                     and (self.getPrevToken().getType() == 'IDE' or self.getPrevToken().getWord() == ']')):
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_operator_auto', self.palavra, '\n')
                 self.palavra = ''
                 self.getNextToken()
                 return self.expr_multi_pos()
@@ -3176,8 +3057,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_multi_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             # <operator_soma> ::= '+' | '-'
@@ -3235,8 +3114,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_multi_pos_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <operator_multi> ##############
@@ -3264,7 +3141,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('expr_multi_pos<>')
                     return
 
             ############## fim <> ##############
@@ -3276,8 +3152,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_art_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
 
@@ -3304,8 +3178,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_art1_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <operator_soma> ##############
@@ -3350,7 +3222,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('expr_art1<>')
                     return
             ############## fim erro ##############
 
@@ -3361,8 +3232,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_number_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <expr_art> ##############
@@ -3425,8 +3294,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_number_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <operator_soma> ##############
@@ -3471,7 +3338,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('expr_number1<>')
                     return
             ############## fim erro ##############
 
@@ -3482,8 +3348,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_rel_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <expr_rel> ##############
@@ -3517,7 +3381,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('expr_rel0)')
                     return
             ############## fim ')' ##############
 
@@ -3535,8 +3398,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_rel_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <expr_art> ##############
@@ -3547,35 +3408,36 @@ class AnalisadorSintatico:
                 self.origin.append('expr_rel1')
                 
                 if self.getToken().getType() == 'NRO':
-                    var = self.semanticItem['var'].getWord()
-                    isSimboloInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(self.semanticItem['nome'])
-                    
-                    if isSimboloInTabelaVarConst == True:
-                        simboloVarConst = self.analisadorSemantico.getSimboloVarConst(self.semanticItem['nome'])
+                    if self.semanticItem != {}:
+                        var = self.semanticItem['var'].getWord()
+                        isSimboloInTabelaVarConst = self.analisadorSemantico.isSimboloInTabelaVarConst(self.semanticItem['nome'])
                         
-                        if simboloVarConst.getCategoria() == 'constante':
-                            self.checkSemanticItem(self.semanticItem['nome'], 'atribuicao de constante fora do bloco!')                        
-                        
-                        if simboloVarConst.getCategoria() == 'variavel':
-                            self.semanticItem = {}
-                            self.semanticItem['categoria'] = simboloVarConst.getCategoria()
-                            self.semanticItem['init'] = True
-                            self.semanticItem['tipo'] = simboloVarConst.getTipo()
-                            self.semanticItem['nome'] = simboloVarConst.getNome()
-                            self.semanticItem['escopo'] = simboloVarConst.getEscopo()
-                            self.semanticItem['dimensao'] = simboloVarConst.getDimensao()
-                            self.semanticItem['valor'] = self.getToken()
+                        if isSimboloInTabelaVarConst == True:
+                            simboloVarConst = self.analisadorSemantico.getSimboloVarConst(self.semanticItem['nome'])
+                            
+                            if simboloVarConst.getCategoria() == 'constante':
+                                self.checkSemanticItem(self.semanticItem['nome'], 'atribuicao de constante fora do bloco!')                        
+                            
+                            if simboloVarConst.getCategoria() == 'variavel':
+                                self.semanticItem = {}
+                                self.semanticItem['categoria'] = simboloVarConst.getCategoria()
+                                self.semanticItem['init'] = True
+                                self.semanticItem['tipo'] = simboloVarConst.getTipo()
+                                self.semanticItem['nome'] = simboloVarConst.getNome()
+                                self.semanticItem['escopo'] = simboloVarConst.getEscopo()
+                                self.semanticItem['dimensao'] = simboloVarConst.getDimensao()
+                                self.semanticItem['valor'] = self.getToken()
 
-                            isValueOk = self.isSemanticItemValueOk()
+                                isValueOk = self.isSemanticItemValueOk()
 
-                            if isValueOk == False:
-                                self.checkSemanticItem(self.semanticItem['nome'], 'de categoria ' + self.semanticItem['categoria'] +
-                                                    ' tem tipo de valor associado diferente do declarado: ' + self.semanticItem['tipo'])
-                            elif isValueOk == True:
-                                self.analisadorSemantico.updateTabelaVarConst(self.semanticItem['nome'], True)
+                                if isValueOk == False:
+                                    self.checkSemanticItem(self.semanticItem['nome'], 'de categoria ' + self.semanticItem['categoria'] +
+                                                        ' tem tipo de valor associado diferente do declarado: ' + self.semanticItem['tipo'])
+                                elif isValueOk == True:
+                                    self.analisadorSemantico.updateTabelaVarConst(self.semanticItem['nome'], True)
 
-                    elif isSimboloInTabelaVarConst == False:
-                        self.checkSemanticItem(self.semanticItem['nome'], 'nao foi declarada')
+                        elif isSimboloInTabelaVarConst == False:
+                            self.checkSemanticItem(self.semanticItem['nome'], 'nao foi declarada')
                     
                 elif self.getToken().getType() == 'IDE' and (self.getToken().getWord() != 'verdadeiro' or self.getToken().getWord() == 'falso'):
                     if self.semanticItem != {}:
@@ -3657,8 +3519,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('expr_rel_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
 
             # FIRST DERIV.
             if self.isRelOperator(self.getToken().getWord()):
@@ -3702,7 +3562,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('expr_rel1<>')
                     return
                 ############## fim erro ##############
 
@@ -3713,8 +3572,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('escreva_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## 'escreva' ##############
@@ -3764,7 +3621,6 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == ';':
                 if self.getPrevToken().getWord() == ')':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    print('fim_escreva_0', self.palavra, '\n')
                     self.semanticItem = {}
                     self.palavra = ''
                     self.getNextToken()
@@ -3786,7 +3642,6 @@ class AnalisadorSintatico:
                             return
 
                     else:
-                        print('write_cmd;')
                         return
 
                 else:
@@ -3810,8 +3665,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('write_value_list_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## ',' ##############
@@ -3868,8 +3721,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('leia_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## 'leia' ##############
@@ -3909,7 +3760,6 @@ class AnalisadorSintatico:
             elif self.getToken().getWord() == ';':
                 if self.getPrevToken().getWord() == ')':
                     self.palavra = self.palavra + self.getToken().getWord() + ' '
-                    print('fim_leia_0', self.palavra, '\n')
                     self.semanticItem = {}
                     self.palavra = ''
                     self.getNextToken()
@@ -3930,7 +3780,6 @@ class AnalisadorSintatico:
                             self.palavra = ''
                             return
                     else:
-                        print('read_cmd;')
                         return
                 else:
                     self.errorSintatico(' ) before ;')
@@ -3952,8 +3801,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('read_value_list_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## ',' ##############
@@ -3991,8 +3838,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('enquanto_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## 'enquanto' ##############
@@ -4032,7 +3877,6 @@ class AnalisadorSintatico:
             ############## '}' ##############
             elif self.getToken().getWord() == '}':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_enquanto', self.palavra, '\n')
                 self.palavra = ''
                 self.getNextToken()
 
@@ -4052,7 +3896,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('com_enquanto}')
                     return
             ############## fim '}' ##############
 
@@ -4069,8 +3912,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('args_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <args> ##############
@@ -4109,8 +3950,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('para_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## 'para' ##############
@@ -4155,7 +3994,6 @@ class AnalisadorSintatico:
             ############## '}' ##############
             elif self.getToken().getWord() == '}':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_para', self.palavra, '\n')
                 self.semanticItem = {}
                 self.palavra = ''
                 self.getNextToken()
@@ -4176,7 +4014,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('com_para}')
                     return
             ############## fim '}' ##############
 
@@ -4192,8 +4029,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('init_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             ############## FIRST DERIV OF <init> ##############
             if self.getToken().getType() == 'IDE':
@@ -4224,8 +4059,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('stop_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <stop> ##############
@@ -4264,8 +4097,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('step_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## 'para' ##############
@@ -4303,8 +4134,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('se_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## 'se' ##############
@@ -4352,7 +4181,6 @@ class AnalisadorSintatico:
             ############## '}' ##############
             elif self.getToken().getWord() == '}':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_se', self.palavra, '\n')
                 self.palavra = ''
                 self.getNextToken()
                 return self.se_body()
@@ -4370,8 +4198,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('se_body_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## 'senao' ##############
@@ -4402,7 +4228,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('se_body<>')
                     return
 
     # <senao>  ::= 'senao' <se_senao>
@@ -4412,8 +4237,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('senao_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## 'senao' ##############
@@ -4442,8 +4265,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('se_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <se> ##############
@@ -4473,7 +4294,6 @@ class AnalisadorSintatico:
             ############## '}' ##############
             elif self.getToken().getWord() == '}':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_se_senao', self.palavra, '\n')
                 self.palavra = ''
                 self.getNextToken()
                 if len(self.origin) > 0:
@@ -4492,7 +4312,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('se_senao}')
                     return
             ############## fim '}' ##############
 
@@ -4511,8 +4330,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('com_body_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <com_enquanto> ##############
@@ -4595,7 +4412,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('com_body}')
                     return
 
             ############# erro ##############
@@ -4612,8 +4428,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('com_retornar_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## retorno ##############
@@ -4626,7 +4440,6 @@ class AnalisadorSintatico:
             ############## ';' ##############
             elif self.getToken().getWord() == ';':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_com_retornar_0', self.palavra, '\n')
                 self.palavra = ''
                 self.getNextToken()
 
@@ -4658,7 +4471,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('retornar;')
                     return
             ############## fim ';' ##############
 
@@ -4692,7 +4504,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('retornar<>')
                     return
             ############## fim ';' ##############
             ############## fim erro ##############
@@ -4702,8 +4513,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('com_retornar1_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <com_retornar1> ##############
@@ -4743,8 +4552,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('corpo_funcao_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <declaration_const> ##############
@@ -4796,8 +4603,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('corpo_funcao_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
 
             # FIRST DERIV.
             ############## <declaration_var> ##############
@@ -4839,8 +4644,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('corpo_funcao_2', self.palavra)
-            print('TOKEN_2', self.getToken().getWord())
 
            # FIRST DERIV.
             ############## <com_enquanto> ##############
@@ -4967,8 +4770,6 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('retornar_funcao_0', self.palavra)
-            print('TOKEN_0', self.getToken().getWord())
 
            # FIRST DERIV.
             ############## retorno ##############
@@ -4980,7 +4781,6 @@ class AnalisadorSintatico:
 
             elif self.getToken().getWord() == ';':
                 self.palavra = self.palavra + self.getToken().getWord() + ' '
-                print('fim_retornar_funcao_0', self.palavra, '\n')
                 self.palavra = ''
                 self.getNextToken()
 
@@ -4999,7 +4799,6 @@ class AnalisadorSintatico:
                         self.palavra = ''
                         return
                 else:
-                    print('retornar;')
                     return
                 # FIM DE CORPO DE FUNCAO
 
@@ -5017,18 +4816,14 @@ class AnalisadorSintatico:
             return
 
         elif self.counter < len(self.tokens):
-            print('retornar_funcao_1', self.palavra)
-            print('TOKEN_1', self.getToken().getWord())
-
             ############## cad | char ##############
             if self.getToken().getType() == 'CAD' or self.getToken().getType() == 'CAR':
                 if self.getPrevToken().getWord() == 'retorno':
-                    self.palavra = self.palavra + self.getToken().getWord() + '$'
+                    self.palavra = self.palavra + self.getToken().getWord() + ' '
                     self.getNextToken()
                     return self.retornar_funcao()
                 else:
-                    self.errorSintatico(
-                        ' retorno before ' + self.getToken().getWord())
+                    self.errorSintatico(' retorno before ' + self.getToken().getWord())
                     self.palavra = ''
                     return
 
